@@ -1,382 +1,699 @@
 <!doctype html>
 <html lang="en" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PTE Master — Practice PTE Online</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=Playfair+Display:wght@600;700;800&amp;display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            heading: ['"Playfair Display"', 'Georgia', 'serif'],
-            body: ['"DM Sans"', 'system-ui', 'sans-serif'],
-          }
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTE Master — Practice PTE Online</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
         }
-      }
-    }
-  </script>
-  <style>
-    /* Mega menu positioning */
-    .nav-item { position: relative; }
-    .mega-menu {
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.2s, visibility 0.2s;
-      z-index: 50;
-      padding-top: 8px;
-    }
-    .nav-item:hover > .mega-menu {
-      opacity: 1;
-      visibility: visible;
-    }
+    </script>
+    <style>
+        /* Mega menu positioning */
+        .nav-item {
+            position: relative;
+        }
 
-    /* Sub-menus for Practice flyouts */
-    .sub-item { position: relative; }
-    .sub-menu {
-      position: absolute;
-      left: 100%;
-      top: 0;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.15s, visibility 0.15s;
-      z-index: 60;
-      padding-left: 4px;
-    }
-    .sub-item:hover > .sub-menu {
-      opacity: 1;
-      visibility: visible;
-    }
+        .mega-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+            z-index: 50;
+            padding-top: 8px;
+        }
 
-    /* Tertiary menus (Free/Paid test types) */
-    .tertiary-item { position: relative; }
-    .tertiary-menu {
-      position: absolute;
-      left: 100%;
-      top: 0;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.15s, visibility 0.15s;
-      z-index: 70;
-      padding-left: 4px;
-    }
-    .tertiary-item:hover > .tertiary-menu {
-      opacity: 1;
-      visibility: visible;
-    }
+        .nav-item:hover>.mega-menu {
+            opacity: 1;
+            visibility: visible;
+        }
 
-    /* Hero gradient */
-    .hero-bg {
-      background: linear-gradient(135deg, #0b1120 0%, #112240 40%, #1a365d 70%, #0b1120 100%);
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-bg::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 70%;
-      height: 200%;
-      background: radial-gradient(ellipse, rgba(56,189,248,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero-bg::after {
-      content: '';
-      position: absolute;
-      bottom: -30%;
-      left: -10%;
-      width: 50%;
-      height: 150%;
-      background: radial-gradient(ellipse, rgba(168,85,247,0.06) 0%, transparent 70%);
-      pointer-events: none;
-    }
+        /* Sub-menus for Practice flyouts */
+        .sub-item {
+            position: relative;
+        }
 
-    /* Accent line animation */
-    @keyframes shimmer {
-      0% { background-position: -200% center; }
-      100% { background-position: 200% center; }
-    }
-    .shimmer-line {
-      background: linear-gradient(90deg, transparent, rgba(56,189,248,0.4), transparent);
-      background-size: 200% 100%;
-      animation: shimmer 3s infinite;
-    }
+        .sub-menu {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.15s, visibility 0.15s;
+            z-index: 60;
+            padding-left: 4px;
+        }
 
-    /* Mobile menu */
-    .mobile-menu {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.35s ease;
-    }
-    .mobile-menu.open {
-      max-height: 2000px;
-    }
-    .mobile-accordion {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
-    }
-    .mobile-accordion.open {
-      max-height: 800px;
-    }
+        .sub-item:hover>.sub-menu {
+            opacity: 1;
+            visibility: visible;
+        }
 
-    /* Smooth hover for menu items */
-    .menu-link {
-      transition: color 0.15s, background 0.15s;
-    }
-  </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full w-full bg-[#0b1120] font-body text-white overflow-auto"><!-- NAV -->
-  <nav id="navbar" class="fixed top-0 left-0 w-full z-40" style="background: transparent;">
-   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-16"><!-- Left: burger + logo -->
-     <div class="flex items-center gap-2"><!-- Burger (mobile) --> <button id="burger-btn" class="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition" aria-label="Toggle menu"> <i data-lucide="menu" class="w-5 h-5" id="burger-icon-open"></i> <i data-lucide="x" class="w-5 h-5 hidden" id="burger-icon-close"></i> </button> <!-- Logo --> <a href="#" class="flex items-center gap-2" onclick="event.preventDefault()">
-       <div class="w-16 h-8 rounded-lg bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center font-heading font-bold text-sm text-white shadow-lg shadow-sky-500/20">
-        PTELT
-       </div><span id="brand-text" class="font-heading font-bold text-lg tracking-tight text-white">PTE Learning Tracker</span> </a>
-     </div><!-- Center: desktop menu -->
-     <div class="hidden md:flex items-center gap-1" id="desktop-menu"><!-- Practice (mega) -->
-      <div class="nav-item"><button class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-1"> Practice <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-60"></i> </button>
-       <div class="mega-menu">
-        <div class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[200px]"><!-- Speaking -->
-         <div class="sub-item"><a href="#" onclick="event.preventDefault()" class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10"> <span class="flex items-center gap-2"><i data-lucide="mic" class="w-4 h-4 text-sky-400"></i> Speaking</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
-          <div class="sub-menu">
-           <div class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[220px]"><a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Read Aloud</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Repeat Sentence</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Describe Image</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Retell Lecture</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Answer Short Question</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Summarise Group Discussion</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Respond To A Situation</a>
-           </div>
-          </div>
-         </div><!-- Writing -->
-         <div class="sub-item"><a href="#" onclick="event.preventDefault()" class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10"> <span class="flex items-center gap-2"><i data-lucide="pen-tool" class="w-4 h-4 text-emerald-400"></i> Writing</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
-          <div class="sub-menu">
-           <div class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[220px]"><a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Summarise Written Text</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Essay</a>
-           </div>
-          </div>
-         </div><!-- Reading -->
-         <div class="sub-item"><a href="#" onclick="event.preventDefault()" class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10"> <span class="flex items-center gap-2"><i data-lucide="book-open" class="w-4 h-4 text-amber-400"></i> Reading</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
-          <div class="sub-menu">
-           <div class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[260px]"><a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Fill In Blank (Drop Down)</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple Choice (Multiple Answer)</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Reorder Paragraph</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Fill In Blank (Drag Drop)</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple Choice (Single Answer)</a>
-           </div>
-          </div>
-         </div><!-- Listening -->
-         <div class="sub-item"><a href="#" onclick="event.preventDefault()" class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10"> <span class="flex items-center gap-2"><i data-lucide="headphones" class="w-4 h-4 text-purple-400"></i> Listening</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
-          <div class="sub-menu">
-           <div class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[270px]"><a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Summarise Spoken Text</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple Choice (Multiple Answer)</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Fill In Blank</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Highlight Correct Summary</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple Choice (Single Answer)</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Select Missing Word</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Highlight Incorrect Word</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Write From Dictation</a>
-           </div>
-          </div>
-         </div><!-- Mock Test -->
-         <div class="sub-item"><a href="#" onclick="event.preventDefault()" class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10"> <span class="flex items-center gap-2"><i data-lucide="clipboard-check" class="w-4 h-4 text-rose-400"></i> Mock Test</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
-          <div class="sub-menu">
-           <div class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[200px]"><!-- Free Test -->
-            <div class="tertiary-item"><a href="#" onclick="event.preventDefault()" class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10"> Free Test <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
-             <div class="tertiary-menu">
-              <div class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[180px]"><a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Speaking</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Writing</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Reading</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Listening</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Full Test</a>
-              </div>
-             </div>
-            </div><!-- Paid Test -->
-            <div class="tertiary-item"><a href="#" onclick="event.preventDefault()" class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10"> Paid Test <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
-             <div class="tertiary-menu">
-              <div class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[180px]"><a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Speaking</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Writing</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Reading</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Listening</a> <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Full Test</a>
-              </div>
-             </div>
+        /* Tertiary menus (Free/Paid test types) */
+        .tertiary-item {
+            position: relative;
+        }
+
+        .tertiary-menu {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.15s, visibility 0.15s;
+            z-index: 70;
+            padding-left: 4px;
+        }
+
+        .tertiary-item:hover>.tertiary-menu {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Hero gradient */
+        .hero-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #1e3a8a 70%, #0f172a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Accent line animation */
+        @keyframes shimmer {
+            0% {
+                background-position: -200% center;
+            }
+
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        .shimmer-line {
+            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.4), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
+
+        /* Mobile menu */
+        .mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease;
+        }
+
+        .mobile-menu.open {
+            max-height: 2000px;
+        }
+
+        .mobile-accordion {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .mobile-accordion.open {
+            max-height: 800px;
+        }
+
+        /* Smooth hover for menu items */
+        .menu-link {
+            transition: color 0.15s, background 0.15s;
+        }
+    </style>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+    </style>
+    <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+</head>
+
+<body class="h-full w-full bg-slate-950 font-sans text-white overflow-auto antialiased"><!-- NAV -->
+    <nav id="navbar"
+        class="fixed top-0 left-0 w-full z-40 transition-all duration-300 border-b border-transparent bg-transparent">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16"><!-- Left: burger + logo -->
+                <div class="flex items-center gap-2"><!-- Burger (mobile) --> <button id="burger-btn"
+                        class="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition"
+                        aria-label="Toggle menu"> <i data-lucide="menu" class="w-5 h-5" id="burger-icon-open"></i> <i
+                            data-lucide="x" class="w-5 h-5 hidden" id="burger-icon-close"></i> </button> <!-- Logo -->
+                    <a href="#" class="flex items-center gap-2 xl:gap-3" onclick="event.preventDefault()">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center font-bold text-sm text-white shadow-lg shadow-sky-500/20">
+                            <img src="./src/assets/images/logo.png" alt="PTELT Logo" class="w-[87.5%] h-[87.5%]"/>
+                        </div><span class="text-2xl font-bold text-white tracking-wider">
+
+                            <!-- Large screen (≥ md) -->
+                            <span class="hidden lg:inline">
+                                PTE <span class="text-blue-400">Learning Tracker</span>
+                            </span>
+
+                            <!-- Small screen (< md) -->
+                            <span class="inline lg:hidden">
+                                PTE<span class="text-blue-400">LT</span>
+                            </span>
+
+                        </span>
+                    </a>
+                </div><!-- Center: desktop menu -->
+                <div class="hidden md:flex items-center gap-1" id="desktop-menu"><!-- Practice (mega) -->
+                    <div class="nav-item"><button
+                            class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-1">
+                            Practice <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-60"></i> </button>
+                        <div class="mega-menu">
+                            <div
+                                class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[200px]">
+                                <!-- Speaking -->
+                                <div class="sub-item"><a href="#" onclick="event.preventDefault()"
+                                        class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                        <span class="flex items-center gap-2"><i data-lucide="mic"
+                                                class="w-4 h-4 text-sky-400"></i> Speaking</span> <i
+                                            data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                    <div class="sub-menu">
+                                        <div
+                                            class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[220px]">
+                                            <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Read
+                                                Aloud</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Repeat
+                                                Sentence</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Describe
+                                                Image</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Retell
+                                                Lecture</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Answer
+                                                Short Question</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Summarise
+                                                Group Discussion</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Respond
+                                                To A Situation</a>
+                                        </div>
+                                    </div>
+                                </div><!-- Writing -->
+                                <div class="sub-item"><a href="#" onclick="event.preventDefault()"
+                                        class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                        <span class="flex items-center gap-2"><i data-lucide="pen-tool"
+                                                class="w-4 h-4 text-emerald-400"></i> Writing</span> <i
+                                            data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                    <div class="sub-menu">
+                                        <div
+                                            class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[220px]">
+                                            <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Summarise
+                                                Written Text</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Essay</a>
+                                        </div>
+                                    </div>
+                                </div><!-- Reading -->
+                                <div class="sub-item"><a href="#" onclick="event.preventDefault()"
+                                        class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                        <span class="flex items-center gap-2"><i data-lucide="book-open"
+                                                class="w-4 h-4 text-amber-400"></i> Reading</span> <i
+                                            data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                    <div class="sub-menu">
+                                        <div
+                                            class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[260px]">
+                                            <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Fill
+                                                In Blank (Drop Down)</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple
+                                                Choice (Multiple Answer)</a> <a href="#"
+                                                onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Reorder
+                                                Paragraph</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Fill
+                                                In Blank (Drag Drop)</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple
+                                                Choice (Single Answer)</a>
+                                        </div>
+                                    </div>
+                                </div><!-- Listening -->
+                                <div class="sub-item"><a href="#" onclick="event.preventDefault()"
+                                        class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                        <span class="flex items-center gap-2"><i data-lucide="headphones"
+                                                class="w-4 h-4 text-purple-400"></i> Listening</span> <i
+                                            data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                    <div class="sub-menu">
+                                        <div
+                                            class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[270px]">
+                                            <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Summarise
+                                                Spoken Text</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple
+                                                Choice (Multiple Answer)</a> <a href="#"
+                                                onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Fill
+                                                In Blank</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Highlight
+                                                Correct Summary</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple
+                                                Choice (Single Answer)</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Select
+                                                Missing Word</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Highlight
+                                                Incorrect Word</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Write
+                                                From Dictation</a>
+                                        </div>
+                                    </div>
+                                </div><!-- Mock Test -->
+                                <div class="sub-item"><a href="#" onclick="event.preventDefault()"
+                                        class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                        <span class="flex items-center gap-2"><i data-lucide="clipboard-check"
+                                                class="w-4 h-4 text-rose-400"></i> Mock Test</span> <i
+                                            data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                    <div class="sub-menu">
+                                        <div
+                                            class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[200px]">
+                                            <!-- Free Test -->
+                                            <div class="tertiary-item"><a href="#" onclick="event.preventDefault()"
+                                                    class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                                    Free Test <i data-lucide="chevron-right"
+                                                        class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                                <div class="tertiary-menu">
+                                                    <div
+                                                        class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[180px]">
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Full
+                                                            Test</a> <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Speaking</a>
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Writing</a>
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Reading</a>
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Listening</a>
+                                                    </div>
+                                                </div>
+                                            </div><!-- Paid Test -->
+                                            <div class="tertiary-item"><a href="#" onclick="event.preventDefault()"
+                                                    class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                                    Paid Test <i data-lucide="chevron-right"
+                                                        class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                                <div class="tertiary-menu">
+                                                    <div
+                                                        class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[180px]">
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Full
+                                                            Test</a> <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Speaking</a>
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Writing</a>
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Reading</a>
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Listening</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- Other nav links --> <a href="#" onclick="event.preventDefault()"
+                        class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">PTE
+                        Tutorial</a> <a href="#" onclick="event.preventDefault()"
+                        class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Pricing</a>
+                    <a href="#" onclick="event.preventDefault()"
+                        class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Q&amp;A</a>
+                    <a href="#" onclick="event.preventDefault()"
+                        class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Forum</a>
+                </div><!-- Right: auth -->
+                <div class="flex items-center gap-2"><a href="#" onclick="event.preventDefault()"
+                        class="hidden sm:inline-flex menu-link px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Log
+                        In</a> <a href="#" onclick="event.preventDefault()"
+                        class="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-sky-500 to-indigo-500 text-white hover:from-sky-400 hover:to-indigo-400 transition shadow-lg shadow-sky-500/20">Sign
+                        Up</a>
+                </div>
             </div>
-           </div>
-          </div>
-         </div>
+        </div><!-- Mobile menu -->
+        <div id="mobile-menu" class="mobile-menu md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-white/10">
+            <div class="px-4 py-3 space-y-1"><!-- Practice accordion -->
+                <div><button onclick="toggleMobileAccordion('practice-acc')"
+                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">
+                        Practice <i data-lucide="chevron-down" class="w-4 h-4 opacity-60 transition-transform"
+                            id="practice-acc-icon"></i> </button>
+                    <div id="practice-acc" class="mobile-accordion pl-4 space-y-0.5"><!-- Speaking -->
+                        <div><button onclick="toggleMobileAccordion('speaking-acc')"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                <span class="flex items-center gap-2"><i data-lucide="mic"
+                                        class="w-3.5 h-3.5 text-sky-400"></i> Speaking</span> <i
+                                    data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform"
+                                    id="speaking-acc-icon"></i> </button>
+                            <div id="speaking-acc" class="mobile-accordion pl-4 space-y-0.5"><a href="#"
+                                    onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Read
+                                    Aloud</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Repeat
+                                    Sentence</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Describe
+                                    Image</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Retell
+                                    Lecture</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Answer
+                                    Short Question</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Summarise
+                                    Group Discussion</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Respond
+                                    To A Situation</a>
+                            </div>
+                        </div><!-- Writing -->
+                        <div><button onclick="toggleMobileAccordion('writing-acc')"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                <span class="flex items-center gap-2"><i data-lucide="pen-tool"
+                                        class="w-3.5 h-3.5 text-emerald-400"></i> Writing</span> <i
+                                    data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform"
+                                    id="writing-acc-icon"></i> </button>
+                            <div id="writing-acc" class="mobile-accordion pl-4 space-y-0.5"><a href="#"
+                                    onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Summarise
+                                    Written Text</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Essay</a>
+                            </div>
+                        </div><!-- Reading -->
+                        <div><button onclick="toggleMobileAccordion('reading-acc')"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                <span class="flex items-center gap-2"><i data-lucide="book-open"
+                                        class="w-3.5 h-3.5 text-amber-400"></i> Reading</span> <i
+                                    data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform"
+                                    id="reading-acc-icon"></i> </button>
+                            <div id="reading-acc" class="mobile-accordion pl-4 space-y-0.5"><a href="#"
+                                    onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Fill
+                                    In Blank (Drop Down)</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple
+                                    Choice (Multiple Answer)</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Reorder
+                                    Paragraph</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Fill
+                                    In Blank (Drag Drop)</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple
+                                    Choice (Single Answer)</a>
+                            </div>
+                        </div><!-- Listening -->
+                        <div><button onclick="toggleMobileAccordion('listening-acc')"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                <span class="flex items-center gap-2"><i data-lucide="headphones"
+                                        class="w-3.5 h-3.5 text-purple-400"></i> Listening</span> <i
+                                    data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform"
+                                    id="listening-acc-icon"></i> </button>
+                            <div id="listening-acc" class="mobile-accordion pl-4 space-y-0.5"><a href="#"
+                                    onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Summarise
+                                    Spoken Text</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple
+                                    Choice (Multiple Answer)</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Fill
+                                    In Blank</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Highlight
+                                    Correct Summary</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple
+                                    Choice (Single Answer)</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Select
+                                    Missing Word</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Highlight
+                                    Incorrect Word</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Write
+                                    From Dictation</a>
+                            </div>
+                        </div><!-- Mock Test -->
+                        <div><button onclick="toggleMobileAccordion('mock-acc')"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                <span class="flex items-center gap-2"><i data-lucide="clipboard-check"
+                                        class="w-3.5 h-3.5 text-rose-400"></i> Mock Test</span> <i
+                                    data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform"
+                                    id="mock-acc-icon"></i> </button>
+                            <div id="mock-acc" class="mobile-accordion pl-4 space-y-0.5">
+                                <div><button onclick="toggleMobileAccordion('free-acc')"
+                                        class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                        Free Test <i data-lucide="chevron-down"
+                                            class="w-3.5 h-3.5 opacity-40 transition-transform" id="free-acc-icon"></i>
+                                    </button>
+                                    <div id="free-acc" class="mobile-accordion pl-4 space-y-0.5">
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Full
+                                            Test</a> <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Speaking</a>
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Writing</a>
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Reading</a>
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Listening</a>
+                                    </div>
+                                </div>
+                                <div><button onclick="toggleMobileAccordion('paid-acc')"
+                                        class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                        Paid Test <i data-lucide="chevron-down"
+                                            class="w-3.5 h-3.5 opacity-40 transition-transform" id="paid-acc-icon"></i>
+                                    </button>
+                                    <div id="paid-acc" class="mobile-accordion pl-4 space-y-0.5">
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Full
+                                            Test</a> <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Speaking</a>
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Writing</a>
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Reading</a>
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Listening</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><a href="#" onclick="event.preventDefault()"
+                    class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">PTE Tutorial</a>
+                <a href="#" onclick="event.preventDefault()"
+                    class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Pricing</a> <a href="#" onclick="event.preventDefault()"
+                    class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Q&amp;A</a>
+                <a href="#" onclick="event.preventDefault()"
+                    class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Forum</a>
+                <a href="#" onclick="event.preventDefault()"
+                    class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 sm:hidden">Log
+                    In</a>
+            </div>
         </div>
-       </div>
-      </div><!-- Other nav links --> <a href="#" onclick="event.preventDefault()" class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Pricing</a> <a href="#" onclick="event.preventDefault()" class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">PTE Tutorial</a> <a href="#" onclick="event.preventDefault()" class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Q &amp; A</a> <a href="#" onclick="event.preventDefault()" class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Forum</a>
-     </div><!-- Right: auth -->
-     <div class="flex items-center gap-2"><a href="#" onclick="event.preventDefault()" class="hidden sm:inline-flex menu-link px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Log In</a> <a href="#" onclick="event.preventDefault()" class="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-sky-500 to-indigo-500 text-white hover:from-sky-400 hover:to-indigo-400 transition shadow-lg shadow-sky-500/20">Sign Up</a>
-     </div>
-    </div>
-   </div><!-- Mobile menu -->
-   <div id="mobile-menu" class="mobile-menu md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-white/10">
-    <div class="px-4 py-3 space-y-1"><!-- Practice accordion -->
-     <div><button onclick="toggleMobileAccordion('practice-acc')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10"> Practice <i data-lucide="chevron-down" class="w-4 h-4 opacity-60 transition-transform" id="practice-acc-icon"></i> </button>
-      <div id="practice-acc" class="mobile-accordion pl-4 space-y-0.5"><!-- Speaking -->
-       <div><button onclick="toggleMobileAccordion('speaking-acc')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10"> <span class="flex items-center gap-2"><i data-lucide="mic" class="w-3.5 h-3.5 text-sky-400"></i> Speaking</span> <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform" id="speaking-acc-icon"></i> </button>
-        <div id="speaking-acc" class="mobile-accordion pl-4 space-y-0.5"><a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Read Aloud</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Repeat Sentence</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Describe Image</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Retell Lecture</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Answer Short Question</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Summarise Group Discussion</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Respond To A Situation</a>
-        </div>
-       </div><!-- Writing -->
-       <div><button onclick="toggleMobileAccordion('writing-acc')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10"> <span class="flex items-center gap-2"><i data-lucide="pen-tool" class="w-3.5 h-3.5 text-emerald-400"></i> Writing</span> <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform" id="writing-acc-icon"></i> </button>
-        <div id="writing-acc" class="mobile-accordion pl-4 space-y-0.5"><a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Summarise Written Text</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Essay</a>
-        </div>
-       </div><!-- Reading -->
-       <div><button onclick="toggleMobileAccordion('reading-acc')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10"> <span class="flex items-center gap-2"><i data-lucide="book-open" class="w-3.5 h-3.5 text-amber-400"></i> Reading</span> <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform" id="reading-acc-icon"></i> </button>
-        <div id="reading-acc" class="mobile-accordion pl-4 space-y-0.5"><a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Fill In Blank (Drop Down)</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple Choice (Multiple Answer)</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Reorder Paragraph</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Fill In Blank (Drag Drop)</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple Choice (Single Answer)</a>
-        </div>
-       </div><!-- Listening -->
-       <div><button onclick="toggleMobileAccordion('listening-acc')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10"> <span class="flex items-center gap-2"><i data-lucide="headphones" class="w-3.5 h-3.5 text-purple-400"></i> Listening</span> <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform" id="listening-acc-icon"></i> </button>
-        <div id="listening-acc" class="mobile-accordion pl-4 space-y-0.5"><a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Summarise Spoken Text</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple Choice (Multiple Answer)</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Fill In Blank</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Highlight Correct Summary</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple Choice (Single Answer)</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Select Missing Word</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Highlight Incorrect Word</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Write From Dictation</a>
-        </div>
-       </div><!-- Mock Test -->
-       <div><button onclick="toggleMobileAccordion('mock-acc')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10"> <span class="flex items-center gap-2"><i data-lucide="clipboard-check" class="w-3.5 h-3.5 text-rose-400"></i> Mock Test</span> <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform" id="mock-acc-icon"></i> </button>
-        <div id="mock-acc" class="mobile-accordion pl-4 space-y-0.5">
-         <div><button onclick="toggleMobileAccordion('free-acc')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10"> Free Test <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform" id="free-acc-icon"></i> </button>
-          <div id="free-acc" class="mobile-accordion pl-4 space-y-0.5"><a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Speaking</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Writing</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Reading</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Listening</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Full Test</a>
-          </div>
-         </div>
-         <div><button onclick="toggleMobileAccordion('paid-acc')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10"> Paid Test <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform" id="paid-acc-icon"></i> </button>
-          <div id="paid-acc" class="mobile-accordion pl-4 space-y-0.5"><a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Speaking</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Writing</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Reading</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Listening</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Full Test</a>
-          </div>
-         </div>
-        </div>
-       </div>
-      </div>
-     </div><a href="#" onclick="event.preventDefault()" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Pricing</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">PTE Tutorial</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Q &amp; A</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Forum</a> <a href="#" onclick="event.preventDefault()" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 sm:hidden">Log In</a>
-    </div>
-   </div>
-  </nav><!-- HERO -->
-  <main class="w-full h-full">
-   <section class="hero-bg w-full min-h-full flex items-center pt-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 lg:py-24 w-full">
-     <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center"><!-- Text side -->
-      <div class="space-y-8"><!-- Badge -->
-      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-300 text-xs font-medium"> # Real Exam Questions
-       </div>
-       <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-300 text-xs font-medium"> # AI-Powered PTE Practice Platform
-       </div>
-       <h1 id="hero-headline" class="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-white">Master Your PTE Exam With Confidence</h1>
-       <p id="hero-subheadline" class="text-lg sm:text-xl text-slate-400 leading-relaxed max-w-lg">Practice every question type with instant AI scoring, detailed analytics, and thousands of real exam questions. Your path to PTE success starts here.</p><!-- Stats row -->
-       <div class="flex flex-wrap gap-6 text-sm">
-        <div class="flex items-center gap-2 text-slate-400"><i data-lucide="users" class="w-4 h-4 text-sky-400"></i> <span><strong class="text-white">50K+</strong> Students</span>
-        </div>
-        <div class="flex items-center gap-2 text-slate-400"><i data-lucide="file-text" class="w-4 h-4 text-emerald-400"></i> <span><strong class="text-white">10K+</strong> Questions</span>
-        </div>
-        <div class="flex items-center gap-2 text-slate-400"><i data-lucide="star" class="w-4 h-4 text-amber-400"></i> <span><strong class="text-white">4.9</strong> Rating</span>
-        </div>
-       </div><!-- CTAs -->
-       <div class="flex flex-col sm:flex-row gap-4"><a href="#" onclick="event.preventDefault()" id="cta-primary-btn" class="group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-sky-500 to-indigo-500 text-white hover:from-sky-400 hover:to-indigo-400 transition shadow-xl shadow-sky-500/25"> <i data-lucide="gift" class="w-4 h-4"></i> <span id="cta-primary-text">Claim 150 Free Tokens</span> <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-0.5"></i> </a> <a href="#" onclick="event.preventDefault()" id="cta-secondary-btn" class="group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold border border-white/15 text-slate-300 hover:text-white hover:bg-white/10 hover:border-white/25 transition"> <i data-lucide="play-circle" class="w-4 h-4"></i> <span id="cta-secondary-text">Practice Instantly — No Sign-Up</span> </a>
-       </div><!-- Trust line -->
-       <p class="text-xs text-slate-500 flex items-center gap-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500"></i> No credit card required · Instant access to premium features</p>
-      </div><!-- Video side -->
-      <div class="relative">
-       <div class="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50 bg-slate-900/50 aspect-video"><!-- Video placeholder with play button -->
-        <div id="video-container" class="w-full h-full flex items-center justify-center relative cursor-pointer group" onclick="playVideo()"><!-- Decorative background -->
-         <div class="absolute inset-0 bg-gradient-to-br from-sky-900/40 via-slate-900/60 to-indigo-900/40"></div><!-- Grid pattern -->
-         <svg class="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg"><defs>
-           <pattern id="grid" width="32" height="32" patternunits="userSpaceOnUse">
-            <path d="M 32 0 L 0 0 0 32" fill="none" stroke="white" stroke-width="0.5" />
-           </pattern>
-          </defs> <rect width="100%" height="100%" fill="url(#grid)" />
-         </svg><!-- Center play button -->
-         <div class="relative z-10 w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center group-hover:bg-white/20 group-hover:scale-105 transition-all duration-300"><i data-lucide="play" class="w-8 h-8 text-white ml-1"></i>
-         </div><span class="absolute bottom-4 left-4 text-xs text-slate-400 z-10">Watch how PTE works</span> <span class="absolute bottom-4 right-4 text-xs text-slate-500 z-10">2:30</span>
-        </div>
-       </div><!-- Glow effect -->
-       <div class="absolute -inset-4 bg-gradient-to-r from-sky-500/10 via-transparent to-indigo-500/10 rounded-3xl blur-2xl -z-10"></div>
-      </div>
-     </div>
-    </div>
-   </section>
-  </main>
-  <script>
-    // Mobile menu toggle
-    const burgerBtn = document.getElementById('burger-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const iconOpen = document.getElementById('burger-icon-open');
-    const iconClose = document.getElementById('burger-icon-close');
-    let menuOpen = false;
+    </nav><!-- HERO -->
+    <main class="w-full h-full">
+        <section class="hero-bg w-full min-h-full flex items-center pt-16 relative">
+            <div
+                class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-blue-500 blur-3xl opacity-20 z-0">
+            </div>
+            <div class="max-w-7xl mx-auto px-8 sm:px-6 md:px-12 lg:px-8 py-16 md:py-20 lg:py-24 w-full relative z-10">
+                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center"><!-- Text side -->
+                    <div class="max-w-2xl space-y-8 w-fit mx-auto"><!-- Badge -->
+                        <div
+                            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-300 text-xs font-medium">
+                            # Real Exam Questions
+                        </div>
+                        <div
+                            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-300 text-xs font-medium">
+                            # AI-Powered PTE Practice Platform
+                        </div>
+                        <h1 id="hero-headline"
+                            class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-400">
+                            Master Your PTE Exam With Confidence</h1>
+                        <p id="hero-subheadline" class="text-lg sm:text-xl text-slate-400 leading-relaxed">Practice
+                            every question type with instant AI scoring, detailed analytics, and thousands of real exam
+                            questions. Your path to PTE success starts here.</p><!-- Stats row -->
+                        <div class="flex flex-wrap gap-6 text-sm">
+                            <div class="flex items-center gap-2 text-slate-400"><i data-lucide="zap"
+                                    class="w-4 h-4 text-sky-400"></i> <span><strong class="text-white">Instant</strong>
+                                    AI Scoring</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-slate-400"><i data-lucide="bar-chart-3"
+                                    class="w-4 h-4 text-emerald-400"></i> <span><strong
+                                        class="text-white">Detailed</strong> Analytics</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-slate-400"><i data-lucide="library"
+                                    class="w-4 h-4 text-amber-400"></i> <span><strong class="text-white">10k+</strong>
+                                    Questions</span>
+                            </div>
+                        </div><!-- CTAs -->
+                        <div class="flex flex-col sm:flex-row gap-6 items-start">
+                            <div class="space-y-3 w-full sm:w-auto"><a href="#" onclick="event.preventDefault()"
+                                    id="cta-secondary-btn"
+                                    class="w-full sm:w-auto h-14 group inline-flex items-center justify-center gap-2 px-6 rounded-xl text-sm font-semibold border border-white/15 text-slate-300 hover:text-white hover:bg-white/10 hover:border-white/25 transition">
+                                    <i data-lucide="play-circle" class="w-4 h-4"></i> <span id="cta-secondary-text"
+                                        class="whitespace-nowrap">Free Practice</span> </a><!-- Trust line -->
+                                <p class="text-[10px] tracking-wider text-slate-500 flex items-center gap-1.5 px-1"><i
+                                        data-lucide="shield-check" class="w-3 h-3 text-emerald-500"></i> No Sign-up
+                                    required</p>
+                            </div>
+                            <div class="space-y-3 w-full sm:w-auto"><a href="#" onclick="event.preventDefault()"
+                                    id="cta-primary-btn"
+                                    class="w-full sm:w-auto h-14 group inline-flex items-center justify-center gap-2 px-6 rounded-xl text-sm font-semibold bg-gradient-to-r from-sky-500 to-indigo-500 text-white hover:from-sky-400 hover:to-indigo-400 transition shadow-xl shadow-sky-500/25">
+                                    <i data-lucide="gift" class="w-4 h-4"></i> <span id="cta-primary-text"
+                                        class="whitespace-nowrap">Claim 150 Free Tokens</span> <i
+                                        data-lucide="arrow-right"
+                                        class="w-4 h-4 transition-transform group-hover:translate-x-0.5"></i>
+                                </a><!-- Trust line -->
+                                <p class="text-[10px] tracking-wider text-slate-500 flex items-center gap-1.5 px-1"><i
+                                        data-lucide="shield-check" class="w-3 h-3 text-emerald-500"></i> No credit card
+                                    required · Instant premium access</p>
+                            </div>
+                        </div>
+                    </div><!-- Video side -->
+                    <div class="relative">
+                        <div
+                            class="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50 bg-slate-900/50 aspect-video">
+                            <!-- Video placeholder with play button -->
+                            <div id="video-container"
+                                class="w-full h-full flex items-center justify-center relative cursor-pointer group"
+                                onclick="playVideo()"><!-- Decorative background -->
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-sky-900/40 via-slate-900/60 to-indigo-900/40">
+                                </div><!-- Grid pattern -->
+                                <svg class="absolute inset-0 w-full h-full opacity-10"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <pattern id="grid" width="32" height="32" patternunits="userSpaceOnUse">
+                                            <path d="M 32 0 L 0 0 0 32" fill="none" stroke="white" stroke-width="0.5" />
+                                        </pattern>
+                                    </defs>
+                                    <rect width="100%" height="100%" fill="url(#grid)" />
+                                </svg><!-- Center play button -->
+                                <div
+                                    class="relative z-10 w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center group-hover:bg-white/20 group-hover:scale-105 transition-all duration-300">
+                                    <i data-lucide="play" class="w-8 h-8 text-white ml-1"></i>
+                                </div><span class="absolute bottom-4 left-4 text-xs text-slate-400 z-10">Watch how PTELT
+                                    works</span> <span
+                                    class="absolute bottom-4 right-4 text-xs text-slate-500 z-10">2:30</span>
+                            </div>
+                        </div><!-- Glow effect -->
+                        <div
+                            class="absolute -inset-4 bg-gradient-to-r from-sky-500/10 via-transparent to-indigo-500/10 rounded-3xl blur-2xl -z-10">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        // Mobile menu toggle
+        const burgerBtn = document.getElementById('burger-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const iconOpen = document.getElementById('burger-icon-open');
+        const iconClose = document.getElementById('burger-icon-close');
+        let menuOpen = false;
 
-    burgerBtn.addEventListener('click', () => {
-      menuOpen = !menuOpen;
-      mobileMenu.classList.toggle('open', menuOpen);
-      iconOpen.classList.toggle('hidden', menuOpen);
-      iconClose.classList.toggle('hidden', !menuOpen);
-    });
+        burgerBtn.addEventListener('click', () => {
+            menuOpen = !menuOpen;
+            mobileMenu.classList.toggle('open', menuOpen);
+            iconOpen.classList.toggle('hidden', menuOpen);
+            iconClose.classList.toggle('hidden', !menuOpen);
+        });
 
-    // Mobile accordion
-    function toggleMobileAccordion(id) {
-      const el = document.getElementById(id);
-      const icon = document.getElementById(id + '-icon');
-      el.classList.toggle('open');
-      if (icon) icon.style.transform = el.classList.contains('open') ? 'rotate(180deg)' : '';
-    }
+        // Mobile accordion
+        function toggleMobileAccordion(id) {
+            const el = document.getElementById(id);
+            const icon = document.getElementById(id + '-icon');
+            el.classList.toggle('open');
+            if (icon) icon.style.transform = el.classList.contains('open') ? 'rotate(180deg)' : '';
+        }
 
-    // Video play (demo)
-    function playVideo() {
-      const container = document.getElementById('video-container');
-      container.innerHTML = '<div class="w-full h-full flex items-center justify-center bg-black text-slate-500 text-sm">Video player would load here</div>';
-    }
+        // Video play (demo)
+        function playVideo() {
+            const container = document.getElementById('video-container');
+            container.innerHTML = '<div class="w-full h-full flex items-center justify-center bg-black text-slate-500 text-sm">Video player would load here</div>';
+        }
 
-    // Element SDK
-    const defaultConfig = {
-      headline: 'Master Your PTE Exam With Confidence',
-      sub_headline: 'Practice every question type with instant AI scoring, detailed analytics, and thousands of real exam questions. Your path to PTE success starts here.',
-      cta_primary: 'Claim 150 Free Tokens',
-      cta_secondary: 'Practice Instantly — No Sign-Up',
-      background_color: '#0b1120',
-      surface_color: '#1e293b',
-      text_color: '#ffffff',
-      primary_action_color: '#0ea5e9',
-      secondary_action_color: '#94a3b8',
-      font_family: 'DM Sans',
-      font_size: 16
-    };
+        // Element SDK
+        const defaultConfig = {
+            headline: 'Master Your PTE Exam With Confidence',
+            sub_headline: 'Practice every question type with instant AI scoring, detailed analytics, and thousands of real exam questions. Your path to PTE success starts here.',
+            cta_primary: 'Claim 150 Free Tokens',
+            cta_secondary: 'Practice Instantly — No Sign-Up',
+            background_color: '#0f172a',
+            surface_color: '#1e293b',
+            text_color: '#ffffff',
+            primary_action_color: '#38bdf8',
+            secondary_action_color: '#94a3b8',
+            font_family: 'Inter',
+            font_size: 16
+        };
 
-    function applyConfig(config) {
-      const h = document.getElementById('hero-headline');
-      const s = document.getElementById('hero-subheadline');
-      const p = document.getElementById('cta-primary-text');
-      const sc = document.getElementById('cta-secondary-text');
+        function applyConfig(config) {
+            const h = document.getElementById('hero-headline');
+            const s = document.getElementById('hero-subheadline');
+            const p = document.getElementById('cta-primary-text');
+            const sc = document.getElementById('cta-secondary-text');
 
-      if (h) h.textContent = config.headline || defaultConfig.headline;
-      if (s) s.textContent = config.sub_headline || defaultConfig.sub_headline;
-      if (p) p.textContent = config.cta_primary || defaultConfig.cta_primary;
-      if (sc) sc.textContent = config.cta_secondary || defaultConfig.cta_secondary;
+            if (h) h.textContent = config.headline || defaultConfig.headline;
+            if (s) s.textContent = config.sub_headline || defaultConfig.sub_headline;
+            if (p) p.textContent = config.cta_primary || defaultConfig.cta_primary;
+            if (sc) sc.textContent = config.cta_secondary || defaultConfig.cta_secondary;
 
-      const font = config.font_family || defaultConfig.font_family;
-      const baseSize = config.font_size || defaultConfig.font_size;
-      document.body.style.fontFamily = `${font}, "DM Sans", system-ui, sans-serif`;
-      if (h) {
-        h.style.fontFamily = `"Playfair Display", ${font}, Georgia, serif`;
-        // Responsive heading handled by Tailwind classes, scale body
-      }
-      if (s) s.style.fontSize = `${baseSize * 1.15}px`;
-    }
+            const font = config.font_family || defaultConfig.font_family;
+            const baseSize = config.font_size || defaultConfig.font_size;
+            document.body.style.fontFamily = `${font}, system-ui, sans-serif`;
+            if (s) s.style.fontSize = `${baseSize * 1.15}px`;
+        }
 
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig,
-        onConfigChange: async (config) => { applyConfig(config); },
-        mapToCapabilities: (config) => ({
-          recolorables: [
-            { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); }},
-            { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); }},
-            { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); }},
-            { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: (v) => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); }},
-            { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); }},
-          ],
-          borderables: [],
-          fontEditable: {
-            get: () => config.font_family || defaultConfig.font_family,
-            set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
-          },
-          fontSizeable: {
-            get: () => config.font_size || defaultConfig.font_size,
-            set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
-          }
-        }),
-        mapToEditPanelValues: (config) => new Map([
-          ['headline', config.headline || defaultConfig.headline],
-          ['sub_headline', config.sub_headline || defaultConfig.sub_headline],
-          ['cta_primary', config.cta_primary || defaultConfig.cta_primary],
-          ['cta_secondary', config.cta_secondary || defaultConfig.cta_secondary],
-        ])
-      });
-    }
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange: async (config) => { applyConfig(config); },
+                mapToCapabilities: (config) => ({
+                    recolorables: [
+                        { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+                        { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+                        { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+                        { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: (v) => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+                        { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } },
+                    ],
+                    borderables: [],
+                    fontEditable: {
+                        get: () => config.font_family || defaultConfig.font_family,
+                        set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+                    },
+                    fontSizeable: {
+                        get: () => config.font_size || defaultConfig.font_size,
+                        set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+                    }
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ['headline', config.headline || defaultConfig.headline],
+                    ['sub_headline', config.sub_headline || defaultConfig.sub_headline],
+                    ['cta_primary', config.cta_primary || defaultConfig.cta_primary],
+                    ['cta_secondary', config.cta_secondary || defaultConfig.cta_secondary],
+                ])
+            });
+        }
 
-    lucide.createIcons();
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e35162b41cf572d',t:'MTc3NDY4NDY3NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+        lucide.createIcons();
+
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('bg-slate-900', 'border-slate-800', 'shadow-lg');
+                navbar.classList.remove('bg-transparent', 'border-transparent');
+            } else {
+                navbar.classList.add('bg-transparent', 'border-transparent');
+                navbar.classList.remove('bg-slate-900', 'border-slate-800', 'shadow-lg');
+            }
+        });
+    </script>
+</body>
+
 </html>
