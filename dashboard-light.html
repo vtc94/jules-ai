@@ -8,14 +8,13 @@
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <script src="/_sdk/data_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            display: ['DM Sans', 'sans-serif'],
-            mono: ['Space Mono', 'monospace']
+            sans: ['Inter', 'system-ui', 'sans-serif'],
           }
         }
       }
@@ -23,10 +22,10 @@
   </script>
   <style>
     html, body { height: 100%; margin: 0; }
-    .app-shell { height: 100%; overflow: auto; }
+    .app-shell { height: 100%; overflow: auto; background-color: #f0f2f5; }
     .score-ring { transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-    .card-glass { background: #eff6ff; border: 1px solid rgba(3, 58, 140, 0.1); border-radius: 1rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02), 0 10px 15px -3px rgba(0, 0, 0, 0.03); transition: transform 0.2s ease, box-shadow 0.2s ease; }
-    .card-glass:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04), 0 20px 25px -5px rgba(0, 0, 0, 0.05); border-color: rgba(8, 102, 255, 0.15); }
+    .card-panel { background: #ffffff; border-radius: 1.5rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); border: 1px solid #e4e6eb; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .card-panel:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
     .progress-fill { transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
     .fade-in { animation: fadeIn 0.5s ease forwards; opacity: 0; }
     .fade-in-delay-1 { animation-delay: 0.1s; }
@@ -43,99 +42,102 @@
   </style>
   <style>body { box-sizing: border-box; }</style>
  </head>
- <body class="h-full">
-  <div class="app-shell bg-[#f0f2f5] font-display text-slate-900">
+ <body class="h-full font-sans antialiased text-[#1c1e21]">
+  <div class="app-shell">
    <!-- Nav Bar -->
-   <nav id="navbar" class="sticky top-0 z-50 bg-white shadow-sm border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-     <div class="flex items-center gap-3">
-      <div class="w-9 h-9 rounded-lg bg-[#0866ff] flex items-center justify-center font-bold text-sm text-white">
-       PTE
-      </div><span id="nav-title" class="text-lg font-semibold text-slate-900 tracking-tight">PTE Academic</span>
+   <nav id="navbar" class="sticky top-0 z-50 bg-white border-b border-[#e4e6eb] shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
+     <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg bg-[#004abf] flex items-center justify-center font-bold text-xs text-white">
+       <img src="./src/assets/images/logo.png" alt="Logo" class="w-[80%] h-[80%]"/>
+      </div>
+      <span id="nav-title" class="text-xl font-bold text-[#004abf] tracking-tight">PTE <span class="text-[#004abf]/80">Learning Tracker</span></span>
      </div>
      <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center">
-       <i data-lucide="user" style="width:16px;height:16px;" class="text-slate-600"></i>
+      <div class="w-9 h-9 rounded-full bg-[#f0f2f5] flex items-center justify-center border border-[#e4e6eb] hover:bg-[#e4e6eb] transition cursor-pointer">
+       <i data-lucide="user" style="width:18px;height:18px;" class="text-[#1c1e21]"></i>
       </div>
      </div>
     </div>
    </nav><!-- Main Content -->
-   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-16">
+   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 pb-16">
     <!-- Greeting -->
     <section class="fade-in">
-     <h1 id="greeting" class="text-2xl sm:text-4xl font-bold text-slate-900">Good afternoon, Student 👋</h1>
-     <p class="text-slate-500 mt-1 text-sm"></p>
-<br/>
+     <h1 id="greeting" class="text-3xl sm:text-4xl font-extrabold text-[#1c1e21]">Good morning, Student 👋</h1>
+     <p class="text-[#65676b] mt-1 text-sm font-medium">Keep pushing towards your target score.</p>
     </section><!-- Estimated Scores + Performance -->
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
      <!-- Estimated Scores -->
-     <section class="lg:col-span-2 card-glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 fade-in fade-in-delay-2">
-      <h2 class="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-5 flex items-center gap-2"><i data-lucide="bar-chart-3" style="width:16px;height:16px;" class="text-[#0866ff]"></i> Estimated Scores</h2><!-- Overall Score Ring -->
-      <div class="flex justify-center mb-6">
+     <section class="lg:col-span-2 card-panel p-6 fade-in fade-in-delay-2">
+      <h2 class="text-xs font-bold text-[#65676b] uppercase tracking-widest mb-6 flex items-center gap-2"><i data-lucide="bar-chart-3" style="width:14px;height:14px;" class="text-[#004abf]"></i> Estimated Scores</h2><!-- Overall Score Ring -->
+      <div class="flex justify-center mb-8">
        <div class="relative">
-        <svg width="140" height="140" viewbox="0 0 140 140">
-         <circle cx="70" cy="70" r="58" fill="none" stroke="rgba(8,102,255,0.05)" stroke-width="10" /> <circle id="overall-ring" class="score-ring" cx="70" cy="70" r="58" fill="none" stroke="url(#scoreGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="364.42" stroke-dashoffset="364.42" transform="rotate(-90 70 70)" /> <defs>
-          <lineargradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-           <stop offset="0%" stop-color="#0866ff" />
-           <stop offset="100%" stop-color="#004abf" />
-          </lineargradient>
-         </defs>
+        <svg width="150" height="150" viewbox="0 0 150 150">
+         <circle cx="75" cy="75" r="64" fill="none" stroke="#f0f2f5" stroke-width="12" />
+         <circle id="overall-ring" class="score-ring" cx="75" cy="75" r="64" fill="none" stroke="#004abf" stroke-width="12" stroke-linecap="round" stroke-dasharray="402.12" stroke-dashoffset="402.12" transform="rotate(-90 75 75)" />
         </svg>
         <div class="absolute inset-0 flex flex-col items-center justify-center">
-         <span id="overall-score-val" class="text-3xl font-bold text-slate-900 font-mono">--</span> <span class="text-xs text-slate-500">Overall</span>
+         <span id="overall-score-val" class="text-4xl font-extrabold text-[#1c1e21]">--</span> <span class="text-xs font-bold text-[#65676b] uppercase tracking-tighter">Overall</span>
         </div>
        </div>
       </div><!-- Sub Scores -->
-      <div id="sub-scores" class="grid grid-cols-2 gap-3">
-       <div class="bg-white rounded-xl p-3 text-center shadow-sm">
-        <p class="text-xs text-slate-500 mb-1">Listening</p>
-        <p id="score-listening" class="text-xl font-bold text-[#0866ff] font-mono">--</p>
+      <div id="sub-scores" class="grid grid-cols-2 gap-4">
+       <div class="bg-[#eff6ff] rounded-xl p-4 text-center border border-[#dbeafe]">
+        <p class="text-[10px] font-bold text-[#65676b] uppercase tracking-widest mb-1">Listening</p>
+        <p id="score-listening" class="text-xl font-bold text-[#004abf]">--</p>
        </div>
-       <div class="bg-white rounded-xl p-3 text-center shadow-sm">
-        <p class="text-xs text-slate-500 mb-1">Reading</p>
-        <p id="score-reading" class="text-xl font-bold text-[#0866ff] font-mono">--</p>
+       <div class="bg-[#eff6ff] rounded-xl p-4 text-center border border-[#dbeafe]">
+        <p class="text-[10px] font-bold text-[#65676b] uppercase tracking-widest mb-1">Reading</p>
+        <p id="score-reading" class="text-xl font-bold text-[#004abf]">--</p>
        </div>
-       <div class="bg-white rounded-xl p-3 text-center shadow-sm">
-        <p class="text-xs text-slate-500 mb-1">Speaking</p>
-        <p id="score-speaking" class="text-xl font-bold text-[#0866ff] font-mono">--</p>
+       <div class="bg-[#eff6ff] rounded-xl p-4 text-center border border-[#dbeafe]">
+        <p class="text-[10px] font-bold text-[#65676b] uppercase tracking-widest mb-1">Speaking</p>
+        <p id="score-speaking" class="text-xl font-bold text-[#004abf]">--</p>
        </div>
-       <div class="bg-white rounded-xl p-3 text-center shadow-sm">
-        <p class="text-xs text-slate-500 mb-1">Writing</p>
-        <p id="score-writing" class="text-xl font-bold text-[#0866ff] font-mono">--</p>
+       <div class="bg-[#eff6ff] rounded-xl p-4 text-center border border-[#dbeafe]">
+        <p class="text-[10px] font-bold text-[#65676b] uppercase tracking-widest mb-1">Writing</p>
+        <p id="score-writing" class="text-xl font-bold text-[#004abf]">--</p>
        </div>
       </div>
      </section><!-- Performance Graph -->
-     <section class="lg:col-span-3 card-glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 fade-in fade-in-delay-3">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-       <h2 class="text-sm font-semibold text-slate-600 uppercase tracking-wider flex items-center gap-2"><i data-lucide="trending-up" style="width:16px;height:16px;" class="text-[#0866ff]"></i> Performance</h2>
+     <section class="lg:col-span-3 card-panel p-6 fade-in fade-in-delay-3">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+       <h2 class="text-xs font-bold text-[#65676b] uppercase tracking-widest flex items-center gap-2"><i data-lucide="trending-up" style="width:14px;height:14px;" class="text-[#004abf]"></i> Performance History</h2>
        <div class="flex items-center gap-2 flex-wrap">
         <div id="perf-skill-btns" class="flex gap-1 flex-wrap">
-         <button data-skill="overall" class="perf-skill-btn active px-2.5 py-1 rounded-md text-xs font-medium bg-[#033a8c] text-white transition">Overall</button> <button data-skill="speaking" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-600 hover:bg-slate-50 transition border border-slate-200">Speaking</button> <button data-skill="writing" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-600 hover:bg-slate-50 transition border border-slate-200">Writing</button> <button data-skill="reading" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-600 hover:bg-slate-50 transition border border-slate-200">Reading</button> <button data-skill="listening" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-600 hover:bg-slate-50 transition border border-slate-200">Listening</button>
+         <button data-skill="overall" class="perf-skill-btn active px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-[#004abf] text-white transition shadow-md shadow-[#004abf]/20">Overall</button>
+         <button data-skill="speaking" class="perf-skill-btn px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-[#f0f2f5] text-[#65676b] hover:text-[#1c1e21] hover:bg-[#e4e6eb] transition border border-[#e4e6eb]">Speaking</button>
+         <button data-skill="writing" class="perf-skill-btn px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-[#f0f2f5] text-[#65676b] hover:text-[#1c1e21] hover:bg-[#e4e6eb] transition border border-[#e4e6eb]">Writing</button>
+         <button data-skill="reading" class="perf-skill-btn px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-[#f0f2f5] text-[#65676b] hover:text-[#1c1e21] hover:bg-[#e4e6eb] transition border border-[#e4e6eb]">Reading</button>
+         <button data-skill="listening" class="perf-skill-btn px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-[#f0f2f5] text-[#65676b] hover:text-[#1c1e21] hover:bg-[#e4e6eb] transition border border-[#e4e6eb]">Listening</button>
         </div>
        </div>
       </div>
-      <div id="perf-period-btns" class="flex gap-1 mb-4">
-       <button data-period="weekly" class="perf-period-btn active px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 text-[#0866ff] border border-blue-200 transition">Weekly</button> <button data-period="monthly" class="perf-period-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-500 border border-slate-200 hover:bg-slate-50 transition">Monthly</button> <button data-period="quarterly" class="perf-period-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-500 border border-slate-200 hover:bg-slate-50 transition">Quarterly</button>
+      <div id="perf-period-btns" class="flex gap-1 mb-6">
+       <button data-period="weekly" class="perf-period-btn active px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-[#eff6ff] text-[#004abf] border border-[#dbeafe] transition">Weekly</button>
+       <button data-period="monthly" class="perf-period-btn px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-[#f0f2f5] text-[#65676b] border border-transparent hover:bg-[#e4e6eb] transition">Monthly</button>
+       <button data-period="quarterly" class="perf-period-btn px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-[#f0f2f5] text-[#65676b] border border-transparent hover:bg-[#e4e6eb] transition">Quarterly</button>
       </div>
-      <div class="relative" style="height: 260px;">
+      <div class="relative" style="height: 280px;">
        <canvas id="perfChart"></canvas>
       </div>
      </section>
     </div><!-- Exam Date -->
-    <section id="exam-date-section" class="card-glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 fade-in fade-in-delay-1">
-     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div class="flex items-center gap-4">
-       <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
-        <i data-lucide="calendar" style="width:24px;height:24px;" class="text-[#0866ff]"></i>
+    <section id="exam-date-section" class="card-panel p-6 fade-in fade-in-delay-1 relative overflow-hidden bg-[#004abf]">
+     <div class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 rounded-full bg-white/10 blur-3xl opacity-20 z-0"></div>
+     <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+      <div class="flex items-center gap-5">
+       <div class="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0">
+        <i data-lucide="calendar" style="width:28px;height:28px;" class="text-white"></i>
        </div>
        <div>
-        <p class="text-xs text-slate-500 uppercase tracking-wider font-medium">Estimated Exam Date</p>
-        <p id="exam-date-display" class="text-xl font-bold text-slate-900 mt-0.5">Not set</p>
+        <p class="text-[10px] text-white/70 uppercase tracking-widest font-bold">Estimated Exam Date</p>
+        <p id="exam-date-display" class="text-2xl font-extrabold text-white mt-1 tracking-tight">Not estimated yet</p>
        </div>
       </div>
       <div class="flex items-center gap-4">
-       <div id="days-left-badge" class="hidden px-4 py-2 rounded-xl bg-blue-50 border border-blue-200">
-        <span id="days-left-number" class="text-2xl font-bold text-[#0866ff] font-mono"></span> <span class="text-xs text-slate-500 ml-1">days left</span>
+       <div id="days-left-badge" class="hidden px-5 py-3 rounded-2xl bg-white/10 border border-white/20 flex items-center gap-3">
+        <span id="days-left-number" class="text-3xl font-black text-white"></span> <span class="text-[10px] text-white/70 uppercase tracking-widest font-bold">days left</span>
        </div>
       </div>
      </div>
@@ -143,53 +145,60 @@
     <!-- Target Scores + Focus Areas -->
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
      <!-- Set Target Scores -->
-     <section class="lg:col-span-2 card-glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 fade-in fade-in-delay-4">
-      <h2 class="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-5 flex items-center gap-2"><i data-lucide="sliders" style="width:16px;height:16px;" class="text-[#0866ff]"></i> Set Target Scores</h2>
-      <form id="target-form" class="space-y-4">
-       <div>
-        <label class="text-xs text-slate-500 block mb-1">Speaking Target</label> <input type="number" id="target-speaking" min="10" max="90" placeholder="e.g. 79" value="79" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-[#0866ff] transition placeholder-slate-400">
+     <section class="lg:col-span-2 card-panel p-6 fade-in fade-in-delay-4">
+      <h2 class="text-xs font-bold text-[#65676b] uppercase tracking-widest mb-6 flex items-center gap-2"><i data-lucide="target" style="width:14px;height:14px;" class="text-[#004abf]"></i> Set Target Scores</h2>
+      <form id="target-form" class="space-y-5">
+       <div class="grid grid-cols-2 gap-4">
+        <div>
+         <label class="text-[10px] font-bold text-[#65676b] uppercase tracking-widest block mb-1.5 ml-1">Speaking</label> <input type="number" id="target-speaking" min="10" max="90" placeholder="79" value="79" class="w-full bg-[#f0f2f5] border border-[#e4e6eb] rounded-xl px-4 py-3 text-[#1c1e21] text-sm font-semibold focus:outline-none focus:border-[#004abf] transition placeholder-[#65676b]">
+        </div>
+        <div>
+         <label class="text-[10px] font-bold text-[#65676b] uppercase tracking-widest block mb-1.5 ml-1">Writing</label> <input type="number" id="target-writing" min="10" max="90" placeholder="79" value="79" class="w-full bg-[#f0f2f5] border border-[#e4e6eb] rounded-xl px-4 py-3 text-[#1c1e21] text-sm font-semibold focus:outline-none focus:border-[#004abf] transition placeholder-[#65676b]">
+        </div>
+        <div>
+         <label class="text-[10px] font-bold text-[#65676b] uppercase tracking-widest block mb-1.5 ml-1">Reading</label> <input type="number" id="target-reading" min="10" max="90" placeholder="79" value="79" class="w-full bg-[#f0f2f5] border border-[#e4e6eb] rounded-xl px-4 py-3 text-[#1c1e21] text-sm font-semibold focus:outline-none focus:border-[#004abf] transition placeholder-[#65676b]">
+        </div>
+        <div>
+         <label class="text-[10px] font-bold text-[#65676b] uppercase tracking-widest block mb-1.5 ml-1">Listening</label> <input type="number" id="target-listening" min="10" max="90" placeholder="79" value="79" class="w-full bg-[#f0f2f5] border border-[#e4e6eb] rounded-xl px-4 py-3 text-[#1c1e21] text-sm font-semibold focus:outline-none focus:border-[#004abf] transition placeholder-[#65676b]">
+        </div>
        </div>
-       <div>
-        <label class="text-xs text-slate-500 block mb-1">Writing Target</label> <input type="number" id="target-writing" min="10" max="90" placeholder="e.g. 79" value="79" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-[#0866ff] transition placeholder-slate-400">
-       </div>
-       <div>
-        <label class="text-xs text-slate-500 block mb-1">Reading Target</label> <input type="number" id="target-reading" min="10" max="90" placeholder="e.g. 79" value="79" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-[#0866ff] transition placeholder-slate-400">
-       </div>
-       <div>
-        <label class="text-xs text-slate-500 block mb-1">Listening Target</label> <input type="number" id="target-listening" min="10" max="90" placeholder="e.g. 79" value="79" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-[#0866ff] transition placeholder-slate-400">
-       </div><button type="submit" id="advice-btn" class="w-full py-3 bg-[#004abf] hover:bg-[#033a8c] text-white font-semibold rounded-lg transition flex items-center justify-center gap-2"> <i data-lucide="sparkles" style="width:16px;height:16px;"></i> Get Advice </button>
+       <button type="submit" id="advice-btn" class="w-full py-4 bg-[#004abf] hover:bg-[#033a8c] text-white font-bold rounded-xl transition flex items-center justify-center gap-3 shadow-lg shadow-[#004abf]/20 text-sm uppercase tracking-widest">
+        <i data-lucide="sparkles" style="width:18px;height:18px;"></i> Get Study Advice
+       </button>
       </form>
-      <div id="target-toast" class="hidden mt-3 p-3 rounded-lg bg-emerald-500/15 border border-emerald-400/20 text-emerald-300 text-sm text-center"></div>
+      <div id="target-toast" class="hidden mt-4 p-3 rounded-xl bg-[#e7f3ff] border border-[#dbeafe] text-[#004abf] text-xs font-bold text-center uppercase tracking-widest"></div>
      </section>
      <!-- Focus Areas -->
-     <section class="lg:col-span-3 card-glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 fade-in fade-in-delay-4 flex flex-col">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-       <h2 class="text-sm font-semibold text-slate-600 uppercase tracking-wider flex items-center gap-2"><i data-lucide="target" style="width:16px;height:16px;" class="text-[#0866ff]"></i> Focus Areas</h2>
-       <div id="priority-filters" class="flex flex-wrap gap-1">
-        <button data-priority="all" class="focus-filter-btn active px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight bg-[#004abf] text-white transition">All</button>
-        <button data-priority="critical" class="focus-filter-btn px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight bg-white border border-slate-200 text-rose-600 hover:bg-slate-50 transition">High (Critical)</button>
-        <button data-priority="moderate" class="focus-filter-btn px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight bg-white border border-slate-200 text-amber-600 hover:bg-slate-50 transition">Moderate</button>
-        <button data-priority="low" class="focus-filter-btn px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight bg-white border border-slate-200 text-[#0866ff] hover:bg-slate-50 transition">Low</button>
+     <section class="lg:col-span-3 card-panel p-6 fade-in fade-in-delay-4 flex flex-col">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+       <h2 class="text-xs font-bold text-[#65676b] uppercase tracking-widest flex items-center gap-2"><i data-lucide="focus" style="width:14px;height:14px;" class="text-[#004abf]"></i> Priority Focus Areas</h2>
+       <div id="priority-filters" class="flex flex-wrap gap-1.5">
+        <button data-priority="all" class="focus-filter-btn active px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-[#004abf] text-white transition">All</button>
+        <button data-priority="critical" class="focus-filter-btn px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-[#f0f2f5] border border-[#e4e6eb] text-rose-600 hover:bg-[#e4e6eb] transition">Critical</button>
+        <button data-priority="moderate" class="focus-filter-btn px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-[#f0f2f5] border border-[#e4e6eb] text-amber-600 hover:bg-[#e4e6eb] transition">Moderate</button>
+        <button data-priority="low" class="focus-filter-btn px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-[#f0f2f5] border border-[#e4e6eb] text-blue-600 hover:bg-[#e4e6eb] transition">Low</button>
        </div>
       </div>
 
       <div id="focus-areas-content" class="flex-grow min-h-[400px]">
-       <div class="text-center py-8 text-slate-500">
-        <i data-lucide="info" style="width:24px;height:24px;" class="mx-auto mb-2 text-slate-400"></i>
-        <p class="text-sm">Set your target scores and click <strong class="text-[#0866ff]">Get Advice</strong> to see your focus areas.</p>
+       <div class="flex flex-col items-center justify-center h-full text-center py-12 px-6">
+        <div class="w-16 h-16 rounded-full bg-[#f0f2f5] flex items-center justify-center mb-4">
+         <i data-lucide="info" style="width:32px;height:32px;" class="text-[#65676b]"></i>
+        </div>
+        <p class="text-sm font-semibold text-[#65676b]">Enter your target scores above to see personalized focus areas.</p>
        </div>
       </div>
 
-      <div id="carousel-controls" class="hidden mt-6 pt-4 border-t border-slate-300 flex items-center justify-between">
-        <div id="carousel-dots" class="flex gap-1.5"></div>
-        <div class="flex items-center gap-3">
-          <span id="carousel-counter" class="text-xs font-mono text-slate-500">1 / 3</span>
-          <div class="flex gap-1">
-            <button id="prev-slide" class="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-slate-600 transition disabled:opacity-30 disabled:cursor-not-allowed">
-              <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
+      <div id="carousel-controls" class="hidden mt-8 pt-6 border-t border-[#e4e6eb] flex items-center justify-between">
+        <div id="carousel-dots" class="flex gap-2"></div>
+        <div class="flex items-center gap-4">
+          <span id="carousel-counter" class="text-[10px] font-bold text-[#65676b] uppercase tracking-widest">1 / 3</span>
+          <div class="flex gap-2">
+            <button id="prev-slide" class="p-2 rounded-xl bg-[#f0f2f5] border border-[#e4e6eb] text-[#65676b] hover:text-[#1c1e21] hover:bg-[#e4e6eb] transition disabled:opacity-40 disabled:cursor-not-allowed">
+              <i data-lucide="chevron-left" style="width:18px;height:18px;"></i>
             </button>
-            <button id="next-slide" class="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-slate-600 transition disabled:opacity-30 disabled:cursor-not-allowed">
-              <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+            <button id="next-slide" class="p-2 rounded-xl bg-[#f0f2f5] border border-[#e4e6eb] text-[#65676b] hover:text-[#1c1e21] hover:bg-[#e4e6eb] transition disabled:opacity-40 disabled:cursor-not-allowed">
+              <i data-lucide="chevron-right" style="width:18px;height:18px;"></i>
             </button>
           </div>
         </div>
@@ -199,58 +208,34 @@
    </main>
   </div>
   <script>
-    // ---- Simulated user scores (would come from backend) ----
-    const userScores = {
-      overall: 64,
-      listening: 68,
-      reading: 62,
-      speaking: 58,
-      writing: 65
-    };
+    // ---- Simulated user scores ----
+    const userScores = { overall: 64, listening: 68, reading: 62, speaking: 58, writing: 65 };
 
-    // Simulated sub-skills with their scores
     const subSkills = {
       speaking: [
-        { name: 'Read Aloud', score: 52 },
-        { name: 'Repeat Sentence', score: 40 },
-        { name: 'Describe Image', score: 55 },
-        { name: 'Re-tell Lecture', score: 44 },
-        { name: 'Answer Short Question', score: 50 }
+        { name: 'Read Aloud', score: 52 }, { name: 'Repeat Sentence', score: 40 }, { name: 'Describe Image', score: 55 },
+        { name: 'Re-tell Lecture', score: 44 }, { name: 'Answer Short Question', score: 50 }
       ],
       writing: [
-        { name: 'Summarize Written Text', score: 48 },
-        { name: 'Write Essay', score: 56 },
-        { name: 'Grammar', score: 45 },
-        { name: 'Vocabulary', score: 58 }
+        { name: 'Summarize Written Text', score: 48 }, { name: 'Write Essay', score: 56 }, { name: 'Grammar', score: 45 }, { name: 'Vocabulary', score: 58 }
       ],
       reading: [
-        { name: 'Fill in the Blanks (R)', score: 50 },
-        { name: 'Fill in the Blanks (R&W)', score: 52 },
-        { name: 'Re-order Paragraphs', score: 42 },
-        { name: 'Multiple Choice (Single)', score: 60 },
-        { name: 'Multiple Choice (Multiple)', score: 55 }
+        { name: 'Fill in the Blanks (R)', score: 50 }, { name: 'Fill in the Blanks (R&W)', score: 52 }, { name: 'Re-order Paragraphs', score: 42 },
+        { name: 'Multiple Choice (Single)', score: 60 }, { name: 'Multiple Choice (Multiple)', score: 55 }
       ],
       listening: [
-        { name: 'Summarize Spoken Text', score: 65 },
-        { name: 'Fill in the Blanks (L)', score: 58 },
-        { name: 'Highlight Correct Summary', score: 60 },
-        { name: 'Multiple Choice (L)', score: 55 },
-        { name: 'Select Missing Word', score: 68 },
-        { name: 'Write from Dictation', score: 70 }
+        { name: 'Summarize Spoken Text', score: 65 }, { name: 'Fill in the Blanks (L)', score: 58 }, { name: 'Highlight Correct Summary', score: 60 },
+        { name: 'Multiple Choice (L)', score: 55 }, { name: 'Select Missing Word', score: 68 }, { name: 'Write from Dictation', score: 70 }
       ]
     };
 
-    // Simulated performance history
     function generateHistory(baseScore, count) {
       const data = [];
       const now = new Date();
       for (let i = count - 1; i >= 0; i--) {
         const d = new Date(now);
         d.setDate(d.getDate() - i * (count <= 7 ? 1 : count <= 12 ? 7 : 30));
-        data.push({
-          date: d,
-          score: Math.max(10, Math.min(90, baseScore + Math.floor((Math.random() - 0.4) * 15) + Math.floor(i * 0.5)))
-        });
+        data.push({ date: d, score: Math.max(10, Math.min(90, baseScore + Math.floor((Math.random() - 0.4) * 15) + Math.floor(i * 0.5))) });
       }
       return data;
     }
@@ -265,77 +250,59 @@
     let currentSkill = 'overall';
     let currentPeriod = 'weekly';
     let allRecords = [];
-
     let focusFilter = 'all';
     let focusPage = 0;
     let filteredFocusSkills = [];
     let lastTargets = null;
 
-    // ---- Greeting ----
+    // ---- UI Logic ----
     function updateGreeting(name) {
       const h = new Date().getHours();
       const prefix = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
       document.getElementById('greeting').textContent = `${prefix}, ${name} 👋`;
     }
 
-    // ---- Scores display ----
     function displayScores() {
       const ring = document.getElementById('overall-ring');
-      const circumference = 364.42;
+      const circumference = 402.12;
       const offset = circumference - (userScores.overall / 90) * circumference;
       ring.style.strokeDashoffset = offset;
       document.getElementById('overall-score-val').textContent = userScores.overall;
-      document.getElementById('score-listening').textContent = userScores.listening;
-      document.getElementById('score-reading').textContent = userScores.reading;
-      document.getElementById('score-speaking').textContent = userScores.speaking;
-      document.getElementById('score-writing').textContent = userScores.writing;
+      ['listening', 'reading', 'speaking', 'writing'].forEach(s => { document.getElementById(`score-${s}`).textContent = userScores[s]; });
     }
 
-    // ---- Chart drawing (pure canvas) ----
     function drawChart() {
       const canvas = document.getElementById('perfChart');
       const ctx = canvas.getContext('2d');
       const dpr = window.devicePixelRatio || 1;
       const rect = canvas.parentElement.getBoundingClientRect();
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      canvas.style.width = rect.width + 'px';
-      canvas.style.height = rect.height + 'px';
+      canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
+      canvas.style.width = rect.width + 'px'; canvas.style.height = rect.height + 'px';
       ctx.scale(dpr, dpr);
 
-      const w = rect.width;
-      const h = rect.height;
+      const w = rect.width; const h = rect.height;
       const pad = { top: 10, right: 15, bottom: 35, left: 35 };
-      const cw = w - pad.left - pad.right;
-      const ch = h - pad.top - pad.bottom;
+      const cw = w - pad.left - pad.right; const ch = h - pad.top - pad.bottom;
 
       ctx.clearRect(0, 0, w, h);
-
       const data = perfData[currentPeriod][currentSkill];
       if (!data || data.length === 0) return;
 
-      // Grid lines
-      ctx.strokeStyle = 'rgba(148,163,184,0.08)';
-      ctx.lineWidth = 1;
+      // Grid
+      ctx.strokeStyle = '#e4e6eb'; ctx.lineWidth = 1;
       for (let i = 0; i <= 9; i++) {
         const y = pad.top + (ch / 9) * i;
-        ctx.beginPath();
-        ctx.moveTo(pad.left, y);
-        ctx.lineTo(pad.left + cw, y);
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cw, y); ctx.stroke();
       }
 
-      // Y labels
-      ctx.fillStyle = 'rgba(148,163,184,0.5)';
-      ctx.font = '10px "Space Mono", monospace';
+      // Labels
+      ctx.fillStyle = '#65676b'; ctx.font = 'bold 9px "Inter", sans-serif';
       ctx.textAlign = 'right';
       for (let i = 0; i <= 9; i++) {
-        const val = 90 - i * 10;
-        const y = pad.top + (ch / 9) * i;
-        ctx.fillText(val, pad.left - 6, y + 3);
+        const val = 90 - i * 10; const y = pad.top + (ch / 9) * i;
+        ctx.fillText(val, pad.left - 8, y + 3);
       }
 
-      // X labels
       ctx.textAlign = 'center';
       const step = Math.max(1, Math.floor(data.length / 6));
       data.forEach((d, i) => {
@@ -346,453 +313,209 @@
         }
       });
 
-      // Line + area
-      const points = data.map((d, i) => ({
-        x: pad.left + (cw / (data.length - 1)) * i,
-        y: pad.top + ch - (d.score / 90) * ch
-      }));
-
-      // Area fill
-      const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + ch);
-      grad.addColorStop(0, 'rgba(14,165,233,0.25)');
-      grad.addColorStop(1, 'rgba(14,165,233,0)');
-      ctx.beginPath();
-      ctx.moveTo(points[0].x, pad.top + ch);
-      points.forEach(p => ctx.lineTo(p.x, p.y));
-      ctx.lineTo(points[points.length - 1].x, pad.top + ch);
-      ctx.closePath();
-      ctx.fillStyle = grad;
-      ctx.fill();
-
       // Line
-      ctx.beginPath();
-      points.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
-      ctx.strokeStyle = '#0866ff';
-      ctx.lineWidth = 2.5;
-      ctx.lineJoin = 'round';
-      ctx.stroke();
+      const points = data.map((d, i) => ({ x: pad.left + (cw / (data.length - 1)) * i, y: pad.top + ch - (d.score / 90) * ch }));
 
-      // Dots
+      const areaGrad = ctx.createLinearGradient(0, pad.top, 0, pad.top + ch);
+      areaGrad.addColorStop(0, 'rgba(0,74,191,0.08)'); areaGrad.addColorStop(1, 'rgba(0,74,191,0)');
+      ctx.beginPath(); ctx.moveTo(points[0].x, pad.top + ch);
+      points.forEach(p => ctx.lineTo(p.x, p.y));
+      ctx.lineTo(points[points.length - 1].x, pad.top + ch); ctx.closePath();
+      ctx.fillStyle = areaGrad; ctx.fill();
+
+      ctx.beginPath(); points.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+      ctx.strokeStyle = '#004abf'; ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.stroke();
+
       points.forEach(p => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 3.5, 0, Math.PI * 2);
-        ctx.fillStyle = '#0866ff';
-        ctx.fill();
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
+        ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2); ctx.fillStyle = '#004abf'; ctx.fill();
+        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
       });
     }
 
-    // ---- Focus Areas ----
     function renderFocusAreas(targets) {
       const container = document.getElementById('focus-areas-content');
       const carousel = document.getElementById('carousel-controls');
+      if (!targets) { carousel.classList.add('hidden'); return; }
+      if (targets !== lastTargets) { lastTargets = targets; focusPage = 0; }
 
-      if (!targets) {
-        container.innerHTML = '<div class="text-center py-8 text-slate-500"><p class="text-sm">Set your target scores and click <strong class="text-[#0866ff]">Get Advice</strong> to see your focus areas.</p></div>';
-        carousel.classList.add('hidden');
-        lucide.createIcons();
-        return;
-      }
-
-      if (targets !== lastTargets) {
-        lastTargets = targets;
-        focusPage = 0;
-      }
-
-      // Collect all sub-skills with gaps
       const allSkills = [];
-      const skillTargets = {
-        speaking: targets.speaking_target,
-        writing: targets.writing_target,
-        reading: targets.reading_target,
-        listening: targets.listening_target
-      };
+      const skillTargets = { speaking: targets.speaking_target, writing: targets.writing_target, reading: targets.reading_target, listening: targets.listening_target };
 
       Object.entries(subSkills).forEach(([category, skills]) => {
-        const target = skillTargets[category] || 65;
+        const target = skillTargets[category] || 79;
         skills.forEach(s => {
           const gap = target - s.score;
           if (gap > 0) {
-            let priority = 'low';
-            if (gap > 20) priority = 'critical';
-            else if (gap > 10) priority = 'moderate';
+            const priority = gap > 20 ? 'critical' : gap > 10 ? 'moderate' : 'low';
             allSkills.push({ ...s, category, target, gap, priority });
           }
         });
       });
-
       allSkills.sort((a, b) => b.gap - a.gap);
 
       if (allSkills.length === 0) {
-        container.innerHTML = '<div class="text-center py-8"><div class="w-12 h-12 rounded-full bg-emerald-500/15 flex items-center justify-center mx-auto mb-3"><i data-lucide="check-circle" style="width:24px;height:24px;" class="text-emerald-400"></i></div><p class="text-emerald-300 font-medium">All skills meet your targets!</p><p class="text-slate-500 text-sm mt-1">Keep up the great work.</p></div>';
-        carousel.classList.add('hidden');
-        lucide.createIcons();
-        return;
+        container.innerHTML = '<div class="flex flex-col items-center justify-center h-full py-12"><div class="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mb-4"><i data-lucide="check-circle" style="width:32px;height:32px;" class="text-emerald-500"></i></div><p class="text-emerald-500 font-bold uppercase tracking-widest text-xs">Target Met!</p><p class="text-[#65676b] text-sm mt-2 font-medium">All sub-skills meet your targets.</p></div>';
+        carousel.classList.add('hidden'); lucide.createIcons(); return;
       }
 
-      // Filter by priority
       filteredFocusSkills = focusFilter === 'all' ? allSkills : allSkills.filter(s => s.priority === focusFilter);
-
       if (filteredFocusSkills.length === 0) {
-        container.innerHTML = `<div class="text-center py-8 text-slate-500"><p class="text-sm">No skills found for priority: <strong class="text-[#0866ff] capitalize">${focusFilter}</strong></p></div>`;
-        carousel.classList.add('hidden');
-        lucide.createIcons();
-        return;
+        container.innerHTML = `<div class="flex flex-col items-center justify-center h-full py-12"><p class="text-[#65676b] text-sm font-medium">No <span class="capitalize text-[#004abf]">${focusFilter}</span> priority focus areas.</p></div>`;
+        carousel.classList.add('hidden'); return;
       }
 
       const totalPages = Math.ceil(filteredFocusSkills.length / 5);
       if (focusPage >= totalPages) focusPage = totalPages - 1;
-      if (focusPage < 0) focusPage = 0;
-
       const itemsToShow = filteredFocusSkills.slice(focusPage * 5, (focusPage + 1) * 5);
 
       const colorMap = {
-        critical: { bg: '#fff1f2', border: '#fecdd3', bar: '#f43f5e', text: '#e11d48', badge: '#ffe4e6', label: 'Critical' },
-        moderate: { bg: '#fffbeb', border: '#fef3c7', bar: '#f59e0b', text: '#d97706', badge: '#fef3c7', label: 'Moderate' },
-        low: { bg: '#eff6ff', border: '#dbeafe', bar: '#0866ff', text: '#2563eb', badge: '#dbeafe', label: 'Low' }
+        critical: { bg: '#fff1f2', border: '#fecdd3', bar: '#e11d48', text: '#991b1b', label: 'Critical' },
+        moderate: { bg: '#fffbeb', border: '#fef3c7', bar: '#d97706', text: '#92400e', label: 'Moderate' },
+        low: { bg: '#eff6ff', border: '#dbeafe', bar: '#2563eb', text: '#1e40af', label: 'Low' }
       };
 
-      const categoryLabels = { speaking: 'Speaking', writing: 'Writing', reading: 'Reading', listening: 'Listening' };
-
-      let html = '<div class="space-y-3">';
+      let html = '<div class="space-y-4">';
       itemsToShow.forEach(s => {
-        const c = colorMap[s.priority];
-        const pct = Math.round((s.score / 90) * 100);
-        html += `<div class="p-4 rounded-xl border transition-colors hover:bg-slate-50 shadow-sm" style="background:${c.bg};border-color:${c.border}">
-          <div class="flex items-center justify-between mb-2">
+        const c = colorMap[s.priority]; const pct = Math.round((s.score / 90) * 100);
+        html += `<div class="p-5 rounded-2xl border transition-all hover:bg-[#f0f2f5]" style="background:${c.bg};border-color:${c.border}">
+          <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-3">
-              <span class="text-sm font-semibold text-slate-900">${s.name}</span>
-              <span class="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider" style="background:${c.badge};color:${c.text}">${c.label}</span>
+              <span class="text-sm font-bold text-[#1c1e21] tracking-tight">${s.name}</span>
+              <span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-tighter" style="background:${c.bar}20;color:${c.bar}">${c.label}</span>
             </div>
-            <span class="text-xs text-slate-500 font-medium">${categoryLabels[s.category]}</span>
+            <span class="text-[10px] font-bold text-[#65676b] uppercase tracking-widest">${s.category}</span>
           </div>
-          <div class="flex items-center gap-4">
-            <div class="flex-grow h-1.5 rounded-full bg-slate-200 overflow-hidden">
+          <div class="flex items-center gap-5">
+            <div class="flex-grow h-2 rounded-full bg-[#f0f2f5] overflow-hidden">
               <div class="progress-fill h-full rounded-full" style="width:${pct}%;background:${c.bar}"></div>
             </div>
-            <span class="text-xs font-mono font-bold text-slate-700 shrink-0">${s.score}<span class="text-slate-400">/90</span></span>
+            <span class="text-xs font-black text-[#1c1e21] shrink-0 tracking-tighter">${s.score}<span class="text-[#65676b]"> / 90</span></span>
           </div>
         </div>`;
       });
-      html += '</div>';
+      container.innerHTML = html + '</div>';
 
-      container.innerHTML = html;
-
-      // Update Carousel UI
       carousel.classList.toggle('hidden', totalPages <= 1);
       document.getElementById('carousel-counter').textContent = `${focusPage + 1} / ${totalPages}`;
       document.getElementById('prev-slide').disabled = focusPage === 0;
       document.getElementById('next-slide').disabled = focusPage === totalPages - 1;
 
-      const dotsContainer = document.getElementById('carousel-dots');
-      dotsContainer.innerHTML = '';
+      const dots = document.getElementById('carousel-dots'); dots.innerHTML = '';
       for (let i = 0; i < totalPages; i++) {
         const dot = document.createElement('button');
-        dot.className = `w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold transition-all ${i === focusPage ? 'bg-[#004abf] text-white' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50'}`;
-        dot.textContent = i + 1;
-        dot.onclick = () => { focusPage = i; renderFocusAreas(targets); };
-        dotsContainer.appendChild(dot);
+        dot.className = `w-6 h-6 rounded-lg text-[10px] font-black transition-all ${i === focusPage ? 'bg-[#004abf] text-white shadow-md shadow-[#004abf]/20' : 'bg-[#f0f2f5] text-[#65676b] hover:text-[#1c1e21] hover:bg-[#e4e6eb]'}`;
+        dot.textContent = i + 1; dot.onclick = () => { focusPage = i; renderFocusAreas(targets); };
+        dots.appendChild(dot);
       }
 
-      // Animate progress bars
-      requestAnimationFrame(() => {
-        container.querySelectorAll('.progress-fill').forEach(el => {
-          const w = el.style.width;
-          el.style.width = '0%';
-          setTimeout(() => { el.style.width = w; }, 50);
-        });
-      });
+      requestAnimationFrame(() => { container.querySelectorAll('.progress-fill').forEach(el => { const w = el.style.width; el.style.width = '0%'; setTimeout(() => { el.style.width = w; }, 50); }); });
       lucide.createIcons();
     }
 
-    // ---- Exam date (Auto Estimated) ----
     function updateEstimatedExamDate(targets) {
       const display = document.getElementById('exam-date-display');
       const badge = document.getElementById('days-left-badge');
-      const number = document.getElementById('days-left-number');
+      const num = document.getElementById('days-left-number');
+      if (!targets) { display.textContent = 'Enter targets to estimate'; badge.classList.add('hidden'); return; }
 
-      if (!targets) {
-        display.textContent = 'Not set';
-        badge.classList.add('hidden');
-        return;
-      }
+      let gap = 0;
+      ['speaking', 'writing', 'reading', 'listening'].forEach(s => gap += Math.max(0, (targets[`${s}_target`] || 79) - userScores[s]));
+      const days = gap > 0 ? Math.max(7, Math.ceil(gap * 1.5)) : 0;
 
-      const skillTargets = {
-        speaking: targets.speaking_target || 79,
-        writing: targets.writing_target || 79,
-        reading: targets.reading_target || 79,
-        listening: targets.listening_target || 79
-      };
-
-      let totalGap = 0;
-      totalGap += Math.max(0, skillTargets.speaking - userScores.speaking);
-      totalGap += Math.max(0, skillTargets.writing - userScores.writing);
-      totalGap += Math.max(0, skillTargets.reading - userScores.reading);
-      totalGap += Math.max(0, skillTargets.listening - userScores.listening);
-
-      // Estimate logic: 1.5 days per point gap, minimum 7 days if any gap exists
-      const daysNeeded = totalGap > 0 ? Math.max(7, Math.ceil(totalGap * 1.5)) : 0;
-
-      const examDate = new Date();
-      examDate.setDate(examDate.getDate() + daysNeeded);
-      examDate.setHours(0, 0, 0, 0);
-
-      display.textContent = totalGap > 0 ? examDate.toLocaleDateString('en', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Ready for Exam!';
-
-      if (totalGap > 0) {
-        number.textContent = daysNeeded;
-        badge.classList.remove('hidden');
+      if (gap > 0) {
+        const d = new Date(); d.setDate(d.getDate() + days);
+        display.textContent = d.toLocaleDateString('en', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+        num.textContent = days; badge.classList.remove('hidden');
       } else {
-        badge.classList.add('hidden');
+        display.textContent = 'Ready for the exam! 🚀'; badge.classList.add('hidden');
       }
     }
 
-    // ---- Focus Filter Events ----
+    // ---- Events ----
     document.querySelectorAll('.focus-filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.focus-filter-btn').forEach(b => {
-          b.classList.remove('active', 'bg-[#004abf]', 'text-white');
-          b.classList.add('bg-white', 'border-slate-200');
-          if (b.dataset.priority === 'critical') b.classList.add('text-rose-600');
-          if (b.dataset.priority === 'moderate') b.classList.add('text-amber-600');
-          if (b.dataset.priority === 'low') b.classList.add('text-[#0866ff]');
-        });
-        btn.classList.add('active', 'bg-[#004abf]', 'text-white');
-        btn.classList.remove('bg-white', 'border-slate-200', 'text-rose-600', 'text-amber-600', 'text-[#0866ff]');
-        focusFilter = btn.dataset.priority;
-        focusPage = 0;
-        renderFocusAreas(lastTargets);
-      });
+      btn.onclick = () => {
+        document.querySelectorAll('.focus-filter-btn').forEach(b => { b.className = 'focus-filter-btn px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-[#f0f2f5] border border-[#e4e6eb] text-[#65676b] hover:bg-[#e4e6eb] transition'; if(b.dataset.priority==='critical')b.classList.add('text-rose-600'); if(b.dataset.priority==='moderate')b.classList.add('text-amber-600'); if(b.dataset.priority==='low')b.classList.add('text-blue-600'); });
+        btn.className = 'focus-filter-btn active px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-[#004abf] text-white transition shadow-md shadow-[#004abf]/20';
+        focusFilter = btn.dataset.priority; focusPage = 0; renderFocusAreas(lastTargets);
+      };
     });
 
-    // ---- Carousel Events ----
-    document.getElementById('prev-slide').addEventListener('click', () => {
-      if (focusPage > 0) {
-        focusPage--;
-        renderFocusAreas(lastTargets);
-      }
-    });
+    document.getElementById('prev-slide').onclick = () => { if (focusPage > 0) { focusPage--; renderFocusAreas(lastTargets); } };
+    document.getElementById('next-slide').onclick = () => { if (focusPage < Math.ceil(filteredFocusSkills.length / 5) - 1) { focusPage++; renderFocusAreas(lastTargets); } };
 
-    document.getElementById('next-slide').addEventListener('click', () => {
-      const totalPages = Math.ceil(filteredFocusSkills.length / 5);
-      if (focusPage < totalPages - 1) {
-        focusPage++;
-        renderFocusAreas(lastTargets);
-      }
-    });
-
-    // ---- Performance button events ----
     document.querySelectorAll('.perf-skill-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.perf-skill-btn').forEach(b => { b.className = 'perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-600 hover:bg-slate-50 transition border border-slate-200'; });
-        btn.className = 'perf-skill-btn active px-2.5 py-1 rounded-md text-xs font-medium bg-[#033a8c] text-white transition';
-        currentSkill = btn.dataset.skill;
-        drawChart();
-      });
+      btn.onclick = () => {
+        document.querySelectorAll('.perf-skill-btn').forEach(b => { b.className = 'perf-skill-btn px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-[#f0f2f5] text-[#65676b] hover:text-[#1c1e21] hover:bg-[#e4e6eb] transition border border-[#e4e6eb]'; });
+        btn.className = 'perf-skill-btn active px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-[#004abf] text-white transition shadow-md shadow-[#004abf]/20';
+        currentSkill = btn.dataset.skill; drawChart();
+      };
     });
 
     document.querySelectorAll('.perf-period-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.perf-period-btn').forEach(b => { b.className = 'perf-period-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-500 border border-slate-200 hover:bg-slate-50 transition'; });
-        btn.className = 'perf-period-btn active px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 text-[#0866ff] border border-blue-200 transition';
-        currentPeriod = btn.dataset.period;
-        drawChart();
-      });
+      btn.onclick = () => {
+        document.querySelectorAll('.perf-period-btn').forEach(b => { b.className = 'perf-period-btn px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-[#f0f2f5] text-[#65676b] border border-transparent hover:bg-[#e4e6eb] transition'; });
+        btn.className = 'perf-period-btn active px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-[#eff6ff] text-[#004abf] border border-[#dbeafe] transition';
+        currentPeriod = btn.dataset.period; drawChart();
+      };
     });
 
-    // ---- Target form ----
     ['target-speaking', 'target-writing', 'target-reading', 'target-listening'].forEach(id => {
-      document.getElementById(id).addEventListener('input', () => {
-        const tg = {
-          speaking_target: parseInt(document.getElementById('target-speaking').value) || 0,
-          writing_target: parseInt(document.getElementById('target-writing').value) || 0,
-          reading_target: parseInt(document.getElementById('target-reading').value) || 0,
-          listening_target: parseInt(document.getElementById('target-listening').value) || 0
-        };
+      document.getElementById(id).oninput = () => {
+        const tg = { speaking_target: parseInt(document.getElementById('target-speaking').value) || 0, writing_target: parseInt(document.getElementById('target-writing').value) || 0, reading_target: parseInt(document.getElementById('target-reading').value) || 0, listening_target: parseInt(document.getElementById('target-listening').value) || 0 };
         updateEstimatedExamDate(tg);
-      });
+      };
     });
 
-    document.getElementById('target-form').addEventListener('submit', async (e) => {
+    document.getElementById('target-form').onsubmit = async (e) => {
       e.preventDefault();
-      const speaking = parseInt(document.getElementById('target-speaking').value) || 0;
-      const writing = parseInt(document.getElementById('target-writing').value) || 0;
-      const reading = parseInt(document.getElementById('target-reading').value) || 0;
-      const listening = parseInt(document.getElementById('target-listening').value) || 0;
-
-      if (!speaking && !writing && !reading && !listening) {
-        const toast = document.getElementById('target-toast');
-        toast.textContent = 'Please enter at least one target score.';
-        toast.className = 'mt-3 p-3 rounded-lg bg-rose-500/15 border border-rose-400/20 text-rose-300 text-sm text-center';
-        setTimeout(() => toast.classList.add('hidden'), 3000);
-        return;
-      }
-
-      const btn = document.getElementById('advice-btn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="pulse-dot">Analyzing...</span>';
-      btn.style.backgroundColor = '#033a8c';
+      const tg = { speaking_target: parseInt(document.getElementById('target-speaking').value) || 0, writing_target: parseInt(document.getElementById('target-writing').value) || 0, reading_target: parseInt(document.getElementById('target-reading').value) || 0, listening_target: parseInt(document.getElementById('target-listening').value) || 0 };
+      const btn = document.getElementById('advice-btn'); btn.disabled = true; btn.innerHTML = '<span class="pulse-dot">Analyzing Profile...</span>';
 
       const existing = allRecords.find(r => r.type === 'targets');
       let result;
-      if (existing) {
-        result = await window.dataSdk.update({ ...existing, speaking_target: speaking, writing_target: writing, reading_target: reading, listening_target: listening });
-      } else {
-        if (allRecords.length >= 999) { btn.disabled = false; btn.innerHTML = '<i data-lucide="sparkles" style="width:16px;height:16px;"></i> Get Advice'; btn.style.backgroundColor = '#004abf'; lucide.createIcons(); return; }
-        result = await window.dataSdk.create({ type: 'targets', speaking_target: speaking, writing_target: writing, reading_target: reading, listening_target: listening, exam_date: '' });
-      }
+      if (existing) result = await window.dataSdk.update({ ...existing, ...tg });
+      else result = await window.dataSdk.create({ type: 'targets', ...tg });
 
-      btn.disabled = false;
-      btn.innerHTML = '<i data-lucide="sparkles" style="width:16px;height:16px;"></i> Get Advice';
-      btn.style.backgroundColor = '#004abf';
-      lucide.createIcons();
-
+      btn.disabled = false; btn.innerHTML = '<i data-lucide="sparkles" style="width:18px;height:18px;"></i> Get Study Advice'; lucide.createIcons();
       if (result.isOk) {
-        const toast = document.getElementById('target-toast');
-        toast.textContent = '✓ Focus areas updated!';
-        toast.className = 'mt-3 p-3 rounded-lg bg-emerald-500/15 border border-emerald-400/20 text-emerald-300 text-sm text-center';
+        const toast = document.getElementById('target-toast'); toast.textContent = '✓ Dashboard Updated'; toast.classList.remove('hidden');
         setTimeout(() => toast.classList.add('hidden'), 3000);
-      }
-    });
-
-    // ---- Data SDK ----
-    const dataHandler = {
-      onDataChanged(data) {
-        allRecords = data;
-        const targetRec = data.find(r => r.type === 'targets');
-        if (targetRec) {
-          if (targetRec.speaking_target) document.getElementById('target-speaking').value = targetRec.speaking_target;
-          if (targetRec.writing_target) document.getElementById('target-writing').value = targetRec.writing_target;
-          if (targetRec.reading_target) document.getElementById('target-reading').value = targetRec.reading_target;
-          if (targetRec.listening_target) document.getElementById('target-listening').value = targetRec.listening_target;
-          const tg = { speaking_target: targetRec.speaking_target, writing_target: targetRec.writing_target, reading_target: targetRec.reading_target, listening_target: targetRec.listening_target };
-          renderFocusAreas(tg);
-          updateEstimatedExamDate(tg);
-        }
+        renderFocusAreas(tg);
       }
     };
 
-    // ---- Element SDK ----
-    const defaultConfig = {
-      greeting_name: 'Student',
-      page_title: 'PTE Academic',
-      background_color: '#f0f2f5',
-      surface_color: '#eff6ff',
-      text_color: '#0f172a',
-      primary_action_color: '#0866ff',
-      secondary_action_color: '#0866ff',
-      font_family: 'DM Sans',
-      font_size: 16
+    // ---- SDKs ----
+    const dataHandler = {
+      onDataChanged(data) {
+        allRecords = data;
+        const r = data.find(rec => rec.type === 'targets');
+        if (r) {
+          ['speaking', 'writing', 'reading', 'listening'].forEach(s => document.getElementById(`target-${s}`).value = r[`${s}_target`]);
+          renderFocusAreas(r); updateEstimatedExamDate(r);
+        }
+      }
     };
 
     try {
       window.elementSdk.init({
-        defaultConfig,
-        onConfigChange: async (config) => {
-        const name = config.greeting_name || defaultConfig.greeting_name;
-        const title = config.page_title || defaultConfig.page_title;
-        const bg = config.background_color || defaultConfig.background_color;
-        const surface = config.surface_color || defaultConfig.surface_color;
-        const text = config.text_color || defaultConfig.text_color;
-        const primary = config.primary_action_color || defaultConfig.primary_action_color;
-        const secondary = config.secondary_action_color || defaultConfig.secondary_action_color;
-        const font = config.font_family || defaultConfig.font_family;
-        const fontSize = config.font_size || defaultConfig.font_size;
-
-        updateGreeting(name);
-        document.getElementById('nav-title').textContent = title;
-
-        // Colors
-        const shell = document.querySelector('.app-shell');
-        if (config.background_color) {
-          shell.style.background = bg;
+        defaultConfig: { greeting_name: 'Student', page_title: 'PTE Learning Tracker' },
+        onConfigChange: (c) => {
+          updateGreeting(c.greeting_name || 'Student');
+          if (c.background_color) document.querySelector('.app-shell').style.backgroundColor = c.background_color;
         }
-
-        document.querySelectorAll('.card-glass').forEach(el => {
-          if (config.surface_color) {
-            el.style.backgroundColor = surface;
-          }
-        });
-
-        document.querySelectorAll('.perf-skill-btn.active').forEach(el => { el.style.backgroundColor = primary; });
-        document.querySelectorAll('#advice-btn, #set-date-btn').forEach(el => { el.style.backgroundColor = primary; });
-
-        document.querySelectorAll('h1, h2, p, span, label').forEach(el => {
-          if (!el.closest('.card-glass') || el.tagName === 'H1') {
-            el.style.color = text;
-          }
-        });
-
-        // Font
-        const fontStack = `${font}, DM Sans, sans-serif`;
-        document.querySelector('.app-shell').style.fontFamily = fontStack;
-
-        // Font size
-        const base = fontSize;
-        // The sm:text-4xl class is ~36px base * 2.25
-        document.getElementById('greeting').style.fontSize = `${base * 2.25}px`;
-        document.querySelectorAll('.card-glass h2').forEach(el => { el.style.fontSize = `${base * 0.8}px`; });
-      },
-      mapToCapabilities: (config) => ({
-        recolorables: [
-          { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
-          { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
-          { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
-          { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: (v) => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
-          { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } }
-        ],
-        borderables: [],
-        fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); } },
-        fontSizeable: { get: () => config.font_size || defaultConfig.font_size, set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); } }
-      }),
-      mapToEditPanelValues: (config) => new Map([
-        ['greeting_name', config.greeting_name || defaultConfig.greeting_name],
-        ['page_title', config.page_title || defaultConfig.page_title]
-        ])
       });
-    } catch (e) {
-      console.warn('Element SDK initialization failed:', e);
-    }
+    } catch (e) {}
 
-    // ---- Init ----
     async function init() {
-      // Fallback data if SDK doesn't load a record
-      const defaultTargets = { speaking_target: 79, writing_target: 79, reading_target: 79, listening_target: 79 };
-
-      try {
-        updateGreeting(defaultConfig.greeting_name);
-        displayScores();
-        drawChart();
-
-        // Initial render with fallback data
-        renderFocusAreas(defaultTargets);
-        updateEstimatedExamDate(defaultTargets);
-
-        lucide.createIcons();
-      } catch (e) {
-        console.error('Initial render failed', e);
-      }
-
-      try {
-        if (window.dataSdk) {
-          const initResult = await window.dataSdk.init(dataHandler);
-          if (initResult.isOk) {
-            // Data SDK will trigger onDataChanged if a record exists
-          } else {
-            console.error('Data SDK init failed');
-          }
-        }
-      } catch (e) {
-        console.warn('Data SDK failure, using dummy data', e);
-      }
+      updateGreeting('Student'); displayScores(); drawChart();
+      const defTargets = { speaking_target: 79, writing_target: 79, reading_target: 79, listening_target: 79 };
+      renderFocusAreas(defTargets); updateEstimatedExamDate(defTargets);
+      lucide.createIcons();
+      if (window.dataSdk) await window.dataSdk.init(dataHandler);
     }
 
     init();
-
-    // Resize chart
-    window.addEventListener('resize', drawChart);
+    window.onresize = drawChart;
   </script>
  </body>
 </html>
