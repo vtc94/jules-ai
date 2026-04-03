@@ -25,7 +25,7 @@
     html, body { height: 100%; margin: 0; }
     .app-shell { height: 100%; overflow: auto; }
     .score-ring { transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-    .card-glass { background: #e4e6eb; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 1rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02), 0 10px 15px -3px rgba(0, 0, 0, 0.03); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .card-glass { background: #eff6ff; border: 1px solid rgba(3, 58, 140, 0.1); border-radius: 1rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02), 0 10px 15px -3px rgba(0, 0, 0, 0.03); transition: transform 0.2s ease, box-shadow 0.2s ease; }
     .card-glass:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04), 0 20px 25px -5px rgba(0, 0, 0, 0.05); border-color: rgba(8, 102, 255, 0.15); }
     .progress-fill { transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
     .fade-in { animation: fadeIn 0.5s ease forwards; opacity: 0; }
@@ -63,13 +63,13 @@
    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-16">
     <!-- Greeting -->
     <section class="fade-in">
-     <h1 id="greeting" class="text-2xl sm:text-3xl font-bold text-slate-900">Good afternoon, Student 👋</h1>
+     <h1 id="greeting" class="text-2xl sm:text-4xl font-bold text-slate-900">Good afternoon, Student 👋</h1>
      <p class="text-slate-500 mt-1 text-sm"></p>
 <br/>
     </section><!-- Estimated Scores + Performance -->
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
      <!-- Estimated Scores -->
-     <section class="lg:col-span-2 card-glass rounded-2xl p-5 sm:p-6 fade-in fade-in-delay-2">
+     <section class="lg:col-span-2 card-glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 fade-in fade-in-delay-2">
       <h2 class="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-5 flex items-center gap-2"><i data-lucide="bar-chart-3" style="width:16px;height:16px;" class="text-[#0866ff]"></i> Estimated Scores</h2><!-- Overall Score Ring -->
       <div class="flex justify-center mb-6">
        <div class="relative">
@@ -105,12 +105,12 @@
        </div>
       </div>
      </section><!-- Performance Graph -->
-     <section class="lg:col-span-3 card-glass rounded-2xl p-5 sm:p-6 fade-in fade-in-delay-3">
+     <section class="lg:col-span-3 card-glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 fade-in fade-in-delay-3">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
        <h2 class="text-sm font-semibold text-slate-600 uppercase tracking-wider flex items-center gap-2"><i data-lucide="trending-up" style="width:16px;height:16px;" class="text-[#0866ff]"></i> Performance</h2>
        <div class="flex items-center gap-2 flex-wrap">
         <div id="perf-skill-btns" class="flex gap-1 flex-wrap">
-         <button data-skill="overall" class="perf-skill-btn active px-2.5 py-1 rounded-md text-xs font-medium bg-[#0866ff] text-white transition">Overall</button> <button data-skill="speaking" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-600 hover:bg-slate-50 transition border border-slate-200">Speaking</button> <button data-skill="writing" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-600 hover:bg-slate-50 transition border border-slate-200">Writing</button> <button data-skill="reading" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-600 hover:bg-slate-50 transition border border-slate-200">Reading</button> <button data-skill="listening" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-600 hover:bg-slate-50 transition border border-slate-200">Listening</button>
+         <button data-skill="overall" class="perf-skill-btn active px-2.5 py-1 rounded-md text-xs font-medium bg-[#033a8c] text-white transition">Overall</button> <button data-skill="speaking" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-600 hover:bg-slate-50 transition border border-slate-200">Speaking</button> <button data-skill="writing" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-600 hover:bg-slate-50 transition border border-slate-200">Writing</button> <button data-skill="reading" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-600 hover:bg-slate-50 transition border border-slate-200">Reading</button> <button data-skill="listening" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-600 hover:bg-slate-50 transition border border-slate-200">Listening</button>
         </div>
        </div>
       </div>
@@ -122,7 +122,7 @@
       </div>
      </section>
     </div><!-- Exam Date -->
-    <section id="exam-date-section" class="card-glass rounded-2xl p-5 sm:p-6 fade-in fade-in-delay-1">
+    <section id="exam-date-section" class="card-glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 fade-in fade-in-delay-1">
      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div class="flex items-center gap-4">
        <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
@@ -143,7 +143,7 @@
     <!-- Target Scores + Focus Areas -->
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
      <!-- Set Target Scores -->
-     <section class="lg:col-span-2 card-glass rounded-2xl p-5 sm:p-6 fade-in fade-in-delay-4">
+     <section class="lg:col-span-2 card-glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 fade-in fade-in-delay-4">
       <h2 class="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-5 flex items-center gap-2"><i data-lucide="sliders" style="width:16px;height:16px;" class="text-[#0866ff]"></i> Set Target Scores</h2>
       <form id="target-form" class="space-y-4">
        <div>
@@ -157,16 +157,16 @@
        </div>
        <div>
         <label class="text-xs text-slate-500 block mb-1">Listening Target</label> <input type="number" id="target-listening" min="10" max="90" placeholder="e.g. 79" value="79" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-[#0866ff] transition placeholder-slate-400">
-       </div><button type="submit" id="advice-btn" class="w-full py-3 bg-[#0866ff] hover:bg-[#004abf] text-white font-semibold rounded-lg transition flex items-center justify-center gap-2"> <i data-lucide="sparkles" style="width:16px;height:16px;"></i> Get Advice </button>
+       </div><button type="submit" id="advice-btn" class="w-full py-3 bg-[#004abf] hover:bg-[#033a8c] text-white font-semibold rounded-lg transition flex items-center justify-center gap-2"> <i data-lucide="sparkles" style="width:16px;height:16px;"></i> Get Advice </button>
       </form>
       <div id="target-toast" class="hidden mt-3 p-3 rounded-lg bg-emerald-500/15 border border-emerald-400/20 text-emerald-300 text-sm text-center"></div>
      </section>
      <!-- Focus Areas -->
-     <section class="lg:col-span-3 card-glass rounded-2xl p-5 sm:p-6 fade-in fade-in-delay-4 flex flex-col">
+     <section class="lg:col-span-3 card-glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 fade-in fade-in-delay-4 flex flex-col">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
        <h2 class="text-sm font-semibold text-slate-600 uppercase tracking-wider flex items-center gap-2"><i data-lucide="target" style="width:16px;height:16px;" class="text-[#0866ff]"></i> Focus Areas</h2>
        <div id="priority-filters" class="flex flex-wrap gap-1">
-        <button data-priority="all" class="focus-filter-btn active px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight bg-[#0866ff] text-white transition">All</button>
+        <button data-priority="all" class="focus-filter-btn active px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight bg-[#004abf] text-white transition">All</button>
         <button data-priority="critical" class="focus-filter-btn px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight bg-white border border-slate-200 text-rose-600 hover:bg-slate-50 transition">High (Critical)</button>
         <button data-priority="moderate" class="focus-filter-btn px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight bg-white border border-slate-200 text-amber-600 hover:bg-slate-50 transition">Moderate</button>
         <button data-priority="low" class="focus-filter-btn px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight bg-white border border-slate-200 text-[#0866ff] hover:bg-slate-50 transition">Low</button>
@@ -490,7 +490,7 @@
       dotsContainer.innerHTML = '';
       for (let i = 0; i < totalPages; i++) {
         const dot = document.createElement('button');
-        dot.className = `w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold transition-all ${i === focusPage ? 'bg-[#0866ff] text-white' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50'}`;
+        dot.className = `w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold transition-all ${i === focusPage ? 'bg-[#004abf] text-white' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50'}`;
         dot.textContent = i + 1;
         dot.onclick = () => { focusPage = i; renderFocusAreas(targets); };
         dotsContainer.appendChild(dot);
@@ -553,13 +553,13 @@
     document.querySelectorAll('.focus-filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.focus-filter-btn').forEach(b => {
-          b.classList.remove('active', 'bg-[#0866ff]', 'text-white');
+          b.classList.remove('active', 'bg-[#004abf]', 'text-white');
           b.classList.add('bg-white', 'border-slate-200');
           if (b.dataset.priority === 'critical') b.classList.add('text-rose-600');
           if (b.dataset.priority === 'moderate') b.classList.add('text-amber-600');
           if (b.dataset.priority === 'low') b.classList.add('text-[#0866ff]');
         });
-        btn.classList.add('active', 'bg-[#0866ff]', 'text-white');
+        btn.classList.add('active', 'bg-[#004abf]', 'text-white');
         btn.classList.remove('bg-white', 'border-slate-200', 'text-rose-600', 'text-amber-600', 'text-[#0866ff]');
         focusFilter = btn.dataset.priority;
         focusPage = 0;
@@ -587,7 +587,7 @@
     document.querySelectorAll('.perf-skill-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.perf-skill-btn').forEach(b => { b.className = 'perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-600 hover:bg-slate-50 transition border border-slate-200'; });
-        btn.className = 'perf-skill-btn active px-2.5 py-1 rounded-md text-xs font-medium bg-[#0866ff] text-white transition';
+        btn.className = 'perf-skill-btn active px-2.5 py-1 rounded-md text-xs font-medium bg-[#033a8c] text-white transition';
         currentSkill = btn.dataset.skill;
         drawChart();
       });
@@ -633,18 +633,20 @@
       const btn = document.getElementById('advice-btn');
       btn.disabled = true;
       btn.innerHTML = '<span class="pulse-dot">Analyzing...</span>';
+      btn.style.backgroundColor = '#033a8c';
 
       const existing = allRecords.find(r => r.type === 'targets');
       let result;
       if (existing) {
         result = await window.dataSdk.update({ ...existing, speaking_target: speaking, writing_target: writing, reading_target: reading, listening_target: listening });
       } else {
-        if (allRecords.length >= 999) { btn.disabled = false; btn.innerHTML = '<i data-lucide="sparkles" style="width:16px;height:16px;"></i> Get Advice'; lucide.createIcons(); return; }
+        if (allRecords.length >= 999) { btn.disabled = false; btn.innerHTML = '<i data-lucide="sparkles" style="width:16px;height:16px;"></i> Get Advice'; btn.style.backgroundColor = '#004abf'; lucide.createIcons(); return; }
         result = await window.dataSdk.create({ type: 'targets', speaking_target: speaking, writing_target: writing, reading_target: reading, listening_target: listening, exam_date: '' });
       }
 
       btn.disabled = false;
       btn.innerHTML = '<i data-lucide="sparkles" style="width:16px;height:16px;"></i> Get Advice';
+      btn.style.backgroundColor = '#004abf';
       lucide.createIcons();
 
       if (result.isOk) {
@@ -677,7 +679,7 @@
       greeting_name: 'Student',
       page_title: 'PTE Academic',
       background_color: '#f0f2f5',
-      surface_color: '#e4e6eb',
+      surface_color: '#eff6ff',
       text_color: '#0f172a',
       primary_action_color: '#0866ff',
       secondary_action_color: '#0866ff',
@@ -729,7 +731,8 @@
 
         // Font size
         const base = fontSize;
-        document.getElementById('greeting').style.fontSize = `${base * 1.8}px`;
+        // The sm:text-4xl class is ~36px base * 2.25
+        document.getElementById('greeting').style.fontSize = `${base * 2.25}px`;
         document.querySelectorAll('.card-glass h2').forEach(el => { el.style.fontSize = `${base * 0.8}px`; });
       },
       mapToCapabilities: (config) => ({
