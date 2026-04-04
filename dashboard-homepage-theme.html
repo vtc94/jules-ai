@@ -1,0 +1,1203 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PTE Dashboard</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=Playfair+Display:wght@600;700;800&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['"Playfair Display"', 'Georgia', 'serif'],
+            body: ['"DM Sans"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    .app-shell { height: 100%; overflow: auto; background: linear-gradient(135deg, #0b1120 0%, #112240 40%, #1a365d 70%, #0b1120 100%); }
+    .score-ring { transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+    .card-glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+    .card-glass:hover { transform: translateY(-2px); box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4); border-color: rgba(56, 189, 248, 0.4); }
+    .progress-fill { transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+    .fade-in { animation: fadeIn 0.5s ease forwards; opacity: 0; }
+    .fade-in-delay-1 { animation-delay: 0.1s; }
+    .fade-in-delay-2 { animation-delay: 0.2s; }
+    .fade-in-delay-3 { animation-delay: 0.3s; }
+    .fade-in-delay-4 { animation-delay: 0.4s; }
+    @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } from { opacity: 0; transform: translateY(12px); } }
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+    canvas { max-width: 100%; }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type="number"] { -moz-appearance: textfield; }
+
+    /* Mega menu positioning */
+    .nav-item { position: relative; }
+    .mega-menu { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s; z-index: 50; padding-top: 8px; }
+    .nav-item:hover>.mega-menu { opacity: 1; visibility: visible; }
+
+    /* Sub-menus for Practice flyouts */
+    .sub-item { position: relative; }
+    .sub-menu { position: absolute; left: 100%; top: 0; opacity: 0; visibility: hidden; transition: opacity 0.15s, visibility 0.15s; z-index: 60; padding-left: 4px; }
+    .sub-item:hover>.sub-menu { opacity: 1; visibility: visible; }
+
+    /* Tertiary menus (Free/Paid test types) */
+    .tertiary-item { position: relative; }
+    .tertiary-menu { position: absolute; left: 100%; top: 0; opacity: 0; visibility: hidden; transition: opacity 0.15s, visibility 0.15s; z-index: 70; padding-left: 4px; }
+    .tertiary-item:hover>.tertiary-menu { opacity: 1; visibility: visible; }
+
+    /* Mobile menu */
+    .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    .mobile-menu.open { max-height: 2000px; }
+    .mobile-accordion { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .mobile-accordion.open { max-height: 800px; }
+
+    /* Smooth hover for menu items */
+    .menu-link { transition: color 0.15s, background 0.15s; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full">
+  <div class="app-shell font-body text-white">
+    <!-- NAV -->
+    <nav id="navbar"
+        class="sticky top-0 left-0 w-full z-40 transition-all duration-300 border-b border-transparent bg-transparent">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16"><!-- Left: burger + logo -->
+                <div class="flex items-center gap-2"><!-- Burger (mobile) --> <button id="burger-btn"
+                        class="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition"
+                        aria-label="Toggle menu"> <i data-lucide="menu" class="w-5 h-5" id="burger-icon-open"></i> <i
+                            data-lucide="x" class="w-5 h-5 hidden" id="burger-icon-close"></i> </button> <!-- Logo -->
+                    <a href="#" class="flex items-center gap-2 xl:gap-3" onclick="event.preventDefault()">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center font-bold text-sm text-white shadow-lg shadow-sky-500/20">
+                            <img src="./src/assets/images/logo.png" alt="PTELT Logo" class="w-[87.5%] h-[87.5%]"/>
+                        </div><span class="text-2xl font-bold text-white tracking-wider">
+
+                            <!-- Large screen (≥ md) -->
+                            <span class="hidden lg:inline" id="nav-title">
+                                PTE <span class="text-blue-400">Learning Tracker</span>
+                            </span>
+
+                            <!-- Small screen (< md) -->
+                            <span class="inline lg:hidden">
+                                PTE<span class="text-blue-400">LT</span>
+                            </span>
+
+                        </span>
+                    </a>
+                </div><!-- Center: desktop menu -->
+                <div class="hidden md:flex items-center gap-1" id="desktop-menu"><!-- Practice (mega) -->
+                    <div class="nav-item"><button
+                            class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-1">
+                            Practice <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-60"></i> </button>
+                        <div class="mega-menu">
+                            <div
+                                class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[200px]">
+                                <!-- Speaking -->
+                                <div class="sub-item"><a href="#" onclick="event.preventDefault()"
+                                        class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                        <span class="flex items-center gap-2"><i data-lucide="mic"
+                                                class="w-4 h-4 text-sky-400"></i> Speaking</span> <i
+                                            data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                    <div class="sub-menu">
+                                        <div
+                                            class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[220px]">
+                                            <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Read
+                                                Aloud</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Repeat
+                                                Sentence</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Describe
+                                                Image</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Retell
+                                                Lecture</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Answer
+                                                Short Question</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Summarise
+                                                Group Discussion</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Respond
+                                                To A Situation</a>
+                                        </div>
+                                    </div>
+                                </div><!-- Writing -->
+                                <div class="sub-item"><a href="#" onclick="event.preventDefault()"
+                                        class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                        <span class="flex items-center gap-2"><i data-lucide="pen-tool"
+                                                class="w-4 h-4 text-emerald-400"></i> Writing</span> <i
+                                            data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                    <div class="sub-menu">
+                                        <div
+                                            class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[220px]">
+                                            <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Summarise
+                                                Written Text</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Essay</a>
+                                        </div>
+                                    </div>
+                                </div><!-- Reading -->
+                                <div class="sub-item"><a href="#" onclick="event.preventDefault()"
+                                        class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                        <span class="flex items-center gap-2"><i data-lucide="book-open"
+                                                class="w-4 h-4 text-amber-400"></i> Reading</span> <i
+                                            data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                    <div class="sub-menu">
+                                        <div
+                                            class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[260px]">
+                                            <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Fill
+                                                In Blank (Drop Down)</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple
+                                                Choice (Multiple Answer)</a> <a href="#"
+                                                onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Reorder
+                                                Paragraph</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Fill
+                                                In Blank (Drag Drop)</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple
+                                                Choice (Single Answer)</a>
+                                        </div>
+                                    </div>
+                                </div><!-- Listening -->
+                                <div class="sub-item"><a href="#" onclick="event.preventDefault()"
+                                        class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                        <span class="flex items-center gap-2"><i data-lucide="headphones"
+                                                class="w-4 h-4 text-purple-400"></i> Listening</span> <i
+                                            data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                    <div class="sub-menu">
+                                        <div
+                                            class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[270px]">
+                                            <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Summarise
+                                                Spoken Text</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple
+                                                Choice (Multiple Answer)</a> <a href="#"
+                                                onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Fill
+                                                In Blank</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Highlight
+                                                Correct Summary</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple
+                                                Choice (Single Answer)</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Select
+                                                Missing Word</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Highlight
+                                                Incorrect Word</a> <a href="#" onclick="event.preventDefault()"
+                                                class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Write
+                                                From Dictation</a>
+                                        </div>
+                                    </div>
+                                </div><!-- Mock Test -->
+                                <div class="sub-item"><a href="#" onclick="event.preventDefault()"
+                                        class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                        <span class="flex items-center gap-2"><i data-lucide="clipboard-check"
+                                                class="w-4 h-4 text-rose-400"></i> Mock Test</span> <i
+                                            data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                    <div class="sub-menu">
+                                        <div
+                                            class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[200px]">
+                                            <!-- Free Test -->
+                                            <div class="tertiary-item"><a href="#" onclick="event.preventDefault()"
+                                                    class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                                    Free Test <i data-lucide="chevron-right"
+                                                        class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                                <div class="tertiary-menu">
+                                                    <div
+                                                        class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[180px]">
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Full
+                                                            Test</a> <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Speaking</a>
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Writing</a>
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Reading</a>
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Listening</a>
+                                                    </div>
+                                                </div>
+                                            </div><!-- Paid Test -->
+                                            <div class="tertiary-item"><a href="#" onclick="event.preventDefault()"
+                                                    class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                                    Paid Test <i data-lucide="chevron-right"
+                                                        class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                                <div class="tertiary-menu">
+                                                    <div
+                                                        class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[180px]">
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Full
+                                                            Test</a> <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Speaking</a>
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Writing</a>
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Reading</a>
+                                                        <a href="#" onclick="event.preventDefault()"
+                                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Listening</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- Other nav links --> <a href="#" onclick="event.preventDefault()"
+                        class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">PTE
+                        Tutorial</a> <a href="#" onclick="event.preventDefault()"
+                        class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Pricing</a>
+                    <a href="#" onclick="event.preventDefault()"
+                        class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Q&amp;A</a>
+                    <a href="#" onclick="event.preventDefault()"
+                        class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Forum</a>
+                </div><!-- Right: auth -->
+                <div class="flex items-center gap-2"><a href="#" onclick="event.preventDefault()"
+                        class="hidden sm:inline-flex menu-link px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Log
+                        In</a> <a href="#" onclick="event.preventDefault()"
+                        class="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-sky-500 to-indigo-500 text-white hover:from-sky-400 hover:to-indigo-400 transition shadow-lg shadow-sky-500/20">Sign
+                        Up</a>
+                </div>
+            </div>
+        </div><!-- Mobile menu -->
+        <div id="mobile-menu" class="mobile-menu md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-white/10">
+            <div class="px-4 py-3 space-y-1"><!-- Practice accordion -->
+                <div><button onclick="toggleMobileAccordion('practice-acc')"
+                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">
+                        Practice <i data-lucide="chevron-down" class="w-4 h-4 opacity-60 transition-transform"
+                            id="practice-acc-icon"></i> </button>
+                    <div id="practice-acc" class="mobile-accordion pl-4 space-y-0.5"><!-- Speaking -->
+                        <div><button onclick="toggleMobileAccordion('speaking-acc')"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                <span class="flex items-center gap-2"><i data-lucide="mic"
+                                        class="w-3.5 h-3.5 text-sky-400"></i> Speaking</span> <i
+                                    data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform"
+                                    id="speaking-acc-icon"></i> </button>
+                            <div id="speaking-acc" class="mobile-accordion pl-4 space-y-0.5"><a href="#"
+                                    onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Read
+                                    Aloud</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Repeat
+                                    Sentence</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Describe
+                                    Image</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Retell
+                                    Lecture</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Answer
+                                    Short Question</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Summarise
+                                    Group Discussion</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Respond
+                                    To A Situation</a>
+                            </div>
+                        </div><!-- Writing -->
+                        <div><button onclick="toggleMobileAccordion('writing-acc')"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                <span class="flex items-center gap-2"><i data-lucide="pen-tool"
+                                        class="w-3.5 h-3.5 text-emerald-400"></i> Writing</span> <i
+                                    data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform"
+                                    id="writing-acc-icon"></i> </button>
+                            <div id="writing-acc" class="mobile-accordion pl-4 space-y-0.5"><a href="#"
+                                    onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Summarise
+                                    Written Text</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Essay</a>
+                            </div>
+                        </div><!-- Reading -->
+                        <div><button onclick="toggleMobileAccordion('reading-acc')"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                <span class="flex items-center gap-2"><i data-lucide="book-open"
+                                        class="w-3.5 h-3.5 text-amber-400"></i> Reading</span> <i
+                                    data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform"
+                                    id="reading-acc-icon"></i> </button>
+                            <div id="reading-acc" class="mobile-accordion pl-4 space-y-0.5"><a href="#"
+                                    onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Fill
+                                    In Blank (Drop Down)</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple
+                                    Choice (Multiple Answer)</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Reorder
+                                    Paragraph</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Fill
+                                    In Blank (Drag Drop)</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple
+                                    Choice (Single Answer)</a>
+                            </div>
+                        </div><!-- Listening -->
+                        <div><button onclick="toggleMobileAccordion('listening-acc')"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                <span class="flex items-center gap-2"><i data-lucide="headphones"
+                                        class="w-3.5 h-3.5 text-purple-400"></i> Listening</span> <i
+                                    data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform"
+                                    id="listening-acc-icon"></i> </button>
+                            <div id="listening-acc" class="mobile-accordion pl-4 space-y-0.5"><a href="#"
+                                    onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Summarise
+                                    Spoken Text</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple
+                                    Choice (Multiple Answer)</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Fill
+                                    In Blank</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Highlight
+                                    Correct Summary</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple
+                                    Choice (Single Answer)</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Select
+                                    Missing Word</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Highlight
+                                    Incorrect Word</a> <a href="#" onclick="event.preventDefault()"
+                                    class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Write
+                                    From Dictation</a>
+                            </div>
+                        </div><!-- Mock Test -->
+                        <div><button onclick="toggleMobileAccordion('mock-acc')"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                <span class="flex items-center gap-2"><i data-lucide="clipboard-check"
+                                        class="w-3.5 h-3.5 text-rose-400"></i> Mock Test</span> <i
+                                    data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform"
+                                    id="mock-acc-icon"></i> </button>
+                            <div id="mock-acc" class="mobile-accordion pl-4 space-y-0.5">
+                                <div><button onclick="toggleMobileAccordion('free-acc')"
+                                        class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                        Free Test <i data-lucide="chevron-down"
+                                            class="w-3.5 h-3.5 opacity-40 transition-transform" id="free-acc-icon"></i>
+                                    </button>
+                                    <div id="free-acc" class="mobile-accordion pl-4 space-y-0.5">
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Full
+                                            Test</a> <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Speaking</a>
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Writing</a>
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Reading</a>
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Listening</a>
+                                    </div>
+                                </div>
+                                <div><button onclick="toggleMobileAccordion('paid-acc')"
+                                        class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                        Paid Test <i data-lucide="chevron-down"
+                                            class="w-3.5 h-3.5 opacity-40 transition-transform" id="paid-acc-icon"></i>
+                                    </button>
+                                    <div id="paid-acc" class="mobile-accordion pl-4 space-y-0.5">
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Full
+                                            Test</a> <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Speaking</a>
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Writing</a>
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Reading</a>
+                                        <a href="#" onclick="event.preventDefault()"
+                                            class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Listening</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><a href="#" onclick="event.preventDefault()"
+                    class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">PTE Tutorial</a>
+                <a href="#" onclick="event.preventDefault()"
+                    class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Pricing</a> <a href="#" onclick="event.preventDefault()"
+                    class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Q&amp;A</a>
+                <a href="#" onclick="event.preventDefault()"
+                    class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Forum</a>
+                <a href="#" onclick="event.preventDefault()"
+                    class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 sm:hidden">Log
+                    In</a>
+            </div>
+        </div>
+    </nav><!-- Main Content -->
+   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-16">
+    <!-- Greeting -->
+    <section class="fade-in">
+     <h1 id="greeting" class="text-2xl sm:text-4xl font-heading font-bold text-white">Good afternoon, Student 👋</h1>
+     <p class="text-slate-400 mt-1 text-sm"></p>
+<br/>
+    </section><!-- Estimated Scores + Performance -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+     <!-- Estimated Scores -->
+     <section class="lg:col-span-2 card-glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 fade-in fade-in-delay-2">
+      <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-5 flex items-center gap-2"><i data-lucide="bar-chart-3" style="width:16px;height:16px;" class="text-sky-400"></i> Estimated Scores</h2><!-- Overall Score Ring -->
+      <div class="flex justify-center mb-6">
+       <div class="relative">
+        <svg width="140" height="140" viewbox="0 0 140 140">
+         <circle cx="70" cy="70" r="58" fill="none" stroke="rgba(56,189,248,0.1)" stroke-width="10" /> <circle id="overall-ring" class="score-ring" cx="70" cy="70" r="58" fill="none" stroke="url(#scoreGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="364.42" stroke-dashoffset="364.42" transform="rotate(-90 70 70)" /> <defs>
+          <lineargradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+           <stop offset="0%" stop-color="#38bdf8" />
+           <stop offset="100%" stop-color="#6366f1" />
+          </lineargradient>
+         </defs>
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+         <span id="overall-score-val" class="text-3xl font-bold text-white font-mono">--</span> <span class="text-xs text-slate-400">Overall</span>
+        </div>
+       </div>
+      </div><!-- Sub Scores -->
+      <div id="sub-scores" class="grid grid-cols-2 gap-3">
+       <div class="bg-slate-900/40 rounded-xl p-3 text-center border border-white/5">
+        <p class="text-xs text-slate-400 mb-1">Listening</p>
+        <p id="score-listening" class="text-xl font-bold text-sky-400 font-mono">--</p>
+       </div>
+       <div class="bg-slate-900/40 rounded-xl p-3 text-center border border-white/5">
+        <p class="text-xs text-slate-400 mb-1">Reading</p>
+        <p id="score-reading" class="text-xl font-bold text-sky-400 font-mono">--</p>
+       </div>
+       <div class="bg-slate-900/40 rounded-xl p-3 text-center border border-white/5">
+        <p class="text-xs text-slate-400 mb-1">Speaking</p>
+        <p id="score-speaking" class="text-xl font-bold text-sky-400 font-mono">--</p>
+       </div>
+       <div class="bg-slate-900/40 rounded-xl p-3 text-center border border-white/5">
+        <p class="text-xs text-slate-400 mb-1">Writing</p>
+        <p id="score-writing" class="text-xl font-bold text-sky-400 font-mono">--</p>
+       </div>
+      </div>
+     </section><!-- Performance Graph -->
+     <section class="lg:col-span-3 card-glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 fade-in fade-in-delay-3">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+       <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2"><i data-lucide="trending-up" style="width:16px;height:16px;" class="text-sky-400"></i> Performance</h2>
+       <div class="flex items-center gap-2 flex-wrap">
+        <div id="perf-skill-btns" class="flex gap-1 flex-wrap">
+         <button data-skill="overall" class="perf-skill-btn active px-2.5 py-1 rounded-md text-xs font-medium bg-gradient-to-r from-sky-500 to-indigo-500 text-white transition shadow-lg shadow-sky-500/20">Overall</button> <button data-skill="speaking" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition border border-white/10">Speaking</button> <button data-skill="writing" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition border border-white/10">Writing</button> <button data-skill="reading" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition border border-white/10">Reading</button> <button data-skill="listening" class="perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition border border-white/10">Listening</button>
+        </div>
+       </div>
+      </div>
+      <div id="perf-period-btns" class="flex gap-1 mb-4">
+       <button data-period="weekly" class="perf-period-btn active px-2.5 py-1 rounded-md text-xs font-medium bg-sky-500/20 text-sky-300 border border-sky-500/30 transition">Weekly</button> <button data-period="monthly" class="perf-period-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white/5 text-slate-500 border border-transparent hover:bg-white/10 transition">Monthly</button> <button data-period="quarterly" class="perf-period-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white/5 text-slate-500 border border-transparent hover:bg-white/10 transition">Quarterly</button>
+      </div>
+      <div class="relative" style="height: 260px;">
+       <canvas id="perfChart"></canvas>
+      </div>
+     </section>
+    </div><!-- Exam Date -->
+    <section id="exam-date-section" class="card-glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 fade-in fade-in-delay-1">
+     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+       <div class="w-12 h-12 rounded-xl bg-sky-500/15 flex items-center justify-center shrink-0">
+        <i data-lucide="calendar" style="width:24px;height:24px;" class="text-sky-400"></i>
+       </div>
+       <div>
+        <p class="text-xs text-slate-400 uppercase tracking-wider font-medium">Estimated Exam Date</p>
+        <p id="exam-date-display" class="text-xl font-bold text-white mt-0.5">Not set</p>
+       </div>
+      </div>
+      <div class="flex items-center gap-4">
+       <div id="days-left-badge" class="hidden px-4 py-2 rounded-xl bg-sky-500/10 border border-sky-400/20">
+        <span id="days-left-number" class="text-2xl font-bold text-sky-300 font-mono"></span> <span class="text-xs text-slate-400 ml-1">days left</span>
+       </div>
+      </div>
+     </div>
+    </section>
+    <!-- Target Scores + Focus Areas -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+     <!-- Set Target Scores -->
+     <section class="lg:col-span-2 card-glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 fade-in fade-in-delay-4">
+      <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-5 flex items-center gap-2"><i data-lucide="sliders" style="width:16px;height:16px;" class="text-sky-400"></i> Set Target Scores</h2>
+      <form id="target-form" class="space-y-4">
+       <div>
+        <label class="text-xs text-slate-400 block mb-1">Overall Target</label> <input type="number" id="target-overall" min="10" max="90" placeholder="e.g. 79" value="79" class="w-full bg-slate-900/60 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-sky-400 transition placeholder-slate-500">
+       </div>
+       <div>
+        <label class="text-xs text-slate-400 block mb-1">Speaking Target</label> <input type="number" id="target-speaking" min="10" max="90" placeholder="e.g. 79" value="79" class="w-full bg-slate-900/60 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-sky-400 transition placeholder-slate-500">
+       </div>
+       <div>
+        <label class="text-xs text-slate-400 block mb-1">Writing Target</label> <input type="number" id="target-writing" min="10" max="90" placeholder="e.g. 79" value="79" class="w-full bg-slate-900/60 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-sky-400 transition placeholder-slate-500">
+       </div>
+       <div>
+        <label class="text-xs text-slate-400 block mb-1">Reading Target</label> <input type="number" id="target-reading" min="10" max="90" placeholder="e.g. 79" value="79" class="w-full bg-slate-900/60 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-sky-400 transition placeholder-slate-500">
+       </div>
+       <div>
+        <label class="text-xs text-slate-400 block mb-1">Listening Target</label> <input type="number" id="target-listening" min="10" max="90" placeholder="e.g. 79" value="79" class="w-full bg-slate-900/60 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-sky-400 transition placeholder-slate-500">
+       </div><button type="submit" id="advice-btn" class="w-full py-3 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 text-white font-semibold rounded-lg transition flex items-center justify-center gap-2 shadow-lg shadow-sky-500/20"> <i data-lucide="sparkles" style="width:16px;height:16px;"></i> Get Advice </button>
+      </form>
+      <div id="target-toast" class="hidden mt-3 p-3 rounded-lg bg-emerald-500/15 border border-emerald-400/20 text-emerald-300 text-sm text-center"></div>
+     </section>
+     <!-- Focus Areas -->
+     <section class="lg:col-span-3 card-glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 fade-in fade-in-delay-4 flex flex-col">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+       <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2"><i data-lucide="target" style="width:16px;height:16px;" class="text-sky-400"></i> Focus Areas</h2>
+       <div id="priority-filters" class="flex flex-wrap gap-1">
+        <button data-priority="all" class="focus-filter-btn active px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight bg-gradient-to-r from-sky-500 to-indigo-500 text-white transition">All</button>
+        <button data-priority="critical" class="focus-filter-btn px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight bg-white/5 border border-white/10 text-rose-400 hover:text-white hover:bg-white/10 transition">High (Critical)</button>
+        <button data-priority="moderate" class="focus-filter-btn px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight bg-white/5 border border-white/10 text-amber-400 hover:text-white hover:bg-white/10 transition">Moderate</button>
+        <button data-priority="low" class="focus-filter-btn px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight bg-white/5 border border-white/10 text-sky-400 hover:text-white hover:bg-white/10 transition">Low</button>
+       </div>
+      </div>
+
+      <div id="focus-areas-content" class="flex-grow min-h-[400px]">
+       <div class="text-center py-8 text-slate-500">
+        <i data-lucide="info" style="width:24px;height:24px;" class="mx-auto mb-2 text-slate-400"></i>
+        <p class="text-sm">Set your target scores and click <strong class="text-sky-400">Get Advice</strong> to see your focus areas.</p>
+       </div>
+      </div>
+
+      <div id="carousel-controls" class="hidden mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+        <div id="carousel-dots" class="flex gap-1.5"></div>
+        <div class="flex items-center gap-3">
+          <span id="carousel-counter" class="text-xs font-mono text-slate-500">1 / 3</span>
+          <div class="flex gap-1">
+            <button id="prev-slide" class="p-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition disabled:opacity-30 disabled:cursor-not-allowed">
+              <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
+            </button>
+            <button id="next-slide" class="p-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition disabled:opacity-30 disabled:cursor-not-allowed">
+              <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+     </section>
+    </div>
+   </main>
+  </div>
+  <script>
+    // Navbar Mobile Logic
+    const burgerBtn = document.getElementById('burger-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const iconOpen = document.getElementById('burger-icon-open');
+    const iconClose = document.getElementById('burger-icon-close');
+    let menuOpen = false;
+
+    if (burgerBtn) {
+      burgerBtn.addEventListener('click', () => {
+        menuOpen = !menuOpen;
+        mobileMenu.classList.toggle('open', menuOpen);
+        iconOpen.classList.toggle('hidden', menuOpen);
+        iconClose.classList.toggle('hidden', !menuOpen);
+      });
+    }
+
+    function toggleMobileAccordion(id) {
+      const el = document.getElementById(id);
+      const icon = document.getElementById(id + '-icon');
+      if (el) el.classList.toggle('open');
+      if (icon) icon.style.transform = el.classList.contains('open') ? 'rotate(180deg)' : '';
+    }
+
+    // Navbar Scroll Effect
+    const navbar = document.getElementById('navbar');
+    const appShell = document.querySelector('.app-shell');
+    function handleScroll() {
+      const scrollPos = appShell ? appShell.scrollTop : window.scrollY;
+      if (scrollPos > 20) {
+        navbar.classList.add('bg-slate-900', 'border-slate-800', 'shadow-lg');
+        navbar.classList.remove('bg-transparent', 'border-transparent');
+      } else {
+        navbar.classList.add('bg-transparent', 'border-transparent');
+        navbar.classList.remove('bg-slate-900', 'border-slate-800', 'shadow-lg');
+      }
+    }
+    if (appShell) {
+      appShell.addEventListener('scroll', handleScroll);
+    } else {
+      window.addEventListener('scroll', handleScroll);
+    }
+    handleScroll(); // Initial check
+
+    // ---- Simulated user scores (would come from backend) ----
+    const userScores = {
+      overall: 64,
+      listening: 68,
+      reading: 62,
+      speaking: 58,
+      writing: 65
+    };
+
+    // Simulated sub-skills with their scores
+    const subSkills = {
+      speaking: [
+        { name: 'Read Aloud', score: 52 },
+        { name: 'Repeat Sentence', score: 40 },
+        { name: 'Describe Image', score: 55 },
+        { name: 'Re-tell Lecture', score: 44 },
+        { name: 'Answer Short Question', score: 50 }
+      ],
+      writing: [
+        { name: 'Summarize Written Text', score: 48 },
+        { name: 'Write Essay', score: 56 },
+        { name: 'Grammar', score: 45 },
+        { name: 'Vocabulary', score: 58 }
+      ],
+      reading: [
+        { name: 'Fill in the Blanks (R)', score: 50 },
+        { name: 'Fill in the Blanks (R&W)', score: 52 },
+        { name: 'Re-order Paragraphs', score: 42 },
+        { name: 'Multiple Choice (Single)', score: 60 },
+        { name: 'Multiple Choice (Multiple)', score: 55 }
+      ],
+      listening: [
+        { name: 'Summarize Spoken Text', score: 65 },
+        { name: 'Fill in the Blanks (L)', score: 58 },
+        { name: 'Highlight Correct Summary', score: 60 },
+        { name: 'Multiple Choice (L)', score: 55 },
+        { name: 'Select Missing Word', score: 68 },
+        { name: 'Write from Dictation', score: 70 }
+      ]
+    };
+
+    // Simulated performance history
+    function generateHistory(baseScore, count) {
+      const data = [];
+      const now = new Date();
+      for (let i = count - 1; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(d.getDate() - i * (count <= 7 ? 1 : count <= 12 ? 7 : 30));
+        data.push({
+          date: d,
+          score: Math.max(10, Math.min(90, baseScore + Math.floor((Math.random() - 0.4) * 15) + Math.floor(i * 0.5)))
+        });
+      }
+      return data;
+    }
+
+    const perfData = {
+      weekly: { overall: generateHistory(55, 7), speaking: generateHistory(45, 7), writing: generateHistory(50, 7), reading: generateHistory(52, 7), listening: generateHistory(60, 7) },
+      monthly: { overall: generateHistory(50, 12), speaking: generateHistory(42, 12), writing: generateHistory(47, 12), reading: generateHistory(49, 12), listening: generateHistory(57, 12) },
+      quarterly: { overall: generateHistory(45, 6), speaking: generateHistory(38, 6), writing: generateHistory(42, 6), reading: generateHistory(44, 6), listening: generateHistory(52, 6) }
+    };
+
+    // ---- State ----
+    let currentSkill = 'overall';
+    let currentPeriod = 'weekly';
+    let allRecords = [];
+
+    let focusFilter = 'all';
+    let focusPage = 0;
+    let filteredFocusSkills = [];
+    let lastTargets = null;
+
+    // ---- Greeting ----
+    function updateGreeting(name) {
+      const h = new Date().getHours();
+      const prefix = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+      document.getElementById('greeting').textContent = `${prefix}, ${name} 👋`;
+    }
+
+    // ---- Scores display ----
+    function displayScores() {
+      const ring = document.getElementById('overall-ring');
+      const circumference = 364.42;
+      const offset = circumference - (userScores.overall / 90) * circumference;
+      ring.style.strokeDashoffset = offset;
+      document.getElementById('overall-score-val').textContent = userScores.overall;
+      document.getElementById('score-listening').textContent = userScores.listening;
+      document.getElementById('score-reading').textContent = userScores.reading;
+      document.getElementById('score-speaking').textContent = userScores.speaking;
+      document.getElementById('score-writing').textContent = userScores.writing;
+    }
+
+    // ---- Chart drawing (pure canvas) ----
+    function drawChart() {
+      const canvas = document.getElementById('perfChart');
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+      ctx.scale(dpr, dpr);
+
+      const w = rect.width;
+      const h = rect.height;
+      const pad = { top: 10, right: 15, bottom: 35, left: 35 };
+      const cw = w - pad.left - pad.right;
+      const ch = h - pad.top - pad.bottom;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const data = perfData[currentPeriod][currentSkill];
+      if (!data || data.length === 0) return;
+
+      // Grid lines
+      ctx.strokeStyle = 'rgba(148,163,184,0.08)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 9; i++) {
+        const y = pad.top + (ch / 9) * i;
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(pad.left + cw, y);
+        ctx.stroke();
+      }
+
+      // Y labels
+      ctx.fillStyle = 'rgba(148,163,184,0.5)';
+      ctx.font = '10px "Space Mono", monospace';
+      ctx.textAlign = 'right';
+      for (let i = 0; i <= 9; i++) {
+        const val = 90 - i * 10;
+        const y = pad.top + (ch / 9) * i;
+        ctx.fillText(val, pad.left - 6, y + 3);
+      }
+
+      // X labels
+      ctx.textAlign = 'center';
+      const step = Math.max(1, Math.floor(data.length / 6));
+      data.forEach((d, i) => {
+        if (i % step === 0 || i === data.length - 1) {
+          const x = pad.left + (cw / (data.length - 1)) * i;
+          const label = d.date.toLocaleDateString('en', { month: 'short', day: 'numeric' });
+          ctx.fillText(label, x, h - 8);
+        }
+      });
+
+      // Line + area
+      const points = data.map((d, i) => ({
+        x: pad.left + (cw / (data.length - 1)) * i,
+        y: pad.top + ch - (d.score / 90) * ch
+      }));
+
+      // Area fill
+      const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + ch);
+      grad.addColorStop(0, 'rgba(14,165,233,0.25)');
+      grad.addColorStop(1, 'rgba(14,165,233,0)');
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, pad.top + ch);
+      points.forEach(p => ctx.lineTo(p.x, p.y));
+      ctx.lineTo(points[points.length - 1].x, pad.top + ch);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Line
+      ctx.beginPath();
+      points.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+      ctx.strokeStyle = '#0866ff';
+      ctx.lineWidth = 2.5;
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+
+      // Dots
+      points.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#0866ff';
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      });
+    }
+
+    // ---- Focus Areas ----
+    function renderFocusAreas(targets) {
+      const container = document.getElementById('focus-areas-content');
+      const carousel = document.getElementById('carousel-controls');
+
+      if (!targets) {
+        container.innerHTML = '<div class="text-center py-8 text-slate-500"><p class="text-sm">Set your target scores and click <strong class="text-[#0866ff]">Get Advice</strong> to see your focus areas.</p></div>';
+        carousel.classList.add('hidden');
+        lucide.createIcons();
+        return;
+      }
+
+      if (targets !== lastTargets) {
+        lastTargets = targets;
+        focusPage = 0;
+      }
+
+      // Collect all sub-skills with gaps
+      const allSkills = [];
+      const skillTargets = {
+        speaking: targets.speaking_target,
+        writing: targets.writing_target,
+        reading: targets.reading_target,
+        listening: targets.listening_target
+      };
+
+      Object.entries(subSkills).forEach(([category, skills]) => {
+        const target = skillTargets[category] || 65;
+        skills.forEach(s => {
+          const gap = target - s.score;
+          if (gap > 0) {
+            let priority = 'low';
+            if (gap > 20) priority = 'critical';
+            else if (gap > 10) priority = 'moderate';
+            allSkills.push({ ...s, category, target, gap, priority });
+          }
+        });
+      });
+
+      allSkills.sort((a, b) => b.gap - a.gap);
+
+      if (allSkills.length === 0) {
+        container.innerHTML = '<div class="text-center py-8"><div class="w-12 h-12 rounded-full bg-emerald-500/15 flex items-center justify-center mx-auto mb-3"><i data-lucide="check-circle" style="width:24px;height:24px;" class="text-emerald-400"></i></div><p class="text-emerald-300 font-medium">All skills meet your targets!</p><p class="text-slate-500 text-sm mt-1">Keep up the great work.</p></div>';
+        carousel.classList.add('hidden');
+        lucide.createIcons();
+        return;
+      }
+
+      // Filter by priority
+      filteredFocusSkills = focusFilter === 'all' ? allSkills : allSkills.filter(s => s.priority === focusFilter);
+
+      if (filteredFocusSkills.length === 0) {
+        container.innerHTML = `<div class="text-center py-8 text-slate-500"><p class="text-sm">No skills found for priority: <strong class="text-[#0866ff] capitalize">${focusFilter}</strong></p></div>`;
+        carousel.classList.add('hidden');
+        lucide.createIcons();
+        return;
+      }
+
+      const totalPages = Math.ceil(filteredFocusSkills.length / 5);
+      if (focusPage >= totalPages) focusPage = totalPages - 1;
+      if (focusPage < 0) focusPage = 0;
+
+      const itemsToShow = filteredFocusSkills.slice(focusPage * 5, (focusPage + 1) * 5);
+
+      const colorMap = {
+        critical: { bg: 'rgba(244,63,94,0.1)', border: 'rgba(244,63,94,0.2)', bar: '#f43f5e', text: '#fda4af', badge: 'rgba(244,63,94,0.2)', label: 'Critical' },
+        moderate: { bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.2)', bar: '#f59e0b', text: '#fcd34d', badge: 'rgba(245,158,11,0.2)', label: 'Moderate' },
+        low: { bg: 'rgba(56,189,248,0.1)', border: 'rgba(56,189,248,0.2)', bar: '#38bdf8', text: '#7dd3fc', badge: 'rgba(56,189,248,0.2)', label: 'Low' }
+      };
+
+      const categoryLabels = { speaking: 'Speaking', writing: 'Writing', reading: 'Reading', listening: 'Listening' };
+
+      let html = '<div class="space-y-3">';
+      itemsToShow.forEach(s => {
+        const c = colorMap[s.priority];
+        const pct = Math.round((s.score / 90) * 100);
+        html += `<div class="p-4 rounded-xl border transition-colors hover:bg-white/5" style="background:${c.bg};border-color:${c.border}">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-3">
+              <span class="text-sm font-semibold text-white">${s.name}</span>
+              <span class="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider" style="background:${c.badge};color:${c.text}">${c.label}</span>
+            </div>
+            <span class="text-xs text-slate-400 font-medium">${categoryLabels[s.category]}</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="flex-grow h-1.5 rounded-full bg-slate-900/60 overflow-hidden">
+              <div class="progress-fill h-full rounded-full" style="width:${pct}%;background:${c.bar}"></div>
+            </div>
+            <span class="text-xs font-mono font-bold text-slate-200 shrink-0">${s.score}<span class="text-slate-500">/90</span></span>
+          </div>
+        </div>`;
+      });
+      html += '</div>';
+
+      container.innerHTML = html;
+
+      // Update Carousel UI
+      carousel.classList.toggle('hidden', totalPages <= 1);
+      document.getElementById('carousel-counter').textContent = `${focusPage + 1} / ${totalPages}`;
+      document.getElementById('prev-slide').disabled = focusPage === 0;
+      document.getElementById('next-slide').disabled = focusPage === totalPages - 1;
+
+      const dotsContainer = document.getElementById('carousel-dots');
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < totalPages; i++) {
+        const dot = document.createElement('button');
+        dot.className = `w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold transition-all ${i === focusPage ? 'bg-gradient-to-r from-sky-500 to-indigo-500 text-white' : 'bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10'}`;
+        dot.textContent = i + 1;
+        dot.onclick = () => { focusPage = i; renderFocusAreas(targets); };
+        dotsContainer.appendChild(dot);
+      }
+
+      // Animate progress bars
+      requestAnimationFrame(() => {
+        container.querySelectorAll('.progress-fill').forEach(el => {
+          const w = el.style.width;
+          el.style.width = '0%';
+          setTimeout(() => { el.style.width = w; }, 50);
+        });
+      });
+      lucide.createIcons();
+    }
+
+    // ---- Exam date (Auto Estimated) ----
+    function updateEstimatedExamDate(targets) {
+      const display = document.getElementById('exam-date-display');
+      const badge = document.getElementById('days-left-badge');
+      const number = document.getElementById('days-left-number');
+
+      if (!targets) {
+        display.textContent = 'Not set';
+        badge.classList.add('hidden');
+        return;
+      }
+
+      const skillTargets = {
+        speaking: targets.speaking_target || 79,
+        writing: targets.writing_target || 79,
+        reading: targets.reading_target || 79,
+        listening: targets.listening_target || 79
+      };
+
+      let totalGap = 0;
+      totalGap += Math.max(0, skillTargets.speaking - userScores.speaking);
+      totalGap += Math.max(0, skillTargets.writing - userScores.writing);
+      totalGap += Math.max(0, skillTargets.reading - userScores.reading);
+      totalGap += Math.max(0, skillTargets.listening - userScores.listening);
+
+      // Estimate logic: 1.5 days per point gap, minimum 7 days if any gap exists
+      const daysNeeded = totalGap > 0 ? Math.max(7, Math.ceil(totalGap * 1.5)) : 0;
+
+      const examDate = new Date();
+      examDate.setDate(examDate.getDate() + daysNeeded);
+      examDate.setHours(0, 0, 0, 0);
+
+      display.textContent = totalGap > 0 ? examDate.toLocaleDateString('en', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Ready for Exam!';
+
+      if (totalGap > 0) {
+        number.textContent = daysNeeded;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    // ---- Focus Filter Events ----
+    document.querySelectorAll('.focus-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.focus-filter-btn').forEach(b => {
+          b.classList.remove('active', 'bg-gradient-to-r', 'from-sky-500', 'to-indigo-500', 'text-white');
+          b.classList.add('bg-white/5', 'border-white/10');
+          if (b.dataset.priority === 'critical') b.classList.add('text-rose-400');
+          if (b.dataset.priority === 'moderate') b.classList.add('text-amber-400');
+          if (b.dataset.priority === 'low') b.classList.add('text-sky-400');
+        });
+        btn.classList.add('active', 'bg-gradient-to-r', 'from-sky-500', 'to-indigo-500', 'text-white');
+        btn.classList.remove('bg-white/5', 'border-white/10', 'text-rose-400', 'text-amber-400', 'text-sky-400');
+        focusFilter = btn.dataset.priority;
+        focusPage = 0;
+        renderFocusAreas(lastTargets);
+      });
+    });
+
+    // ---- Carousel Events ----
+    document.getElementById('prev-slide').addEventListener('click', () => {
+      if (focusPage > 0) {
+        focusPage--;
+        renderFocusAreas(lastTargets);
+      }
+    });
+
+    document.getElementById('next-slide').addEventListener('click', () => {
+      const totalPages = Math.ceil(filteredFocusSkills.length / 5);
+      if (focusPage < totalPages - 1) {
+        focusPage++;
+        renderFocusAreas(lastTargets);
+      }
+    });
+
+    // ---- Performance button events ----
+    document.querySelectorAll('.perf-skill-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.perf-skill-btn').forEach(b => { b.className = 'perf-skill-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition border border-white/10'; });
+        btn.className = 'perf-skill-btn active px-2.5 py-1 rounded-md text-xs font-medium bg-gradient-to-r from-sky-500 to-indigo-500 text-white transition shadow-lg shadow-sky-500/20';
+        currentSkill = btn.dataset.skill;
+        drawChart();
+      });
+    });
+
+    document.querySelectorAll('.perf-period-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.perf-period-btn').forEach(b => { b.className = 'perf-period-btn px-2.5 py-1 rounded-md text-xs font-medium bg-white/5 text-slate-500 border border-transparent hover:bg-white/10 transition'; });
+        btn.className = 'perf-period-btn active px-2.5 py-1 rounded-md text-xs font-medium bg-sky-500/20 text-sky-300 border border-sky-500/30 transition';
+        currentPeriod = btn.dataset.period;
+        drawChart();
+      });
+    });
+
+    // ---- Target form ----
+    ['target-overall', 'target-speaking', 'target-writing', 'target-reading', 'target-listening'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        const tg = {
+          overall_target: parseInt(document.getElementById('target-overall').value) || 0,
+          speaking_target: parseInt(document.getElementById('target-speaking').value) || 0,
+          writing_target: parseInt(document.getElementById('target-writing').value) || 0,
+          reading_target: parseInt(document.getElementById('target-reading').value) || 0,
+          listening_target: parseInt(document.getElementById('target-listening').value) || 0
+        };
+        updateEstimatedExamDate(tg);
+      });
+    });
+
+    document.getElementById('target-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const overall = parseInt(document.getElementById('target-overall').value) || 0;
+      const speaking = parseInt(document.getElementById('target-speaking').value) || 0;
+      const writing = parseInt(document.getElementById('target-writing').value) || 0;
+      const reading = parseInt(document.getElementById('target-reading').value) || 0;
+      const listening = parseInt(document.getElementById('target-listening').value) || 0;
+
+      if (!overall && !speaking && !writing && !reading && !listening) {
+        const toast = document.getElementById('target-toast');
+        toast.textContent = 'Please enter at least one target score.';
+        toast.className = 'mt-3 p-3 rounded-lg bg-rose-500/15 border border-rose-400/20 text-rose-300 text-sm text-center';
+        setTimeout(() => toast.classList.add('hidden'), 3000);
+        return;
+      }
+
+      const btn = document.getElementById('advice-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="pulse-dot">Analyzing...</span>';
+
+      const existing = allRecords.find(r => r.type === 'targets');
+      let result;
+      if (existing) {
+        result = await window.dataSdk.update({ ...existing, overall_target: overall, speaking_target: speaking, writing_target: writing, reading_target: reading, listening_target: listening });
+      } else {
+        if (allRecords.length >= 999) { btn.disabled = false; btn.innerHTML = '<i data-lucide="sparkles" style="width:16px;height:16px;"></i> Get Advice'; lucide.createIcons(); return; }
+        result = await window.dataSdk.create({ type: 'targets', overall_target: overall, speaking_target: speaking, writing_target: writing, reading_target: reading, listening_target: listening, exam_date: '' });
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = '<i data-lucide="sparkles" style="width:16px;height:16px;"></i> Get Advice';
+      lucide.createIcons();
+
+      if (result.isOk) {
+        const toast = document.getElementById('target-toast');
+        toast.textContent = '✓ Focus areas updated!';
+        toast.className = 'mt-3 p-3 rounded-lg bg-emerald-500/15 border border-emerald-400/20 text-emerald-300 text-sm text-center';
+        setTimeout(() => toast.classList.add('hidden'), 3000);
+      }
+    });
+
+    // ---- Data SDK ----
+    const dataHandler = {
+      onDataChanged(data) {
+        allRecords = data;
+        const targetRec = data.find(r => r.type === 'targets');
+        if (targetRec) {
+          if (targetRec.overall_target) document.getElementById('target-overall').value = targetRec.overall_target;
+          if (targetRec.speaking_target) document.getElementById('target-speaking').value = targetRec.speaking_target;
+          if (targetRec.writing_target) document.getElementById('target-writing').value = targetRec.writing_target;
+          if (targetRec.reading_target) document.getElementById('target-reading').value = targetRec.reading_target;
+          if (targetRec.listening_target) document.getElementById('target-listening').value = targetRec.listening_target;
+          const tg = { overall_target: targetRec.overall_target, speaking_target: targetRec.speaking_target, writing_target: targetRec.writing_target, reading_target: targetRec.reading_target, listening_target: targetRec.listening_target };
+          renderFocusAreas(tg);
+          updateEstimatedExamDate(tg);
+        }
+      }
+    };
+
+    // ---- Element SDK ----
+    const defaultConfig = {
+      greeting_name: 'Student',
+      page_title: 'PTE Learning Tracker',
+      background_color: '#0b1120',
+      surface_color: '#112240',
+      text_color: '#ffffff',
+      primary_action_color: '#0ea5e9',
+      secondary_action_color: '#6366f1',
+      font_family: 'DM Sans',
+      font_size: 16
+    };
+
+    try {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+        const name = config.greeting_name || defaultConfig.greeting_name;
+        const title = config.page_title || defaultConfig.page_title;
+        const bg = config.background_color || defaultConfig.background_color;
+        const surface = config.surface_color || defaultConfig.surface_color;
+        const text = config.text_color || defaultConfig.text_color;
+        const primary = config.primary_action_color || defaultConfig.primary_action_color;
+        const secondary = config.secondary_action_color || defaultConfig.secondary_action_color;
+        const font = config.font_family || defaultConfig.font_family;
+        const fontSize = config.font_size || defaultConfig.font_size;
+
+        updateGreeting(name);
+        document.getElementById('nav-title').textContent = title;
+
+        // Colors
+        const shell = document.querySelector('.app-shell');
+        if (config.background_color) {
+          shell.style.background = bg;
+        }
+
+        document.querySelectorAll('.card-glass').forEach(el => {
+          if (config.surface_color) {
+            el.style.backgroundColor = surface;
+          }
+        });
+
+        document.querySelectorAll('.perf-skill-btn.active').forEach(el => { el.style.backgroundColor = primary; });
+        document.querySelectorAll('#advice-btn, #set-date-btn').forEach(el => { el.style.backgroundColor = primary; });
+
+        document.querySelectorAll('h1, h2, p, span, label').forEach(el => {
+          if (!el.closest('.card-glass') || el.tagName === 'H1') {
+            el.style.color = text;
+          }
+        });
+
+        // Font
+        const fontStack = `${font}, "DM Sans", system-ui, sans-serif`;
+        document.querySelector('.app-shell').style.fontFamily = fontStack;
+
+        // Font size
+        const base = fontSize;
+        document.getElementById('greeting').style.fontFamily = `"Playfair Display", ${fontStack}`;
+        document.getElementById('greeting').style.fontSize = `${base * 2.25}px`;
+        document.querySelectorAll('.card-glass h2').forEach(el => { el.style.fontSize = `${base * 0.8}px`; });
+      },
+      mapToCapabilities: (config) => ({
+        recolorables: [
+          { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+          { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+          { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+          { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: (v) => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+          { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } }
+        ],
+        borderables: [],
+        fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); } },
+        fontSizeable: { get: () => config.font_size || defaultConfig.font_size, set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); } }
+      }),
+      mapToEditPanelValues: (config) => new Map([
+        ['greeting_name', config.greeting_name || defaultConfig.greeting_name],
+        ['page_title', config.page_title || defaultConfig.page_title]
+        ])
+      });
+    } catch (e) {
+      console.warn('Element SDK initialization failed:', e);
+    }
+
+    // ---- Init ----
+    async function init() {
+      // Fallback data if SDK doesn't load a record
+      const defaultTargets = { overall_target: 79, speaking_target: 79, writing_target: 79, reading_target: 79, listening_target: 79 };
+
+      try {
+        updateGreeting(defaultConfig.greeting_name);
+        displayScores();
+        drawChart();
+
+        // Initial render with fallback data
+        renderFocusAreas(defaultTargets);
+        updateEstimatedExamDate(defaultTargets);
+
+        lucide.createIcons();
+      } catch (e) {
+        console.error('Initial render failed', e);
+      }
+
+      try {
+        if (window.dataSdk) {
+          const initResult = await window.dataSdk.init(dataHandler);
+          if (initResult.isOk) {
+            // Data SDK will trigger onDataChanged if a record exists
+          } else {
+            console.error('Data SDK init failed');
+          }
+        }
+      } catch (e) {
+        console.warn('Data SDK failure, using dummy data', e);
+      }
+    }
+
+    init();
+
+    // Resize chart
+    window.addEventListener('resize', drawChart);
+  </script>
+ </body>
+</html>
