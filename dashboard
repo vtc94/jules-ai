@@ -421,7 +421,7 @@
    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-16">
     <!-- Greeting -->
     <section class="fade-in">
-     <h1 id="greeting" class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-white">Good afternoon, Student 👋</h1>
+     <h1 id="greeting" class="text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight text-white">Good afternoon, Student 👋</h1>
      <p class="text-slate-400 mt-1 text-sm"></p>
 <br/>
     </section><!-- Estimated Scores + Performance -->
