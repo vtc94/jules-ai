@@ -1,0 +1,455 @@
+<!-- NAV -->
+<nav id="navbar"
+    class="fixed top-0 left-0 w-full z-40 transition-all duration-300 border-b"
+    [class.bg-slate-900]="isScrolled"
+    [class.border-slate-800]="isScrolled"
+    [class.shadow-lg]="isScrolled"
+    [class.bg-transparent]="!isScrolled"
+    [class.border-transparent]="!isScrolled">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16"><!-- Left: burger + logo -->
+            <div class="flex items-center gap-2"><!-- Burger (mobile) -->
+                <button (click)="menuOpen = !menuOpen"
+                    class="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition"
+                    aria-label="Toggle menu">
+                    <i data-lucide="menu" class="w-5 h-5" [class.hidden]="menuOpen"></i>
+                    <i data-lucide="x" class="w-5 h-5" [class.hidden]="!menuOpen"></i>
+                </button>
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2 xl:gap-3" (click)="$event.preventDefault()">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center font-bold text-sm text-white shadow-lg shadow-sky-500/20">
+                        <img src="assets/images/logo.png" alt="PTELT Logo" class="w-[87.5%] h-[87.5%]"/>
+                    </div><span class="text-2xl font-bold text-white tracking-wider">
+                        <!-- Large screen (≥ md) -->
+                        <span class="hidden lg:inline">
+                            PTE <span class="text-blue-400">Learning Tracker</span>
+                        </span>
+                        <!-- Small screen (< md) -->
+                        <span class="inline lg:hidden">
+                            PTE<span class="text-blue-400">LT</span>
+                        </span>
+                    </span>
+                </a>
+            </div><!-- Center: desktop menu -->
+            <div class="hidden md:flex items-center gap-1" id="desktop-menu"><!-- Practice (mega) -->
+                <div class="nav-item"><button
+                        class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-1">
+                        Practice <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-60"></i> </button>
+                    <div class="mega-menu">
+                        <div
+                            class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[200px]">
+                            <!-- Speaking -->
+                            <div class="sub-item"><a href="#" (click)="$event.preventDefault()"
+                                    class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                    <span class="flex items-center gap-2"><i data-lucide="mic"
+                                            class="w-4 h-4 text-sky-400"></i> Speaking</span> <i
+                                        data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                <div class="sub-menu">
+                                    <div
+                                        class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[220px]">
+                                        <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Read
+                                            Aloud</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Repeat
+                                            Sentence</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Describe
+                                            Image</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Retell
+                                            Lecture</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Answer
+                                            Short Question</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Summarise
+                                            Group Discussion</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Respond
+                                            To A Situation</a>
+                                    </div>
+                                </div>
+                            </div><!-- Writing -->
+                            <div class="sub-item"><a href="#" (click)="$event.preventDefault()"
+                                    class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                    <span class="flex items-center gap-2"><i data-lucide="pen-tool"
+                                            class="w-4 h-4 text-emerald-400"></i> Writing</span> <i
+                                        data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                <div class="sub-menu">
+                                    <div
+                                        class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[220px]">
+                                        <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Summarise
+                                            Written Text</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Essay</a>
+                                    </div>
+                                </div>
+                            </div><!-- Reading -->
+                            <div class="sub-item"><a href="#" (click)="$event.preventDefault()"
+                                    class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                    <span class="flex items-center gap-2"><i data-lucide="book-open"
+                                            class="w-4 h-4 text-amber-400"></i> Reading</span> <i
+                                        data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                <div class="sub-menu">
+                                    <div
+                                        class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[260px]">
+                                        <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Fill
+                                            In Blank (Drop Down)</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple
+                                            Choice (Multiple Answer)</a> <a href="#"
+                                            (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Reorder
+                                            Paragraph</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Fill
+                                            In Blank (Drag Drop)</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple
+                                            Choice (Single Answer)</a>
+                                    </div>
+                                </div>
+                            </div><!-- Listening -->
+                            <div class="sub-item"><a href="#" (click)="$event.preventDefault()"
+                                    class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                    <span class="flex items-center gap-2"><i data-lucide="headphones"
+                                            class="w-4 h-4 text-purple-400"></i> Listening</span> <i
+                                        data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                <div class="sub-menu">
+                                    <div
+                                        class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[270px]">
+                                        <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Summarise
+                                            Spoken Text</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple
+                                            Choice (Multiple Answer)</a> <a href="#"
+                                            (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Fill
+                                            In Blank</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Highlight
+                                            Correct Summary</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Multiple
+                                            Choice (Single Answer)</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Select
+                                            Missing Word</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Highlight
+                                            Incorrect Word</a> <a href="#" (click)="$event.preventDefault()"
+                                            class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Write
+                                            From Dictation</a>
+                                    </div>
+                                </div>
+                            </div><!-- Mock Test -->
+                            <div class="sub-item"><a href="#" (click)="$event.preventDefault()"
+                                    class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                    <span class="flex items-center gap-2"><i data-lucide="clipboard-check"
+                                            class="w-4 h-4 text-rose-400"></i> Mock Test</span> <i
+                                        data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                <div class="sub-menu">
+                                    <div
+                                        class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[200px]">
+                                        <!-- Free Test -->
+                                        <div class="tertiary-item"><a href="#" (click)="$event.preventDefault()"
+                                                class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                                Free Test <i data-lucide="chevron-right"
+                                                    class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                            <div class="tertiary-menu">
+                                                <div
+                                                    class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[180px]">
+                                                    <a href="#" (click)="$event.preventDefault()"
+                                                        class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Full
+                                                        Test</a> <a href="#" (click)="$event.preventDefault()"
+                                                        class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Speaking</a>
+                                                    <a href="#" (click)="$event.preventDefault()"
+                                                        class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Writing</a>
+                                                    <a href="#" (click)="$event.preventDefault()"
+                                                        class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Reading</a>
+                                                    <a href="#" (click)="$event.preventDefault()"
+                                                        class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Listening</a>
+                                                </div>
+                                            </div>
+                                        </div><!-- Paid Test -->
+                                        <div class="tertiary-item"><a href="#" (click)="$event.preventDefault()"
+                                                class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
+                                                Paid Test <i data-lucide="chevron-right"
+                                                    class="w-3.5 h-3.5 opacity-40"></i> </a>
+                                            <div class="tertiary-menu">
+                                                <div
+                                                    class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[180px]">
+                                                    <a href="#" (click)="$event.preventDefault()"
+                                                        class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Full
+                                                        Test</a> <a href="#" (click)="$event.preventDefault()"
+                                                        class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Speaking</a>
+                                                    <a href="#" (click)="$event.preventDefault()"
+                                                        class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Writing</a>
+                                                    <a href="#" (click)="$event.preventDefault()"
+                                                        class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Reading</a>
+                                                    <a href="#" (click)="$event.preventDefault()"
+                                                        class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Listening</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- Other nav links --> <a href="#" (click)="$event.preventDefault()"
+                    class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">PTE
+                    Tutorial</a> <a href="#" (click)="$event.preventDefault()"
+                    class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Pricing</a>
+                <a href="#" (click)="$event.preventDefault()"
+                    class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Q&amp;A</a>
+                <a href="#" (click)="$event.preventDefault()"
+                    class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Forum</a>
+            </div><!-- Right: auth -->
+            <div class="flex items-center gap-2"><a href="#" (click)="$event.preventDefault()"
+                    class="hidden sm:inline-flex menu-link px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Log
+                    In</a> <a href="#" (click)="$event.preventDefault()"
+                    class="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-sky-500 to-indigo-500 text-white hover:from-sky-400 hover:to-indigo-400 transition shadow-lg shadow-sky-500/20">Sign
+                    Up</a>
+            </div>
+        </div>
+    </div><!-- Mobile menu -->
+    <div id="mobile-menu" class="mobile-menu md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-white/10"
+        [class.open]="menuOpen">
+        <div class="px-4 py-3 space-y-1"><!-- Practice accordion -->
+            <div><button (click)="toggleAccordion('practice-acc')"
+                    class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">
+                    Practice <i data-lucide="chevron-down" class="w-4 h-4 opacity-60 transition-transform"
+                        [style.transform]="isAccordionOpen('practice-acc') ? 'rotate(180deg)' : ''"></i> </button>
+                <div id="practice-acc" class="mobile-accordion pl-4 space-y-0.5" [class.open]="isAccordionOpen('practice-acc')"><!-- Speaking -->
+                    <div><button (click)="toggleAccordion('speaking-acc')"
+                            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                            <span class="flex items-center gap-2"><i data-lucide="mic"
+                                    class="w-3.5 h-3.5 text-sky-400"></i> Speaking</span> <i
+                                data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform"
+                                [style.transform]="isAccordionOpen('speaking-acc') ? 'rotate(180deg)' : ''"></i> </button>
+                        <div id="speaking-acc" class="mobile-accordion pl-4 space-y-0.5" [class.open]="isAccordionOpen('speaking-acc')"><a href="#"
+                                (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Read
+                                Aloud</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Repeat
+                                Sentence</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Describe
+                                Image</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Retell
+                                Lecture</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Answer
+                                Short Question</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Summarise
+                                Group Discussion</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Respond
+                                To A Situation</a>
+                        </div>
+                    </div><!-- Writing -->
+                    <div><button (click)="toggleAccordion('writing-acc')"
+                            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                            <span class="flex items-center gap-2"><i data-lucide="pen-tool"
+                                    class="w-3.5 h-3.5 text-emerald-400"></i> Writing</span> <i
+                                data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform"
+                                [style.transform]="isAccordionOpen('writing-acc') ? 'rotate(180deg)' : ''"></i> </button>
+                        <div id="writing-acc" class="mobile-accordion pl-4 space-y-0.5" [class.open]="isAccordionOpen('writing-acc')"><a href="#"
+                                (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Summarise
+                                Written Text</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Essay</a>
+                        </div>
+                    </div><!-- Reading -->
+                    <div><button (click)="toggleAccordion('reading-acc')"
+                            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                            <span class="flex items-center gap-2"><i data-lucide="book-open"
+                                    class="w-3.5 h-3.5 text-amber-400"></i> Reading</span> <i
+                                data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform"
+                                [style.transform]="isAccordionOpen('reading-acc') ? 'rotate(180deg)' : ''"></i> </button>
+                        <div id="reading-acc" class="mobile-accordion pl-4 space-y-0.5" [class.open]="isAccordionOpen('reading-acc')"><a href="#"
+                                (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Fill
+                                In Blank (Drop Down)</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple
+                                Choice (Multiple Answer)</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Reorder
+                                Paragraph</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Fill
+                                In Blank (Drag Drop)</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple
+                                Choice (Single Answer)</a>
+                        </div>
+                    </div><!-- Listening -->
+                    <div><button (click)="toggleAccordion('listening-acc')"
+                            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                            <span class="flex items-center gap-2"><i data-lucide="headphones"
+                                    class="w-3.5 h-3.5 text-purple-400"></i> Listening</span> <i
+                                data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform"
+                                [style.transform]="isAccordionOpen('listening-acc') ? 'rotate(180deg)' : ''"></i> </button>
+                        <div id="listening-acc" class="mobile-accordion pl-4 space-y-0.5" [class.open]="isAccordionOpen('listening-acc')"><a href="#"
+                                (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Summarise
+                                Spoken Text</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple
+                                Choice (Multiple Answer)</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Fill
+                                In Blank</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Highlight
+                                Correct Summary</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Multiple
+                                Choice (Single Answer)</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Select
+                                Missing Word</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Highlight
+                                Incorrect Word</a> <a href="#" (click)="$event.preventDefault()"
+                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Write
+                                From Dictation</a>
+                        </div>
+                    </div><!-- Mock Test -->
+                    <div><button (click)="toggleAccordion('mock-acc')"
+                            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                            <span class="flex items-center gap-2"><i data-lucide="clipboard-check"
+                                    class="w-3.5 h-3.5 text-rose-400"></i> Mock Test</span> <i
+                                data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-40 transition-transform"
+                                [style.transform]="isAccordionOpen('mock-acc') ? 'rotate(180deg)' : ''"></i> </button>
+                        <div id="mock-acc" class="mobile-accordion pl-4 space-y-0.5" [class.open]="isAccordionOpen('mock-acc')">
+                            <div><button (click)="toggleAccordion('free-acc')"
+                                    class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                    Free Test <i data-lucide="chevron-down"
+                                        class="w-3.5 h-3.5 opacity-40 transition-transform" [style.transform]="isAccordionOpen('free-acc') ? 'rotate(180deg)' : ''"></i>
+                                </button>
+                                <div id="free-acc" class="mobile-accordion pl-4 space-y-0.5" [class.open]="isAccordionOpen('free-acc')">
+                                    <a href="#" (click)="$event.preventDefault()"
+                                        class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Full
+                                        Test</a> <a href="#" (click)="$event.preventDefault()"
+                                        class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Speaking</a>
+                                    <a href="#" (click)="$event.preventDefault()"
+                                        class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Writing</a>
+                                    <a href="#" (click)="$event.preventDefault()"
+                                        class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Reading</a>
+                                    <a href="#" (click)="$event.preventDefault()"
+                                        class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Listening</a>
+                                </div>
+                            </div>
+                            <div><button (click)="toggleAccordion('paid-acc')"
+                                    class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">
+                                    Paid Test <i data-lucide="chevron-down"
+                                        class="w-3.5 h-3.5 opacity-40 transition-transform" [style.transform]="isAccordionOpen('paid-acc') ? 'rotate(180deg)' : ''"></i>
+                                </button>
+                                <div id="paid-acc" class="mobile-accordion pl-4 space-y-0.5" [class.open]="isAccordionOpen('paid-acc')">
+                                    <a href="#" (click)="$event.preventDefault()"
+                                        class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Full
+                                        Test</a> <a href="#" (click)="$event.preventDefault()"
+                                        class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Speaking</a>
+                                    <a href="#" (click)="$event.preventDefault()"
+                                        class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Writing</a>
+                                    <a href="#" (click)="$event.preventDefault()"
+                                        class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Reading</a>
+                                    <a href="#" (click)="$event.preventDefault()"
+                                        class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Listening</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><a href="#" (click)="$event.preventDefault()"
+                class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">PTE Tutorial</a>
+            <a href="#" (click)="$event.preventDefault()"
+                class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Pricing</a> <a href="#" (click)="$event.preventDefault()"
+                class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Q&amp;A</a>
+            <a href="#" (click)="$event.preventDefault()"
+                class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Forum</a>
+            <a href="#" (click)="$event.preventDefault()"
+                class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 sm:hidden">Log
+                In</a>
+        </div>
+    </div>
+</nav><!-- HERO -->
+<main class="w-full h-full">
+    <section class="hero-bg w-full min-h-full flex items-center pt-16 relative">
+        <div
+            class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-blue-500 blur-3xl opacity-20 z-0">
+        </div>
+        <div class="max-w-7xl mx-auto px-8 sm:px-6 md:px-12 lg:px-8 py-16 md:py-20 lg:py-24 w-full relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center"><!-- Text side -->
+                <div class="max-w-2xl space-y-8 w-fit mx-auto"><!-- Badge -->
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-300 text-xs font-medium">
+                        # Real Exam Questions
+                    </div>
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-300 text-xs font-medium">
+                        # AI-Powered PTE Practice Platform
+                    </div>
+                    <h1 id="hero-headline"
+                        class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-400">
+                        {{ config.headline }}</h1>
+                    <p id="hero-subheadline" class="text-lg sm:text-xl text-slate-400 leading-relaxed" [style.fontSize.px]="config.font_size * 1.15">
+                        {{ config.sub_headline }}</p><!-- Stats row -->
+                    <div class="flex flex-wrap gap-6 text-sm">
+                        <div class="flex items-center gap-2 text-slate-400"><i data-lucide="zap"
+                                class="w-4 h-4 text-sky-400"></i> <span><strong class="text-white">Instant</strong>
+                                AI Scoring</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-400"><i data-lucide="bar-chart-3"
+                                class="w-4 h-4 text-emerald-400"></i> <span><strong
+                                    class="text-white">Detailed</strong> Analytics</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-400"><i data-lucide="library"
+                                class="w-4 h-4 text-amber-400"></i> <span><strong class="text-white">10k+</strong>
+                                Questions</span>
+                        </div>
+                    </div><!-- CTAs -->
+                    <div class="flex flex-col sm:flex-row gap-6 items-start">
+                        <div class="space-y-3 w-full sm:w-auto"><a href="#" (click)="$event.preventDefault()"
+                                id="cta-secondary-btn"
+                                class="w-full sm:w-auto h-14 group inline-flex items-center justify-center gap-2 px-6 rounded-xl text-sm font-semibold border border-white/15 text-slate-300 hover:text-white hover:bg-white/10 hover:border-white/25 transition">
+                                <i data-lucide="play-circle" class="w-4 h-4"></i> <span id="cta-secondary-text"
+                                    class="whitespace-nowrap">{{ config.cta_secondary }}</span> </a><!-- Trust line -->
+                            <p class="text-[10px] tracking-wider text-slate-500 flex items-center gap-1.5 px-1"><i
+                                    data-lucide="shield-check" class="w-3 h-3 text-emerald-500"></i> No Sign-up
+                                required</p>
+                        </div>
+                        <div class="space-y-3 w-full sm:w-auto"><a href="#" (click)="$event.preventDefault()"
+                                id="cta-primary-btn"
+                                class="w-full sm:w-auto h-14 group inline-flex items-center justify-center gap-2 px-6 rounded-xl text-sm font-semibold bg-gradient-to-r from-sky-500 to-indigo-500 text-white hover:from-sky-400 hover:to-indigo-400 transition shadow-xl shadow-sky-500/25">
+                                <i data-lucide="gift" class="w-4 h-4"></i> <span id="cta-primary-text"
+                                    class="whitespace-nowrap">{{ config.cta_primary }}</span> <i
+                                    data-lucide="arrow-right"
+                                    class="w-4 h-4 transition-transform group-hover:translate-x-0.5"></i>
+                            </a><!-- Trust line -->
+                            <p class="text-[10px] tracking-wider text-slate-500 flex items-center gap-1.5 px-1"><i
+                                    data-lucide="shield-check" class="w-3 h-3 text-emerald-500"></i> No credit card
+                                required · Instant premium access</p>
+                        </div>
+                    </div>
+                </div><!-- Video side -->
+                <div class="relative">
+                    <div
+                        class="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50 bg-slate-900/50 aspect-video">
+                        <!-- Video placeholder with play button -->
+                        <div id="video-container"
+                            class="w-full h-full flex items-center justify-center relative cursor-pointer group"
+                            (click)="playVideo()"><!-- Decorative background -->
+                            <ng-container *ngIf="!isVideoPlayed">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-sky-900/40 via-slate-900/60 to-indigo-900/40">
+                                </div><!-- Grid pattern -->
+                                <svg class="absolute inset-0 w-full h-full opacity-10"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <pattern id="grid" width="32" height="32" patternunits="userSpaceOnUse">
+                                            <path d="M 32 0 L 0 0 0 32" fill="none" stroke="white" stroke-width="0.5" />
+                                        </pattern>
+                                    </defs>
+                                    <rect width="100%" height="100%" fill="url(#grid)" />
+                                </svg><!-- Center play button -->
+                                <div
+                                    class="relative z-10 w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center group-hover:bg-white/20 group-hover:scale-105 transition-all duration-300">
+                                    <i data-lucide="play" class="w-8 h-8 text-white ml-1"></i>
+                                </div><span class="absolute bottom-4 left-4 text-xs text-slate-400 z-10">Watch how PTELT
+                                    works</span> <span
+                                    class="absolute bottom-4 right-4 text-xs text-slate-500 z-10">2:30</span>
+                            </ng-container>
+                            <ng-container *ngIf="isVideoPlayed">
+                                <div class="w-full h-full flex items-center justify-center bg-black text-slate-500 text-sm">Video player would load here</div>
+                            </ng-container>
+                        </div>
+                    </div><!-- Glow effect -->
+                    <div
+                        class="absolute -inset-4 bg-gradient-to-r from-sky-500/10 via-transparent to-indigo-500/10 rounded-3xl blur-2xl -z-10">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
