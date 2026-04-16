@@ -311,18 +311,9 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="max-w-5xl mx-auto px-5 py-24 relative z-10">
-        <div class="backdrop-blur-sm bg-white/5 rounded-2xl border border-white/10 p-10 shadow-2xl text-center">
-            <h1
-                class="text-4xl md:text-6xl font-bold bg-gradient-to-r from-white via-indigo-200 to-purple-200 bg-clip-text text-transparent mb-6">
-                Comprehensive Glass Navbar</h1>
-            <p class="text-white/60 max-w-lg mx-auto mb-10 text-lg">Demonstrating integrated navigation with state
-                toggling (Before/After Login) in a modern glassmorphism aesthetic.</p>
-            <button onclick="toggleAuth()"
-                class="px-8 py-3 rounded-full bg-indigo-500 hover:bg-indigo-400 text-white font-semibold transition shadow-xl shadow-indigo-500/20">
-                Toggle Auth State
-            </button>
-        </div>
+    <main class="h-full flex items-center justify-center pt-24">
+        <div class="text-white/20 select-none pointer-events-none text-sm uppercase tracking-widest">Blank Page Content</div>
+        <button onclick="toggleAuth()" class="absolute inset-0 w-full h-full opacity-0 cursor-default" aria-label="Toggle state"></button>
     </main>
 
     <script>
