@@ -4,247 +4,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PTE Master — Comprehensive Navigation Demo</title>
+    <title>PTE Master — Comprehensive Navbar (Plain HTML/JS)</title>
+    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <!-- Lucide Icons via CDN -->
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-    <script src="/_sdk/element_sdk.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background-color: #0f172a;
-            color: white;
-        }
-
-        /* Mega menu positioning */
-        .nav-item {
-            position: relative;
-        }
-
+        body { font-family: 'Inter', sans-serif; }
+        .nav-item { position: relative; }
         .mega-menu {
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.2s, visibility 0.2s;
-            z-index: 50;
-            padding-top: 8px;
+            position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            opacity: 0; visibility: hidden; transition: opacity 0.2s; z-index: 50; padding-top: 8px;
         }
-
-        .nav-item:hover>.mega-menu {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Sub-menus for Practice flyouts */
-        .sub-item {
-            position: relative;
-        }
-
+        .nav-item:hover > .mega-menu { opacity: 1; visibility: visible; }
+        .sub-item { position: relative; }
         .sub-menu {
-            position: absolute;
-            left: 100%;
-            top: 0;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.15s, visibility 0.15s;
-            z-index: 60;
-            padding-left: 4px;
+            position: absolute; left: 100%; top: 0;
+            opacity: 0; visibility: hidden; transition: opacity 0.15s; z-index: 60; padding-left: 4px;
         }
-
-        .sub-item:hover>.sub-menu {
-            opacity: 1;
-            visibility: visible;
+        .sub-item:hover > .sub-menu { opacity: 1; visibility: visible; }
+        .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+        .mobile-menu.open { max-height: 1000px; }
+        .mobile-accordion { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .mobile-accordion.open { max-height: 500px; }
+        .profile-tooltip {
+            display: none; position: absolute; right: 0; width: 13rem; border-radius: 0.75rem;
+            background: #0f172a; border: 1px solid rgba(255,255,255,0.1); z-index: 50; overflow: hidden;
         }
-
-        /* Mobile menu */
-        .mobile-menu {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.35s ease;
-        }
-
-        .mobile-menu.open {
-            max-height: 2000px;
-        }
-
-        .mobile-accordion {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .mobile-accordion.open {
-            max-height: 800px;
-        }
-
-        /* Tooltip Dropdown */
-        .tooltip-enter {
-            animation: tooltipIn 0.2s ease-out forwards;
-        }
-
-        .tooltip-exit {
-            animation: tooltipOut 0.15s ease-in forwards;
-        }
-
-        @keyframes tooltipIn {
-            from {
-                opacity: 0;
-                transform: translateY(-8px) scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @keyframes tooltipOut {
-            from {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-
-            to {
-                opacity: 0;
-                transform: translateY(-8px) scale(0.95);
-            }
-        }
-
-        .token-glow {
-            text-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
-        }
-
-        .profile-ring {
-            background: conic-gradient(#38bdf8, #6366f1, #38bdf8);
-            padding: 2px;
-            border-radius: 50%;
-            transition: all 0.25s ease;
-            cursor: pointer;
-        }
-
-        .profile-ring:hover {
-            box-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
-            transform: scale(1.05);
-        }
-
-        .menu-link {
-            transition: color 0.15s, background 0.15s;
-        }
+        .profile-tooltip.open { display: block; }
     </style>
 </head>
 
-<body class="h-full antialiased">
-    <!-- Comprehensive Navbar -->
-    <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-white/10 bg-slate-900/80 backdrop-blur-xl">
+<body class="h-full bg-slate-950 text-white antialiased">
+    <!-- COMPREHENSIVE NAVBAR -->
+    <nav id="navbar" class="fixed top-0 left-0 w-full z-50 border-b border-white/10 bg-slate-900/90 backdrop-blur-xl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <!-- Left: Burger + Logo -->
-                <div class="flex items-center gap-2">
-                    <button id="burger-btn" class="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition">
-                        <i data-lucide="menu" class="w-5 h-5" id="burger-icon-open"></i>
-                        <i data-lucide="x" class="w-5 h-5 hidden" id="burger-icon-close"></i>
+                <!-- Left: Logo & Burger -->
+                <div class="flex items-center gap-4">
+                    <button id="burger-btn" class="md:hidden p-2 text-slate-400 hover:text-white transition">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
                     </button>
-                    <a href="#" class="flex items-center gap-2 xl:gap-3" onclick="event.preventDefault()">
-                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center font-bold text-sm text-white shadow-lg shadow-sky-500/20">
-                            P
-                        </div>
-                        <span class="text-xl font-bold text-white tracking-tight">PTE<span class="text-sky-400">Master</span></span>
-                    </a>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center font-bold text-white">P</div>
+                        <span class="text-xl font-bold tracking-tight">PTE Master</span>
+                    </div>
                 </div>
 
-                <!-- Center: Desktop Menu -->
-                <div class="hidden md:flex items-center gap-1" id="desktop-menu">
+                <!-- Center: Desktop Links -->
+                <div class="hidden md:flex items-center gap-2">
                     <div class="nav-item">
-                        <button class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-1">
-                            Practice <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-60"></i>
+                        <button class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white flex items-center gap-1">
+                            Practice <i data-lucide="chevron-down" class="w-4 h-4 opacity-50"></i>
                         </button>
                         <div class="mega-menu">
-                            <div class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[200px]">
+                            <div class="bg-slate-900 border border-white/10 rounded-xl shadow-2xl p-1.5 min-w-[180px]">
                                 <div class="sub-item">
-                                    <a href="#" onclick="event.preventDefault()" class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
-                                        <span class="flex items-center gap-2"><i data-lucide="mic" class="w-4 h-4 text-sky-400"></i> Speaking</span>
-                                        <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i>
-                                    </a>
+                                    <button class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/5">
+                                        <span>Speaking</span> <i data-lucide="chevron-right" class="w-4 h-4 opacity-30"></i>
+                                    </button>
                                     <div class="sub-menu">
-                                        <div class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[220px]">
-                                            <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Read Aloud</a>
-                                            <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Repeat Sentence</a>
-                                            <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Describe Image</a>
+                                        <div class="bg-slate-900 border border-white/10 rounded-xl p-1.5 min-w-[180px]">
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Read Aloud</a>
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Repeat Sentence</a>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="sub-item">
-                                    <a href="#" onclick="event.preventDefault()" class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
-                                        <span class="flex items-center gap-2"><i data-lucide="pen-tool" class="w-4 h-4 text-emerald-400"></i> Writing</span>
-                                        <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i>
-                                    </a>
+                                    <button class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/5">
+                                        <span>Writing</span> <i data-lucide="chevron-right" class="w-4 h-4 opacity-30"></i>
+                                    </button>
                                     <div class="sub-menu">
-                                        <div class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[220px]">
-                                            <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Summarise Written Text</a>
-                                            <a href="#" onclick="event.preventDefault()" class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Essay</a>
+                                        <div class="bg-slate-900 border border-white/10 rounded-xl p-1.5 min-w-[180px]">
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Summarise Text</a>
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Write Essay</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <a href="#" onclick="event.preventDefault()" class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">PTE Tutorial</a>
-                    <a href="#" onclick="event.preventDefault()" class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Pricing</a>
-                    <a href="#" onclick="event.preventDefault()" class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Q&A</a>
-                    <a href="#" onclick="event.preventDefault()" class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Forum</a>
+                    <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white transition">Tutorial</a>
+                    <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white transition">Pricing</a>
+                    <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white transition">Forum</a>
                 </div>
 
-                <!-- Right: Auth/User -->
-                <div class="flex items-center gap-3">
-                    <!-- Guest State -->
+                <!-- Right: Auth State -->
+                <div class="flex items-center gap-4">
+                    <!-- Guest -->
                     <div id="guest-state" class="hidden flex items-center gap-2">
-                        <a href="#" onclick="event.preventDefault(); toggleAuth();" class="hidden sm:inline-flex menu-link px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Log In</a>
-                        <a href="#" onclick="event.preventDefault(); toggleAuth();" class="px-4 py-2 rounded-lg text-sm font-semibold bg-white text-slate-900 hover:bg-slate-100 transition shadow-lg">Sign Up</a>
+                        <button onclick="setLoggedIn(true)" class="text-sm font-medium text-slate-300 hover:text-white px-4 py-2">Log In</button>
+                        <button onclick="setLoggedIn(true)" class="bg-sky-500 hover:bg-sky-400 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">Sign Up</button>
                     </div>
-
-                    <!-- Authenticated State -->
-                    <div id="auth-state" class="flex items-center gap-3">
+                    <!-- Authenticated -->
+                    <div id="auth-state" class="flex items-center gap-4">
                         <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20">
                             <i data-lucide="coins" class="w-4 h-4 text-sky-400"></i>
                             <span class="text-sky-300 font-bold text-sm">1,250</span>
                         </div>
-                        <button class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-500 text-white text-sm font-semibold hover:bg-sky-400 transition shadow-lg shadow-sky-500/20">
-                            <i data-lucide="zap" class="w-4 h-4"></i> Buy Tokens
-                        </button>
-                        <div class="relative" id="profile-wrapper">
-                            <button id="profile-btn" class="profile-ring border-0 cursor-pointer bg-transparent">
-                                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
-                                    <i data-lucide="user" class="w-4 h-4 text-slate-400"></i>
-                                </div>
+                        <div class="relative">
+                            <button id="profile-btn" class="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center border border-white/10 hover:border-sky-500/50 transition">
+                                <i data-lucide="user" class="w-5 h-5 text-slate-400"></i>
                             </button>
-                            <!-- Tooltip -->
-                            <div id="profile-tooltip" class="hidden absolute right-0 mt-3 w-56 rounded-xl bg-slate-900 border border-white/10 shadow-2xl overflow-hidden z-50">
+                            <div id="profile-tooltip" class="profile-tooltip mt-2 right-0">
                                 <div class="px-4 py-3 border-b border-white/5">
-                                    <p class="text-xs text-slate-500 font-medium">Logged in as</p>
-                                    <p class="text-sm font-semibold text-white truncate">student@ptemaster.com</p>
+                                    <p class="text-xs text-slate-500">student@ptemaster.com</p>
                                 </div>
-                                <div class="p-1.5">
-                                    <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/5 transition-colors">
-                                        <i data-lucide="layout-dashboard" class="w-4 h-4 text-slate-500"></i> Dashboard
-                                    </a>
-                                    <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/5 transition-colors">
-                                        <i data-lucide="settings" class="w-4 h-4 text-slate-500"></i> Settings
-                                    </a>
-                                </div>
-                                <div class="p-1.5 border-t border-white/5">
-                                    <button onclick="toggleAuth()" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-rose-400 hover:bg-rose-500/10 transition-colors">
-                                        <i data-lucide="log-out" class="w-4 h-4"></i> Log Out
-                                    </button>
+                                <div class="p-1">
+                                    <button class="w-full text-left px-3 py-2 text-sm text-slate-300 hover:bg-white/5 rounded-md transition">Profile</button>
+                                    <button onclick="setLoggedIn(false)" class="w-full text-left px-3 py-2 text-sm text-rose-400 hover:bg-rose-500/10 rounded-md transition">Log Out</button>
                                 </div>
                             </div>
                         </div>
@@ -256,104 +125,56 @@
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="mobile-menu md:hidden bg-slate-900 border-t border-white/10">
             <div class="px-4 py-3 space-y-1">
-                <div>
-                    <button onclick="toggleMobileAccordion('practice-acc')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors">
-                        Practice <i data-lucide="chevron-down" class="w-4 h-4 opacity-40 transition-transform" id="practice-acc-icon"></i>
-                    </button>
-                    <div id="practice-acc" class="mobile-accordion pl-4 space-y-0.5">
-                        <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10 transition-colors">Speaking</a>
-                        <a href="#" onclick="event.preventDefault()" class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10 transition-colors">Writing</a>
-                    </div>
+                <button onclick="toggleAccordion('mob-practice')" class="w-full flex items-center justify-between px-3 py-2 text-slate-300 hover:text-white">
+                    Practice <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </button>
+                <div id="mob-practice" class="mobile-accordion pl-4 space-y-1">
+                    <a href="#" class="block px-3 py-1.5 text-sm text-slate-400 hover:text-white">Speaking</a>
+                    <a href="#" class="block px-3 py-1.5 text-sm text-slate-400 hover:text-white">Writing</a>
                 </div>
-                <a href="#" onclick="event.preventDefault()" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors">PTE Tutorial</a>
-                <a href="#" onclick="event.preventDefault()" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors">Pricing</a>
-                <a href="#" onclick="event.preventDefault()" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors">Q&A</a>
-                <a href="#" onclick="event.preventDefault()" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors">Forum</a>
+                <a href="#" class="block px-3 py-2 text-slate-300 hover:text-white">Tutorial</a>
+                <a href="#" class="block px-3 py-2 text-slate-300 hover:text-white">Pricing</a>
+                <a href="#" class="block px-3 py-2 text-slate-300 hover:text-white">Forum</a>
             </div>
         </div>
     </nav>
 
-    <!-- Content -->
-    <main class="h-full flex flex-col items-center justify-center pt-16">
-        <button onclick="toggleAuth()" class="opacity-0 cursor-default absolute inset-0 w-full h-full" aria-label="Toggle state"></button>
-        <div class="text-slate-800 pointer-events-none select-none">Blank Page</div>
+    <!-- CONTENT (BLANK) -->
+    <main class="h-full flex items-center justify-center">
+        <div class="text-slate-800 text-xs uppercase tracking-widest pointer-events-none">Blank Page Body</div>
     </main>
 
     <script>
+        // Initialize Icons
         lucide.createIcons();
 
-        // Navbar Logic
+        // State Management (Plain JS)
+        let isLoggedIn = true;
+        function setLoggedIn(val) {
+            isLoggedIn = val;
+            document.getElementById('guest-state').classList.toggle('hidden', isLoggedIn);
+            document.getElementById('auth-state').classList.toggle('hidden', !isLoggedIn);
+            if (!isLoggedIn) document.getElementById('profile-tooltip').classList.remove('open');
+        }
+        setLoggedIn(isLoggedIn);
+
+        // UI Interactions
         const burgerBtn = document.getElementById('burger-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        const iconOpen = document.getElementById('burger-icon-open');
-        const iconClose = document.getElementById('burger-icon-close');
+        burgerBtn.onclick = () => mobileMenu.classList.toggle('open');
+
         const profileBtn = document.getElementById('profile-btn');
         const profileTooltip = document.getElementById('profile-tooltip');
-        const guestState = document.getElementById('guest-state');
-        const authState = document.getElementById('auth-state');
-
-        let menuOpen = false;
-        let tooltipOpen = false;
-        let isLoggedIn = true;
-
-        burgerBtn.addEventListener('click', () => {
-            menuOpen = !menuOpen;
-            mobileMenu.classList.toggle('open', menuOpen);
-            iconOpen.classList.toggle('hidden', menuOpen);
-            iconClose.classList.toggle('hidden', !menuOpen);
-        });
-
-        function toggleMobileAccordion(id) {
-            const el = document.getElementById(id);
-            const icon = document.getElementById(id + '-icon');
-            el.classList.toggle('open');
-            if (icon) icon.style.transform = el.classList.contains('open') ? 'rotate(180deg)' : '';
-        }
-
-        function toggleAuth() {
-            isLoggedIn = !isLoggedIn;
-            updateUI();
-            if (tooltipOpen) closeTooltip();
-        }
-
-        function updateUI() {
-            if (isLoggedIn) {
-                guestState.classList.add('hidden');
-                authState.classList.remove('hidden');
-                authState.classList.add('flex');
-            } else {
-                authState.classList.add('hidden');
-                guestState.classList.remove('hidden');
-                guestState.classList.add('flex');
-            }
-        }
-
-        function openTooltip() {
-            profileTooltip.classList.remove('hidden', 'tooltip-exit');
-            profileTooltip.classList.add('tooltip-enter');
-            tooltipOpen = true;
-        }
-
-        function closeTooltip() {
-            profileTooltip.classList.remove('tooltip-enter');
-            profileTooltip.classList.add('tooltip-exit');
-            tooltipOpen = false;
-            setTimeout(() => { if (!tooltipOpen) profileTooltip.classList.add('hidden'); }, 150);
-        }
-
-        profileBtn.addEventListener('click', (e) => {
+        profileBtn.onclick = (e) => {
             e.stopPropagation();
-            tooltipOpen ? closeTooltip() : openTooltip();
-        });
+            profileTooltip.classList.toggle('open');
+        };
 
-        document.addEventListener('click', (e) => {
-            if (tooltipOpen && !document.getElementById('profile-wrapper').contains(e.target)) closeTooltip();
-        });
+        window.onclick = () => profileTooltip.classList.remove('open');
 
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && tooltipOpen) closeTooltip(); });
-
-        // Init
-        updateUI();
+        function toggleAccordion(id) {
+            document.getElementById(id).classList.toggle('open');
+        }
     </script>
 </body>
 

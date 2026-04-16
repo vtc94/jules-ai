@@ -1,529 +1,141 @@
 <!doctype html>
-<html lang="en" class="h-full">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PTE Master — Comprehensive Navbar</title>
+    <title>PTE Master Navbar — Plain HTML/JS</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <!-- Lucide Icons CDN -->
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-    <script src="/_sdk/element_sdk.js"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@700&display=swap"
-        rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-        }
-
-        /* Mega menu positioning */
-        .nav-item {
-            position: relative;
-        }
-
         .mega-menu {
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.2s, visibility 0.2s;
-            z-index: 50;
-            padding-top: 8px;
+            display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            padding-top: 0.5rem; z-index: 50;
         }
-
-        .nav-item:hover>.mega-menu {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Sub-menus for Practice flyouts */
-        .sub-item {
-            position: relative;
-        }
-
+        .nav-item:hover .mega-menu { display: block; }
         .sub-menu {
-            position: absolute;
-            left: 100%;
-            top: 0;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.15s, visibility 0.15s;
-            z-index: 60;
-            padding-left: 4px;
+            display: none; position: absolute; left: 100%; top: 0; padding-left: 0.25rem;
         }
-
-        .sub-item:hover>.sub-menu {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Tertiary menus (Free/Paid test types) */
-        .tertiary-item {
-            position: relative;
-        }
-
-        .tertiary-menu {
-            position: absolute;
-            left: 100%;
-            top: 0;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.15s, visibility 0.15s;
-            z-index: 70;
-            padding-left: 4px;
-        }
-
-        .tertiary-item:hover>.tertiary-menu {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Mobile menu */
-        .mobile-menu {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.35s ease;
-        }
-
-        .mobile-menu.open {
-            max-height: 2000px;
-        }
-
-        .mobile-accordion {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .mobile-accordion.open {
-            max-height: 800px;
-        }
-
-        /* Tooltip Dropdown */
-        .tooltip-enter {
-            animation: tooltipIn 0.2s ease-out forwards;
-        }
-
-        .tooltip-exit {
-            animation: tooltipOut 0.15s ease-in forwards;
-        }
-
-        @keyframes tooltipIn {
-            from {
-                opacity: 0;
-                transform: translateY(-8px) scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @keyframes tooltipOut {
-            from {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-
-            to {
-                opacity: 0;
-                transform: translateY(-8px) scale(0.95);
-            }
-        }
-
-        .token-glow {
-            text-shadow: 0 0 12px rgba(250, 204, 21, 0.4);
-        }
-
-        .buy-btn {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            transition: all 0.25s ease;
-        }
-
-        .buy-btn:hover {
-            background: linear-gradient(135deg, #60a5fa, #3b82f6);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-            transform: translateY(-1px);
-        }
-
-        .profile-ring {
-            background: conic-gradient(#7c3aed, #06b6d4, #7c3aed);
-            padding: 2px;
-            border-radius: 50%;
-            transition: all 0.25s ease;
-            cursor: pointer;
-        }
-
-        .profile-ring:hover {
-            box-shadow: 0 0 16px rgba(124, 58, 237, 0.5);
-            transform: scale(1.05);
-        }
-
-        /* Smooth hover for menu items */
-        .menu-link {
-            transition: color 0.15s, background 0.15s;
-        }
+        .sub-item:hover .sub-menu { display: block; }
+        .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .mobile-menu.open { max-height: 100vh; }
+        .mobile-accordion { max-height: 0; overflow: hidden; transition: max-height 0.2s ease-out; }
+        .mobile-accordion.open { max-height: 500px; }
     </style>
-    <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
 </head>
 
-<body class="h-full">
-    <div id="app-wrapper" class="w-full h-full"
-        style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #0f172a 100%);">
-        <!-- Nav Bar -->
-        <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300"
-            style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.07);">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
-                    <!-- Left: Brand -->
+<body class="bg-slate-950 font-sans text-white">
+    <!-- NAVBAR START -->
+    <nav class="fixed top-0 left-0 w-full z-50 border-b border-white/10 bg-slate-900/80 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand & Burger -->
+                <div class="flex items-center gap-4">
+                    <button onclick="document.getElementById('mobile-menu').classList.toggle('open')" class="md:hidden p-2 text-slate-400 hover:text-white">
+                        <i data-lucide="menu"></i>
+                    </button>
                     <div class="flex items-center gap-2">
-                        <button id="burger-btn"
-                            class="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition"
-                            aria-label="Toggle menu">
-                            <i data-lucide="menu" class="w-5 h-5" id="burger-icon-open"></i>
-                            <i data-lucide="x" class="w-5 h-5 hidden" id="burger-icon-close"></i>
-                        </button>
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center"
-                            style="background: linear-gradient(135deg, #7c3aed, #06b6d4);">
-                            <i data-lucide="graduation-cap" style="width:18px;height:18px;color:#fff;"></i>
-                        </div>
-                        <span id="brand-name" class="text-white font-bold text-lg tracking-tight"
-                            style="font-family:'Space Mono',monospace;">PTE Master</span>
+                        <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center font-bold">P</div>
+                        <span class="text-xl font-bold tracking-tight">PTE Master</span>
                     </div>
+                </div>
 
-                    <!-- Center: Navigation -->
-                    <div class="hidden md:flex items-center gap-1" id="desktop-menu">
-                        <div class="nav-item">
-                            <button
-                                class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-1">
-                                Practice <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-60"></i>
-                            </button>
-                            <div class="mega-menu">
-                                <div
-                                    class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[200px]">
-                                    <!-- Speaking -->
-                                    <div class="sub-item">
-                                        <a href="#" onclick="event.preventDefault()"
-                                            class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
-                                            <span class="flex items-center gap-2"><i data-lucide="mic"
-                                                    class="w-4 h-4 text-sky-400"></i> Speaking</span>
-                                            <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i>
-                                        </a>
-                                        <div class="sub-menu">
-                                            <div
-                                                class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[220px]">
-                                                <a href="#" onclick="event.preventDefault()"
-                                                    class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Read
-                                                    Aloud</a>
-                                                <a href="#" onclick="event.preventDefault()"
-                                                    class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Repeat
-                                                    Sentence</a>
-                                                <a href="#" onclick="event.preventDefault()"
-                                                    class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Describe
-                                                    Image</a>
-                                                <a href="#" onclick="event.preventDefault()"
-                                                    class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Retell
-                                                    Lecture</a>
-                                                <a href="#" onclick="event.preventDefault()"
-                                                    class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Answer
-                                                    Short Question</a>
-                                            </div>
+                <!-- Desktop Links -->
+                <div class="hidden md:flex items-center gap-2">
+                    <div class="nav-item relative">
+                        <button class="px-3 py-2 text-sm font-medium text-slate-300 hover:text-white flex items-center gap-1">
+                            Practice <i data-lucide="chevron-down" class="w-4 h-4 opacity-50"></i>
+                        </button>
+                        <div class="mega-menu">
+                            <div class="bg-slate-900 border border-white/10 rounded-xl shadow-2xl p-1.5 min-w-[180px]">
+                                <div class="sub-item relative">
+                                    <button class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/5">
+                                        Speaking <i data-lucide="chevron-right" class="w-4 h-4 opacity-30"></i>
+                                    </button>
+                                    <div class="sub-menu">
+                                        <div class="bg-slate-900 border border-white/10 rounded-xl p-1.5 min-w-[180px]">
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Read Aloud</a>
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Repeat Sentence</a>
                                         </div>
                                     </div>
-                                    <!-- Writing -->
-                                    <div class="sub-item">
-                                        <a href="#" onclick="event.preventDefault()"
-                                            class="menu-link flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">
-                                            <span class="flex items-center gap-2"><i data-lucide="pen-tool"
-                                                    class="w-4 h-4 text-emerald-400"></i> Writing</span>
-                                            <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i>
-                                        </a>
-                                        <div class="sub-menu">
-                                            <div
-                                                class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/40 p-1.5 min-w-[220px]">
-                                                <a href="#" onclick="event.preventDefault()"
-                                                    class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Summarise
-                                                    Written Text</a>
-                                                <a href="#" onclick="event.preventDefault()"
-                                                    class="menu-link block px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10">Essay</a>
-                                            </div>
+                                </div>
+                                <div class="sub-item relative">
+                                    <button class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/5">
+                                        Writing <i data-lucide="chevron-right" class="w-4 h-4 opacity-30"></i>
+                                    </button>
+                                    <div class="sub-menu">
+                                        <div class="bg-slate-900 border border-white/10 rounded-xl p-1.5 min-w-[180px]">
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Summarise Text</a>
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Essay</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#" onclick="event.preventDefault()"
-                            class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">PTE
-                            Tutorial</a>
-                        <a href="#" onclick="event.preventDefault()"
-                            class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Pricing</a>
-                        <a href="#" onclick="event.preventDefault()"
-                            class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Q&amp;A</a>
-                        <a href="#" onclick="event.preventDefault()"
-                            class="menu-link px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Forum</a>
                     </div>
+                    <a href="#" class="px-3 py-2 text-sm font-medium text-slate-300 hover:text-white transition">Pricing</a>
+                    <a href="#" class="px-3 py-2 text-sm font-medium text-slate-300 hover:text-white transition">Tutorial</a>
+                </div>
 
-                    <!-- Right: Auth/Profile -->
-                    <div class="flex items-center gap-4 relative">
-                        <!-- Guest State -->
-                        <div id="guest-state" class="hidden flex items-center gap-2">
-                            <a href="#" onclick="event.preventDefault(); toggleAuth();"
-                                class="hidden sm:inline-flex menu-link px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Log
-                                In</a>
-                            <a href="#" onclick="event.preventDefault(); toggleAuth();"
-                                class="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-sky-500 to-indigo-500 text-white hover:from-sky-400 hover:to-indigo-400 transition shadow-lg shadow-sky-500/20">Sign
-                                Up</a>
+                <!-- User Section -->
+                <div class="flex items-center gap-4">
+                    <!-- Guest -->
+                    <div id="guest-ui" class="hidden flex items-center gap-2">
+                        <button onclick="toggleUser(true)" class="text-sm font-medium text-slate-300 hover:text-white">Log In</button>
+                        <button onclick="toggleUser(true)" class="bg-sky-500 hover:bg-sky-400 text-white text-sm font-semibold px-4 py-2 rounded-lg">Sign Up</button>
+                    </div>
+                    <!-- Authenticated -->
+                    <div id="auth-ui" class="flex items-center gap-4">
+                        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20">
+                            <i data-lucide="coins" class="w-4 h-4 text-sky-400"></i>
+                            <span class="text-sky-300 font-bold text-sm">1,250</span>
                         </div>
-
-                        <!-- Authenticated State -->
-                        <div id="auth-state" class="flex items-center gap-4">
-                            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-                                style="background: rgba(250, 204, 21, 0.08); border: 1px solid rgba(250, 204, 21, 0.2);">
-                                <i data-lucide="coins" class="w-4 h-4 text-yellow-400"></i>
-                                <span id="token-count" class="text-yellow-400 font-semibold text-sm token-glow">1,250</span>
-                                <span class="text-yellow-500 font-semibold text-xs token-glow hidden sm:inline">Tokens</span>
-                            </div>
-                            <button id="buy-btn"
-                                class="buy-btn text-white text-sm font-semibold px-4 py-2 rounded-full hidden sm:flex items-center gap-1.5 border-0 cursor-pointer">
-                                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
-                                <span id="buy-btn-text">Buy Tokens</span>
+                        <div class="relative">
+                            <button onclick="document.getElementById('prof-drop').classList.toggle('hidden')" class="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center border border-white/10 hover:border-sky-500/50 transition">
+                                <i data-lucide="user" class="w-5 h-5 text-slate-400"></i>
                             </button>
-                            <div class="relative" id="profile-wrapper">
-                                <button id="profile-btn" class="profile-ring border-0 cursor-pointer bg-transparent"
-                                    aria-label="Profile menu" aria-expanded="false">
-                                    <div class="w-9 h-9 rounded-full flex items-center justify-center"
-                                        style="background: #1e293b;">
-                                        <i data-lucide="user" style="width:18px;height:18px;color:#94a3b8;"></i>
-                                    </div>
-                                </button>
-                                <!-- Tooltip Dropdown -->
-                                <div id="profile-tooltip"
-                                    class="hidden absolute right-0 mt-2 w-52 rounded-xl overflow-hidden z-50"
-                                    style="background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
-                                    <div class="px-4 pt-4 pb-3 flex items-center gap-3"
-                                        style="border-bottom: 1px solid rgba(255,255,255,0.07);">
-                                        <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                                            style="background: linear-gradient(135deg, #7c3aed, #06b6d4);">
-                                            <span class="text-white font-bold text-sm">JD</span>
-                                        </div>
-                                        <div class="min-w-0">
-                                            <p class="text-white font-semibold text-sm truncate">Jane Doe</p>
-                                            <p class="text-slate-400 text-xs truncate">jane@example.com</p>
-                                        </div>
-                                    </div>
-                                    <div class="py-1.5">
-                                        <a href="#"
-                                            class="flex items-center gap-2.5 px-4 py-2.5 text-slate-300 text-sm no-underline transition-colors hover:bg-white/5"
-                                            onclick="event.preventDefault()">
-                                            <i data-lucide="user" style="width:15px;height:15px;color:#94a3b8;"></i> My
-                                            Profile </a>
-                                        <a href="#"
-                                            class="flex items-center gap-2.5 px-4 py-2.5 text-slate-300 text-sm no-underline transition-colors hover:bg-white/5"
-                                            onclick="event.preventDefault()">
-                                            <i data-lucide="settings" style="width:15px;height:15px;color:#94a3b8;"></i>
-                                            Settings </a>
-                                    </div>
-                                    <div style="border-top: 1px solid rgba(255,255,255,0.07);" class="py-1.5">
-                                        <a href="#" id="logout-btn"
-                                            class="flex items-center gap-2.5 px-4 py-2.5 text-red-400 text-sm no-underline transition-colors hover:bg-red-500/10"
-                                            onclick="event.preventDefault(); toggleAuth();">
-                                            <i data-lucide="log-out"
-                                                style="width:15px;height:15px;color:#f87171;"></i> Log Out </a>
-                                    </div>
+                            <div id="prof-drop" class="hidden absolute right-0 mt-2 w-48 bg-slate-900 border border-white/10 rounded-xl shadow-2xl overflow-hidden">
+                                <div class="px-4 py-3 border-b border-white/5 text-xs text-slate-500">student@ptemaster.com</div>
+                                <div class="p-1">
+                                    <button onclick="toggleUser(false)" class="w-full text-left px-3 py-2 text-sm text-rose-400 hover:bg-rose-500/10 rounded-lg">Log Out</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Mobile menu -->
-            <div id="mobile-menu" class="mobile-menu md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-white/10">
-                <div class="px-4 py-3 space-y-1">
-                    <div>
-                        <button onclick="toggleMobileAccordion('practice-acc')"
-                            class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">
-                            Practice <i data-lucide="chevron-down" class="w-4 h-4 opacity-60 transition-transform"
-                                id="practice-acc-icon"></i>
-                        </button>
-                        <div id="practice-acc" class="mobile-accordion pl-4 space-y-0.5">
-                            <a href="#" onclick="event.preventDefault()"
-                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Speaking</a>
-                            <a href="#" onclick="event.preventDefault()"
-                                class="block px-3 py-1.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/10">Writing</a>
-                        </div>
-                    </div>
-                    <a href="#" onclick="event.preventDefault()"
-                        class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">PTE
-                        Tutorial</a>
-                    <a href="#" onclick="event.preventDefault()"
-                        class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Pricing</a>
-                    <a href="#" onclick="event.preventDefault()"
-                        class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Q&amp;A</a>
-                    <a href="#" onclick="event.preventDefault()"
-                        class="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10">Forum</a>
+        <!-- Mobile Content -->
+        <div id="mobile-menu" class="mobile-menu md:hidden bg-slate-900 border-t border-white/10">
+            <div class="px-4 py-3 space-y-1">
+                <button onclick="document.getElementById('mob-practice').classList.toggle('open')" class="w-full flex items-center justify-between px-3 py-2 text-slate-300">
+                    Practice <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </button>
+                <div id="mob-practice" class="mobile-accordion pl-4 space-y-1">
+                    <a href="#" class="block px-3 py-1.5 text-sm text-slate-400 hover:text-white">Speaking</a>
+                    <a href="#" class="block px-3 py-1.5 text-sm text-slate-400 hover:text-white">Writing</a>
                 </div>
+                <a href="#" class="block px-3 py-2 text-slate-300 hover:text-white">Pricing</a>
+                <a href="#" class="block px-3 py-2 text-slate-300 hover:text-white">Tutorial</a>
             </div>
-        </nav>
+        </div>
+    </nav>
+    <!-- NAVBAR END -->
 
-        <!-- Content -->
-        <main class="h-full flex items-center justify-center">
-             <!-- Page content goes here -->
-        </main>
-    </div>
+    <main class="h-screen flex items-center justify-center text-slate-800 text-xs uppercase tracking-widest">
+        Page content area (Click items to test)
+    </main>
 
     <script>
         lucide.createIcons();
-
-        // Mobile menu toggle
-        const burgerBtn = document.getElementById('burger-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const iconOpen = document.getElementById('burger-icon-open');
-        const iconClose = document.getElementById('burger-icon-close');
-        let menuOpen = false;
-
-        burgerBtn.addEventListener('click', () => {
-            menuOpen = !menuOpen;
-            mobileMenu.classList.toggle('open', menuOpen);
-            iconOpen.classList.toggle('hidden', menuOpen);
-            iconClose.classList.toggle('hidden', !menuOpen);
-        });
-
-        function toggleMobileAccordion(id) {
-            const el = document.getElementById(id);
-            const icon = document.getElementById(id + '-icon');
-            el.classList.toggle('open');
-            if (icon) icon.style.transform = el.classList.contains('open') ? 'rotate(180deg)' : '';
+        function toggleUser(isLoggedIn) {
+            document.getElementById('guest-ui').classList.toggle('hidden', isLoggedIn);
+            document.getElementById('auth-ui').classList.toggle('hidden', !isLoggedIn);
+            document.getElementById('prof-drop').classList.add('hidden');
         }
-
-        // Auth toggle logic
-        let isLoggedIn = true;
-        const guestState = document.getElementById('guest-state');
-        const authState = document.getElementById('auth-state');
-
-        function toggleAuth() {
-            isLoggedIn = !isLoggedIn;
-            updateAuthState();
-            closeTooltip();
-        }
-
-        function updateAuthState() {
-            if (isLoggedIn) {
-                guestState.classList.add('hidden');
-                authState.classList.remove('hidden');
-                authState.classList.add('flex');
-            } else {
-                guestState.classList.remove('hidden');
-                guestState.classList.add('flex');
-                authState.classList.add('hidden');
-            }
-        }
-
-        // Tooltip toggle
-        const profileBtn = document.getElementById('profile-btn');
-        const tooltip = document.getElementById('profile-tooltip');
-        let tooltipOpen = false;
-
-        function openTooltip() {
-            tooltip.classList.remove('hidden', 'tooltip-exit');
-            tooltip.classList.add('tooltip-enter');
-            profileBtn.setAttribute('aria-expanded', 'true');
-            tooltipOpen = true;
-        }
-
-        function closeTooltip() {
-            tooltip.classList.remove('tooltip-enter');
-            tooltip.classList.add('tooltip-exit');
-            profileBtn.setAttribute('aria-expanded', 'false');
-            tooltipOpen = false;
-            setTimeout(() => { if (!tooltipOpen) tooltip.classList.add('hidden'); }, 150);
-        }
-
-        profileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            tooltipOpen ? closeTooltip() : openTooltip();
-        });
-
-        document.addEventListener('click', (e) => {
-            if (tooltipOpen && !document.getElementById('profile-wrapper').contains(e.target)) closeTooltip();
-        });
-
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && tooltipOpen) closeTooltip(); });
-
-        // Element SDK
-        const defaultConfig = {
-            brand_name: 'PTE Master',
-            token_count: '1,250',
-            buy_button_text: 'Buy Tokens',
-            background_color: '#0f172a',
-            surface_color: '#1e293b',
-            text_color: '#e2e8f0',
-            primary_action: '#7c3aed',
-            secondary_action: '#06b6d4'
-        };
-
-        function applyConfig(config) {
-            const c = { ...defaultConfig, ...config };
-            const brand = document.getElementById('brand-name');
-            if (brand) brand.textContent = c.brand_name;
-            const tCount = document.getElementById('token-count');
-            if (tCount) tCount.textContent = c.token_count;
-            const bText = document.getElementById('buy-btn-text');
-            if (bText) bText.textContent = c.buy_button_text;
-
-            // Colors
-            const wrapper = document.getElementById('app-wrapper');
-            if (wrapper) wrapper.style.background = `linear-gradient(135deg, ${c.background_color} 0%, ${c.primary_action}22 40%, ${c.background_color} 100%)`;
-
-            document.querySelectorAll('.buy-btn').forEach(b => {
-                b.style.background = `linear-gradient(135deg, ${c.primary_action}, ${c.primary_action}dd)`;
-            });
-
-            const fonts = c.font_family ? `${c.font_family}, DM Sans, sans-serif` : 'DM Sans, sans-serif';
-            document.body.style.fontFamily = fonts;
-        }
-
-        if (window.elementSdk) {
-            window.elementSdk.init({
-                defaultConfig,
-                onConfigChange: async (config) => applyConfig(config),
-                mapToCapabilities: (config) => ({
-                    recolorables: [
-                        { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
-                        { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
-                        { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
-                        { get: () => config.primary_action || defaultConfig.primary_action, set: (v) => { config.primary_action = v; window.elementSdk.setConfig({ primary_action: v }); } },
-                        { get: () => config.secondary_action || defaultConfig.secondary_action, set: (v) => { config.secondary_action = v; window.elementSdk.setConfig({ secondary_action: v }); } }
-                    ],
-                    borderables: [],
-                    fontEditable: {
-                        get: () => config.font_family || defaultConfig.font_family || '',
-                        set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
-                    },
-                    fontSizeable: {
-                        get: () => config.font_size || defaultConfig.font_size || 16,
-                        set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
-                    }
-                }),
-                mapToEditPanelValues: (config) => new Map([
-                    ['brand_name', config.brand_name || defaultConfig.brand_name],
-                    ['token_count', config.token_count || defaultConfig.token_count],
-                    ['buy_button_text', config.buy_button_text || defaultConfig.buy_button_text]
-                ])
-            });
-        }
-
-        // Initialize state
-        updateAuthState();
     </script>
 </body>
 
