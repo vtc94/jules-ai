@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In Popup - Light</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+* { font-family: 'DM Sans', sans-serif; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(24px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes shake { 0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(-6px); } 40%,80% { transform: translateX(6px); } }
+.overlay-anim { animation: fadeIn 0.25s ease-out; }
+.panel-anim { animation: slideUp 0.3s cubic-bezier(0.16,1,0.3,1); }
+.shake { animation: shake 0.4s ease; }
+.field-error input { border-color: #ef4444 !important; }
+.field-error input:focus { box-shadow: 0 0 0 3px rgba(239,68,68,0.15) !important; }
+</style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app" class="h-full w-full flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+   <!-- Sign In Trigger Button --> <button id="openBtn" onclick="openModal()" class="group relative px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 hover:scale-105 active:scale-95" style="background: linear-gradient(to right, #3b82f6, #6366f1); color: #fff; box-shadow: 0 8px 32px rgba(59,130,246,0.4);"> <i data-lucide="log-in" class="inline-block w-5 h-5 mr-2 align-middle"></i> <span class="align-middle">Sign in</span> </button> <!-- Success Message (shown after login) -->
+   <div id="successMsg" class="hidden text-center">
+    <div class="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center" style="background: linear-gradient(135deg, #22c55e, #16a34a);">
+     <i data-lucide="check" class="w-10 h-10" style="color: #fff;"></i>
+    </div>
+    <h2 class="text-2xl font-bold mb-2" style="color: #1e293b;">Welcome back!</h2>
+    <p style="color: #64748b;">You've signed in successfully.</p>
+   </div><!-- Modal Overlay -->
+   <div id="overlay" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);" onclick="handleOverlayClick(event)">
+    <!-- Modal Container -->
+    <div id="modal" class="overlay-anim panel-anim w-full max-w-md rounded-3xl overflow-hidden relative" style="background: #ffffff; box-shadow: 0 25px 60px rgba(0,0,0,0.1);" onclick="event.stopPropagation()">
+     <!-- Close Button --> <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-9 h-9 rounded-full flex items-center justify-center transition-colors" style="background: rgba(0,0,0,0.05); color: #94a3b8;" onmouseover="this.style.background='rgba(0,0,0,0.08)'" onmouseout="this.style.background='rgba(0,0,0,0.05)'"> <i data-lucide="x" class="w-4 h-4"></i> </button> <!-- ===================== SIGN IN PANEL ===================== -->
+     <div id="panelSignIn" class="p-8 pt-10">
+      <div class="text-center mb-8">
+       <div class="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center" style="background: linear-gradient(to right, #3b82f6, #6366f1);">
+        <i data-lucide="lock" class="w-7 h-7" style="color: #fff;"></i>
+       </div>
+       <h2 id="signInTitle" class="text-2xl font-bold" style="color: #1e293b;">Sign in</h2>
+      </div>
+      <form id="signInForm" onsubmit="handleSignIn(event)" novalidate>
+       <div class="space-y-4 mb-6">
+        <div id="siEmailWrap">
+         <label for="siEmail" class="block text-sm font-medium mb-1.5" style="color: #475569;">Email</label> <input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email" class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200" style="background: #f8fafc; border: 1.5px solid #e2e8f0; color: #1e293b;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'" oninput="clearFieldError('siEmailWrap','siEmailErr')">
+         <p id="siEmailErr" class="text-xs mt-1 hidden" style="color: #ef4444;"></p>
+        </div>
+        <div id="siPassWrap">
+         <label for="siPass" class="block text-sm font-medium mb-1.5" style="color: #475569;">Password</label>
+         <div class="relative">
+          <input type="password" id="siPass" placeholder="••••••••" autocomplete="current-password" class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200 pr-11" style="background: #f8fafc; border: 1.5px solid #e2e8f0; color: #1e293b;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'" oninput="clearFieldError('siPassWrap','siPassErr')"> <button type="button" onclick="togglePass('siPass')" class="absolute right-3 top-1/2 -translate-y-1/2" style="color: #94a3b8;"> <i data-lucide="eye-off" class="w-4 h-4 block" id="siPassIconHidden"></i> <i data-lucide="eye" class="w-4 h-4 hidden" id="siPassIconVisible"></i> </button>
+         </div>
+         <p id="siPassErr" class="text-xs mt-1 hidden" style="color: #ef4444;"></p>
+        </div>
+       </div>
+       <div id="siGeneralErr" class="hidden mb-4 p-3 rounded-xl text-sm flex items-start gap-2" style="background: rgba(239,68,68,0.1); color: #ef4444;">
+        <i data-lucide="alert-circle" class="w-4 h-4 mt-0.5 flex-shrink-0"></i> <span id="siGeneralErrText"></span>
+       </div><button type="submit" id="siSubmitBtn" class="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-2" style="background: linear-gradient(to right, #3b82f6, #6366f1); color: #fff;"> <span id="siSubmitText">Sign in</span>
+        <svg id="siSpinner" class="hidden animate-spin w-4 h-4" viewbox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" opacity="0.3"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+        </svg></button>
+      </form>
+      <div class="mt-6 space-y-3 text-center text-sm">
+       <div>
+        <span style="color: #64748b;">Don't have an account?</span> <a href="#" onclick="showPanel('panelSignUp'); return false;" class="font-semibold ml-1 hover:underline" style="color: #3b82f6;" id="signUpLink">Sign up!</a>
+       </div><a href="#" onclick="showPanel('panelResetPassword'); return false;" class="block hover:underline" style="color: #3b82f6;" id="resetLink">Reset/Forgot password</a> <a href="#" onclick="guestContinue(); return false;" class="block hover:underline" style="color: #64748b;" id="guestLink">( Continue as a guest )</a>
+      </div>
+     </div><!-- ===================== SIGN UP PANEL ===================== -->
+     <div id="panelSignUp" class="hidden p-8 pt-10">
+      <div class="text-center mb-8">
+       <div class="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center" style="background: linear-gradient(to right, #3b82f6, #6366f1);">
+        <i data-lucide="user-plus" class="w-7 h-7" style="color: #fff;"></i>
+       </div>
+       <h2 id="signUpTitle" class="text-2xl font-bold" style="color: #1e293b;">Sign up</h2>
+      </div>
+      <form id="signUpForm" onsubmit="handleSignUpStep1(event)" novalidate>
+       <div class="space-y-4 mb-6">
+        <div id="suUsernameWrap">
+         <label for="suUsername" class="block text-sm font-medium mb-1.5" style="color: #475569;">Username</label> <input type="text" id="suUsername" placeholder="Choose a username" autocomplete="username" class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200" style="background: #f8fafc; border: 1.5px solid #e2e8f0; color: #1e293b;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'" oninput="clearFieldError('suUsernameWrap','suUsernameErr')">
+         <p id="suUsernameErr" class="text-xs mt-1 hidden" style="color: #ef4444;"></p>
+        </div>
+        <div id="suEmailWrap">
+         <label for="suEmail" class="block text-sm font-medium mb-1.5" style="color: #475569;">Email</label> <input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email" class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200" style="background: #f8fafc; border: 1.5px solid #e2e8f0; color: #1e293b;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'" oninput="clearFieldError('suEmailWrap','suEmailErr')">
+         <p id="suEmailErr" class="text-xs mt-1 hidden" style="color: #ef4444;"></p>
+        </div>
+        <div id="suConfirmEmailWrap">
+         <label for="suConfirmEmail" class="block text-sm font-medium mb-1.5" style="color: #475569;">Confirm Email</label> <input type="email" id="suConfirmEmail" placeholder="you@example.com" autocomplete="email" class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200" style="background: #f8fafc; border: 1.5px solid #e2e8f0; color: #1e293b;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'" oninput="clearFieldError('suConfirmEmailWrap','suConfirmEmailErr')">
+         <p id="suConfirmEmailErr" class="text-xs mt-1 hidden" style="color: #ef4444;"></p>
+        </div>
+       </div>
+       <div id="suGeneralErr" class="hidden mb-4 p-3 rounded-xl text-sm flex items-start gap-2" style="background: rgba(239,68,68,0.08); color: #dc2626;">
+        <i data-lucide="alert-circle" class="w-4 h-4 mt-0.5 flex-shrink-0"></i> <span id="suGeneralErrText"></span>
+       </div><button type="submit" id="suStep1Btn" class="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-2" style="background: linear-gradient(to right, #3b82f6, #6366f1); color: #fff;"> <span id="suStep1Text">Next</span>
+        <svg id="suStep1Spinner" class="hidden animate-spin w-4 h-4" viewbox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" opacity="0.3"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+        </svg></button>
+      </form>
+      <div class="mt-6 space-y-3 text-center text-sm">
+       <div>
+        <span style="color: #64748b;">Already have an account?</span> <a href="#" onclick="showPanel('panelSignIn'); return false;" class="font-semibold ml-1 hover:underline" style="color: #3b82f6;">Login!</a>
+       </div><a href="#" onclick="showPanel('panelResetPassword'); return false;" class="block hover:underline" style="color: #3b82f6;">Reset/Forgot password</a> <a href="#" onclick="guestContinue(); return false;" class="block hover:underline" style="color: #64748b;" id="guestLink2">( Continue as a guest )</a>
+      </div>
+     </div><!-- ===================== SIGN UP VERIFY PANEL ===================== -->
+     <div id="panelSignUpVerify" class="hidden p-8 pt-10">
+      <div class="text-center mb-8">
+       <div class="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center" style="background: linear-gradient(to right, #3b82f6, #6366f1);">
+        <i data-lucide="shield-check" class="w-7 h-7" style="color: #fff;"></i>
+       </div>
+       <h2 class="text-2xl font-bold" style="color: #1e293b;">Complete Sign Up</h2>
+      </div>
+      <form id="signUpVerifyForm" onsubmit="handleSignUpStep2(event)" novalidate>
+       <div class="mb-4 p-3 rounded-xl text-sm" style="background: rgba(99,102,241,0.1); color: #4f46e5;">
+        <i data-lucide="info" class="w-4 h-4 inline mr-2"></i>Verification code sent to <span id="verifyEmailDisplay"></span>
+       </div>
+       <div class="space-y-4 mb-6">
+        <div id="suVerifyCodeWrap">
+         <label for="suVerifyCode" class="block text-sm font-medium mb-1.5" style="color: #475569;">Verification Code</label> <input type="text" id="suVerifyCode" placeholder="000000" autocomplete="off" maxlength="6" class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200 tracking-widest" style="background: #f8fafc; border: 1.5px solid #e2e8f0; color: #1e293b; letter-spacing: 0.1em;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'" oninput="clearFieldError('suVerifyCodeWrap','suVerifyCodeErr')">
+         <p id="suVerifyCodeErr" class="text-xs mt-1 hidden" style="color: #ef4444;"></p>
+        </div>
+        <div id="suVerifyPassWrap">
+         <label for="suVerifyPass" class="block text-sm font-medium mb-1.5" style="color: #475569;">Password</label>
+         <div class="relative">
+          <input type="password" id="suVerifyPass" placeholder="••••••••" autocomplete="new-password" class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200 pr-11" style="background: #f8fafc; border: 1.5px solid #e2e8f0; color: #1e293b;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'" oninput="clearFieldError('suVerifyPassWrap','suVerifyPassErr')"> <button type="button" onclick="togglePass('suVerifyPass')" class="absolute right-3 top-1/2 -translate-y-1/2" style="color: #94a3b8;"> <i data-lucide="eye-off" class="w-4 h-4 block" id="suVerifyPassIconHidden"></i> <i data-lucide="eye" class="w-4 h-4 hidden" id="suVerifyPassIconVisible"></i> </button>
+         </div>
+         <p id="suVerifyPassErr" class="text-xs mt-1 hidden" style="color: #ef4444;"></p>
+        </div>
+        <div id="suVerifyConfirmPassWrap">
+         <label for="suVerifyConfirmPass" class="block text-sm font-medium mb-1.5" style="color: #475569;">Confirm Password</label>
+         <div class="relative">
+          <input type="password" id="suVerifyConfirmPass" placeholder="••••••••" autocomplete="new-password" class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200 pr-11" style="background: #f8fafc; border: 1.5px solid #e2e8f0; color: #1e293b;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'" oninput="clearFieldError('suVerifyConfirmPassWrap','suVerifyConfirmPassErr')"> <button type="button" onclick="togglePass('suVerifyConfirmPass')" class="absolute right-3 top-1/2 -translate-y-1/2" style="color: #94a3b8;"> <i data-lucide="eye-off" class="w-4 h-4 block" id="suVerifyConfirmPassIconHidden"></i> <i data-lucide="eye" class="w-4 h-4 hidden" id="suVerifyConfirmPassIconVisible"></i> </button>
+         </div>
+         <p id="suVerifyConfirmPassErr" class="text-xs mt-1 hidden" style="color: #ef4444;"></p>
+        </div>
+       </div>
+       <div id="suVerifyGeneralErr" class="hidden mb-4 p-3 rounded-xl text-sm flex items-start gap-2" style="background: rgba(239,68,68,0.1); color: #ef4444;">
+        <i data-lucide="alert-circle" class="w-4 h-4 mt-0.5 flex-shrink-0"></i> <span id="suVerifyGeneralErrText"></span>
+       </div><button type="submit" id="suStep2Btn" class="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-2" style="background: linear-gradient(to right, #3b82f6, #6366f1); color: #fff;"> <span id="suStep2Text">Sign up</span>
+        <svg id="suStep2Spinner" class="hidden animate-spin w-4 h-4" viewbox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" opacity="0.3"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+        </svg></button>
+      </form>
+      <div class="mt-6 space-y-3 text-center text-sm">
+       <div>
+        <span style="color: #64748b;">Already have an account?</span> <a href="#" onclick="showPanel('panelSignIn'); return false;" class="font-semibold ml-1 hover:underline" style="color: #3b82f6;">Login!</a>
+       </div><a href="#" onclick="showPanel('panelResetPassword'); return false;" class="block hover:underline" style="color: #3b82f6;">Reset/Forgot password</a> <a href="#" onclick="guestContinue(); return false;" class="block hover:underline" style="color: #64748b;" id="guestLink3">( Continue as a guest )</a>
+      </div>
+     </div><!-- ===================== RESET PASSWORD PANEL ===================== -->
+     <div id="panelResetPassword" class="hidden p-8 pt-10">
+      <div class="text-center mb-8">
+       <div class="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center" style="background: linear-gradient(to right, #3b82f6, #6366f1);">
+        <i data-lucide="key" class="w-7 h-7" style="color: #fff;"></i>
+       </div>
+       <h2 class="text-2xl font-bold" style="color: #1e293b;">Reset password</h2>
+      </div>
+      <form id="resetPasswordForm" onsubmit="handleResetPasswordStep1(event)" novalidate>
+       <div class="space-y-4 mb-6">
+        <div id="resetEmailWrap">
+         <label for="resetEmail" class="block text-sm font-medium mb-1.5" style="color: #475569;">Email</label> <input type="email" id="resetEmail" placeholder="you@example.com" autocomplete="email" class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200" style="background: #f8fafc; border: 1.5px solid #e2e8f0; color: #1e293b;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'" oninput="clearFieldError('resetEmailWrap','resetEmailErr')">
+         <p id="resetEmailErr" class="text-xs mt-1 hidden" style="color: #ef4444;"></p>
+        </div>
+       </div>
+       <div id="resetGeneralErr" class="hidden mb-4 p-3 rounded-xl text-sm flex items-start gap-2" style="background: rgba(239,68,68,0.1); color: #ef4444;">
+        <i data-lucide="alert-circle" class="w-4 h-4 mt-0.5 flex-shrink-0"></i> <span id="resetGeneralErrText"></span>
+       </div><button type="submit" id="resetStep1Btn" class="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-2" style="background: linear-gradient(to right, #3b82f6, #6366f1); color: #fff;"> <span id="resetStep1Text">Get verification code</span>
+        <svg id="resetStep1Spinner" class="hidden animate-spin w-4 h-4" viewbox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" opacity="0.3"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+        </svg></button>
+      </form>
+      <div class="mt-6 space-y-3 text-center text-sm">
+       <div>
+        <span style="color: #64748b;">Remember your password?</span> <a href="#" onclick="showPanel('panelSignIn'); return false;" class="font-semibold ml-1 hover:underline" style="color: #3b82f6;">Login!</a>
+       </div><a href="#" onclick="showPanel('panelSignUp'); return false;" class="block hover:underline" style="color: #3b82f6;">Sign up!</a> <a href="#" onclick="guestContinue(); return false;" class="block hover:underline" style="color: #64748b;" id="guestLink4">( Continue as a guest )</a>
+      </div>
+     </div><!-- ===================== RESET PASSWORD VERIFY PANEL ===================== -->
+     <div id="panelResetPasswordVerify" class="hidden p-8 pt-10">
+      <div class="text-center mb-8">
+       <div class="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center" style="background: linear-gradient(to right, #3b82f6, #6366f1);">
+        <i data-lucide="shield-check" class="w-7 h-7" style="color: #fff;"></i>
+       </div>
+       <h2 class="text-2xl font-bold" style="color: #f1f5f9;">Verify &amp; reset</h2>
+      </div>
+      <form id="resetPasswordVerifyForm" onsubmit="handleResetPasswordStep2(event)" novalidate>
+       <div class="mb-4 p-3 rounded-xl text-sm" style="background: rgba(99,102,241,0.1); color: #4f46e5;">
+        <i data-lucide="info" class="w-4 h-4 inline mr-2"></i>Verification code sent to <span id="resetVerifyEmailDisplay"></span>
+       </div>
+       <div class="space-y-4 mb-6">
+        <div id="resetVerifyCodeWrap">
+         <label for="resetVerifyCode" class="block text-sm font-medium mb-1.5" style="color: #475569;">Verification Code</label> <input type="text" id="resetVerifyCode" placeholder="000000" autocomplete="off" maxlength="6" class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200 tracking-widest" style="background: #f8fafc; border: 1.5px solid #e2e8f0; color: #1e293b; letter-spacing: 0.1em;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'" oninput="clearFieldError('resetVerifyCodeWrap','resetVerifyCodeErr')">
+         <p id="resetVerifyCodeErr" class="text-xs mt-1 hidden" style="color: #ef4444;"></p>
+        </div>
+        <div id="resetNewPassWrap">
+         <label for="resetNewPass" class="block text-sm font-medium mb-1.5" style="color: #cbd5e1;">New Password</label>
+         <div class="relative">
+          <input type="password" id="resetNewPass" placeholder="••••••••" autocomplete="new-password" class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200 pr-11" style="background: #0f1320; border: 1.5px solid #2d3548; color: #f1f5f9;" onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 3px rgba(99,102,241,0.15)'" onblur="this.style.borderColor='#2d3548'; this.style.boxShadow='none'" oninput="clearFieldError('resetNewPassWrap','resetNewPassErr')"> <button type="button" onclick="togglePass('resetNewPass')" class="absolute right-3 top-1/2 -translate-y-1/2" style="color: #64748b;"> <i data-lucide="eye-off" class="w-4 h-4 block" id="resetNewPassIconHidden"></i> <i data-lucide="eye" class="w-4 h-4 hidden" id="resetNewPassIconVisible"></i> </button>
+         </div>
+         <p id="resetNewPassErr" class="text-xs mt-1 hidden" style="color: #ef4444;"></p>
+        </div>
+        <div id="resetConfirmPassWrap">
+         <label for="resetConfirmPass" class="block text-sm font-medium mb-1.5" style="color: #cbd5e1;">Confirm Password</label>
+         <div class="relative">
+          <input type="password" id="resetConfirmPass" placeholder="••••••••" autocomplete="new-password" class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200 pr-11" style="background: #0f1320; border: 1.5px solid #2d3548; color: #f1f5f9;" onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 3px rgba(99,102,241,0.15)'" onblur="this.style.borderColor='#2d3548'; this.style.boxShadow='none'" oninput="clearFieldError('resetConfirmPassWrap','resetConfirmPassErr')"> <button type="button" onclick="togglePass('resetConfirmPass')" class="absolute right-3 top-1/2 -translate-y-1/2" style="color: #64748b;"> <i data-lucide="eye-off" class="w-4 h-4 block" id="resetConfirmPassIconHidden"></i> <i data-lucide="eye" class="w-4 h-4 hidden" id="resetConfirmPassIconVisible"></i> </button>
+         </div>
+         <p id="resetConfirmPassErr" class="text-xs mt-1 hidden" style="color: #ef4444;"></p>
+        </div>
+       </div>
+       <div id="resetVerifyGeneralErr" class="hidden mb-4 p-3 rounded-xl text-sm flex items-start gap-2" style="background: rgba(239,68,68,0.1); color: #ef4444;">
+        <i data-lucide="alert-circle" class="w-4 h-4 mt-0.5 flex-shrink-0"></i> <span id="resetVerifyGeneralErrText"></span>
+       </div><button type="submit" id="resetStep2Btn" class="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-2" style="background: linear-gradient(to right, #3b82f6, #6366f1); color: #fff;"> <span id="resetStep2Text">Save change</span>
+        <svg id="resetStep2Spinner" class="hidden animate-spin w-4 h-4" viewbox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" opacity="0.3"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+        </svg></button>
+      </form>
+      <div class="mt-6 space-y-3 text-center text-sm">
+       <div>
+        <span style="color: #64748b;">Remember your password?</span> <a href="#" onclick="showPanel('panelSignIn'); return false;" class="font-semibold ml-1 hover:underline" style="color: #818cf8;">Login!</a>
+       </div><a href="#" onclick="showPanel('panelSignUp'); return false;" class="block hover:underline" style="color: #818cf8;">Sign up!</a> <a href="#" onclick="guestContinue(); return false;" class="block hover:underline" style="color: #64748b;" id="guestLink5">( Continue as a guest )</a>
+      </div>
+     </div>
+     <script>
+// Simulated registered users
+const registeredUsers = [
+  { email: 'demo@example.com', password: 'Password1!' },
+  { email: 'test@test.com', password: 'Test1234!' }
+];
+
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passRe = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+function openModal() {
+  document.getElementById('overlay').classList.remove('hidden');
+  showPanel('panelSignIn');
+}
+function closeModal() {
+  document.getElementById('overlay').classList.add('hidden');
+  resetAllForms();
+}
+function handleOverlayClick(e) {
+  if (e.target === e.currentTarget) closeModal();
+}
+
+function resetAllForms() {
+  document.querySelectorAll('form').forEach(f => f.reset());
+  document.querySelectorAll('[id$="Err"]').forEach(el => { el.classList.add('hidden'); el.textContent = ''; });
+  document.querySelectorAll('[id$="Wrap"]').forEach(el => el.classList.remove('field-error'));
+  document.getElementById('siGeneralErr').classList.add('hidden');
+}
+
+function showFieldErr(wrapId, errId, msg) {
+  const wrap = document.getElementById(wrapId);
+  const err = document.getElementById(errId);
+  wrap.classList.add('field-error');
+  err.textContent = msg;
+  err.classList.remove('hidden');
+  wrap.classList.add('shake');
+  setTimeout(() => wrap.classList.remove('shake'), 400);
+}
+function clearFieldError(wrapId, errId) {
+  document.getElementById(wrapId).classList.remove('field-error');
+  const err = document.getElementById(errId);
+  err.classList.add('hidden');
+  err.textContent = '';
+}
+
+function setLoading(btnId, textId, spinnerId, loading) {
+  const btn = document.getElementById(btnId);
+  const spinner = document.getElementById(spinnerId);
+  btn.disabled = loading;
+  btn.style.opacity = loading ? '0.7' : '1';
+  spinner.classList.toggle('hidden', !loading);
+}
+
+function togglePass(inputId) {
+  const input = document.getElementById(inputId);
+  const isPassword = input.type === 'password';
+  input.type = isPassword ? 'text' : 'password';
+  
+  // Update icon visibility for this specific input
+  const hiddenIcon = document.getElementById(inputId + 'IconHidden');
+  const visibleIcon = document.getElementById(inputId + 'IconVisible');
+  
+  if (isPassword) {
+    // Password is being revealed - show eye, hide eye-off
+    hiddenIcon.classList.add('hidden');
+    visibleIcon.classList.remove('hidden');
+  } else {
+    // Password is being hidden - show eye-off, hide eye
+    hiddenIcon.classList.remove('hidden');
+    visibleIcon.classList.add('hidden');
+  }
+  
+  lucide.createIcons();
+}
+
+function showPanel(panelId) {
+  document.getElementById('panelSignIn').classList.add('hidden');
+  document.getElementById('panelSignUp').classList.add('hidden');
+  document.getElementById('panelSignUpVerify').classList.add('hidden');
+  document.getElementById('panelResetPassword').classList.add('hidden');
+  document.getElementById('panelResetPasswordVerify').classList.add('hidden');
+  document.getElementById(panelId).classList.remove('hidden');
+}
+
+// SIGN IN
+function handleSignIn(e) {
+  e.preventDefault();
+  const email = document.getElementById('siEmail').value.trim();
+  const pass = document.getElementById('siPass').value;
+  let valid = true;
+
+  document.getElementById('siGeneralErr').classList.add('hidden');
+
+  if (!email) { showFieldErr('siEmailWrap','siEmailErr','Email is required'); valid = false; }
+  else if (!emailRe.test(email)) { showFieldErr('siEmailWrap','siEmailErr','Please enter a valid email address'); valid = false; }
+
+  if (!pass) { showFieldErr('siPassWrap','siPassErr','Password is required'); valid = false; }
+  else if (pass.length < 8) { showFieldErr('siPassWrap','siPassErr','Password must be at least 8 characters'); valid = false; }
+  else if (!passRe.test(pass)) { showFieldErr('siPassWrap','siPassErr','Must include uppercase, lowercase, and a number'); valid = false; }
+
+  if (!valid) return;
+
+  setLoading('siSubmitBtn','siSubmitText','siSpinner', true);
+
+  setTimeout(() => {
+    setLoading('siSubmitBtn','siSubmitText','siSpinner', false);
+    const user = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (!user) {
+      showFieldErr('siEmailWrap','siEmailErr','No account found with this email');
+      return;
+    }
+    if (user.password !== pass) {
+      showFieldErr('siPassWrap','siPassErr','Incorrect password');
+      return;
+    }
+    // Success
+    closeModal();
+    document.getElementById('openBtn').classList.add('hidden');
+    document.getElementById('successMsg').classList.remove('hidden');
+    lucide.createIcons();
+  }, 1200);
+}
+
+// GUEST
+function guestContinue() {
+  closeModal();
+  document.getElementById('openBtn').classList.add('hidden');
+  const msg = document.getElementById('successMsg');
+  msg.classList.remove('hidden');
+  msg.querySelector('h2').textContent = 'Welcome, guest!';
+  msg.querySelector('p').textContent = 'You\'re browsing as a guest.';
+  lucide.createIcons();
+}
+
+// SIGN UP - Step 1: Username, Email, Confirm Email
+function handleSignUpStep1(e) {
+  e.preventDefault();
+  const username = document.getElementById('suUsername').value.trim();
+  const email = document.getElementById('suEmail').value.trim();
+  const confirmEmail = document.getElementById('suConfirmEmail').value.trim();
+  let valid = true;
+
+  document.getElementById('suGeneralErr').classList.add('hidden');
+
+  if (!username) { showFieldErr('suUsernameWrap','suUsernameErr','Username is required'); valid = false; }
+  else if (username.length < 3) { showFieldErr('suUsernameWrap','suUsernameErr','Username must be at least 3 characters'); valid = false; }
+
+  if (!email) { showFieldErr('suEmailWrap','suEmailErr','Email is required'); valid = false; }
+  else if (!emailRe.test(email)) { showFieldErr('suEmailWrap','suEmailErr','Please enter a valid email address'); valid = false; }
+
+  if (!confirmEmail) { showFieldErr('suConfirmEmailWrap','suConfirmEmailErr','Please confirm your email'); valid = false; }
+  else if (confirmEmail !== email) { showFieldErr('suConfirmEmailWrap','suConfirmEmailErr','Emails do not match'); valid = false; }
+
+  if (!valid) return;
+
+  setLoading('suStep1Btn','suStep1Text','suStep1Spinner', true);
+
+  setTimeout(() => {
+    setLoading('suStep1Btn','suStep1Text','suStep1Spinner', false);
+    const emailExists = registeredUsers.some(u => u.email.toLowerCase() === email.toLowerCase());
+    if (emailExists) {
+      showFieldErr('suEmailWrap','suEmailErr','This email is already registered');
+      return;
+    }
+    // Move to step 2
+    document.getElementById('suUsername').setAttribute('data-value', username);
+    document.getElementById('suEmail').setAttribute('data-value', email);
+    document.getElementById('verifyEmailDisplay').textContent = email;
+    showPanel('panelSignUpVerify');
+    lucide.createIcons();
+  }, 1200);
+}
+
+// SIGN UP - Step 2: Verification Code, Password, Confirm Password
+function handleSignUpStep2(e) {
+  e.preventDefault();
+  const verifyCode = document.getElementById('suVerifyCode').value.trim();
+  const pass = document.getElementById('suVerifyPass').value;
+  const confirmPass = document.getElementById('suVerifyConfirmPass').value;
+  let valid = true;
+
+  document.getElementById('suVerifyGeneralErr').classList.add('hidden');
+
+  if (!verifyCode) { showFieldErr('suVerifyCodeWrap','suVerifyCodeErr','Verification code is required'); valid = false; }
+  else if (verifyCode.length !== 6 || !/^\d+$/.test(verifyCode)) { showFieldErr('suVerifyCodeWrap','suVerifyCodeErr','Please enter a valid 6-digit code'); valid = false; }
+
+  if (!pass) { showFieldErr('suVerifyPassWrap','suVerifyPassErr','Password is required'); valid = false; }
+  else if (pass.length < 8) { showFieldErr('suVerifyPassWrap','suVerifyPassErr','Password must be at least 8 characters'); valid = false; }
+  else if (!passRe.test(pass)) { showFieldErr('suVerifyPassWrap','suVerifyPassErr','Must include uppercase, lowercase, and a number'); valid = false; }
+
+  if (!confirmPass) { showFieldErr('suVerifyConfirmPassWrap','suVerifyConfirmPassErr','Please confirm your password'); valid = false; }
+  else if (confirmPass !== pass) { showFieldErr('suVerifyConfirmPassWrap','suVerifyConfirmPassErr','Passwords do not match'); valid = false; }
+
+  if (!valid) return;
+
+  setLoading('suStep2Btn','suStep2Text','suStep2Spinner', true);
+
+  setTimeout(() => {
+    setLoading('suStep2Btn','suStep2Text','suStep2Spinner', false);
+    // Simulate verification code check (only accepts "123456")
+    if (verifyCode !== '123456') {
+      showFieldErr('suVerifyCodeWrap','suVerifyCodeErr','Verification code is incorrect');
+      return;
+    }
+    // Success - add new user
+    const username = document.getElementById('suUsername').getAttribute('data-value');
+    const email = document.getElementById('suEmail').getAttribute('data-value');
+    registeredUsers.push({ email, password: pass });
+    
+    // Show success screen with countdown
+    showSignUpSuccess();
+  }, 1200);
+}
+
+function showSignUpSuccess() {
+  closeModal();
+  document.getElementById('openBtn').classList.add('hidden');
+  const msg = document.getElementById('successMsg');
+  msg.classList.remove('hidden');
+  msg.querySelector('h2').innerHTML = '🎉 Welcome aboard!<br><span style="font-size: 0.7em;">You received 150 tokens!</span>';
+  msg.querySelector('p').textContent = 'Your account has been created successfully.';
+  
+  let countdown = 5;
+  const countdownEl = document.createElement('div');
+  countdownEl.style.cssText = 'margin-top: 1rem; font-size: 2em; font-weight: bold; color: #6366f1;';
+  countdownEl.textContent = countdown;
+  msg.appendChild(countdownEl);
+  
+  const skipBtn = document.createElement('button');
+  skipBtn.textContent = 'Continue Now';
+  skipBtn.style.cssText = 'margin-top: 1.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(to right, #3b82f6, #6366f1); color: #fff; border: none; border-radius: 0.75rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;';
+  skipBtn.onmouseover = () => skipBtn.style.opacity = '0.9';
+  skipBtn.onmouseout = () => skipBtn.style.opacity = '1';
+  skipBtn.onclick = () => {
+    clearInterval(interval);
+    countdownEl.remove();
+    skipBtn.remove();
+    msg.classList.add('hidden');
+    document.getElementById('openBtn').classList.remove('hidden');
+    resetAllForms();
+  };
+  msg.appendChild(skipBtn);
+  
+  const interval = setInterval(() => {
+    countdown--;
+    if (countdown >= 0) {
+      countdownEl.textContent = countdown;
+    } else {
+      clearInterval(interval);
+      countdownEl.remove();
+      skipBtn.remove();
+      msg.classList.add('hidden');
+      document.getElementById('openBtn').classList.remove('hidden');
+      resetAllForms();
+    }
+  }, 1000);
+  
+  lucide.createIcons();
+}
+
+// RESET PASSWORD - Step 1: Email
+function handleResetPasswordStep1(e) {
+  e.preventDefault();
+  const email = document.getElementById('resetEmail').value.trim();
+  let valid = true;
+
+  document.getElementById('resetGeneralErr').classList.add('hidden');
+
+  if (!email) { showFieldErr('resetEmailWrap','resetEmailErr','Email is required'); valid = false; }
+  else if (!emailRe.test(email)) { showFieldErr('resetEmailWrap','resetEmailErr','Please enter a valid email address'); valid = false; }
+
+  if (!valid) return;
+
+  setLoading('resetStep1Btn','resetStep1Text','resetStep1Spinner', true);
+
+  setTimeout(() => {
+    setLoading('resetStep1Btn','resetStep1Text','resetStep1Spinner', false);
+    const user = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (!user) {
+      showFieldErr('resetEmailWrap','resetEmailErr','No account found with this email');
+      return;
+    }
+    // Move to step 2
+    document.getElementById('resetEmail').setAttribute('data-value', email);
+    document.getElementById('resetVerifyEmailDisplay').textContent = email;
+    showPanel('panelResetPasswordVerify');
+    lucide.createIcons();
+  }, 1200);
+}
+
+// RESET PASSWORD - Step 2: Verification Code, New Password, Confirm Password
+function handleResetPasswordStep2(e) {
+  e.preventDefault();
+  const verifyCode = document.getElementById('resetVerifyCode').value.trim();
+  const newPass = document.getElementById('resetNewPass').value;
+  const confirmPass = document.getElementById('resetConfirmPass').value;
+  let valid = true;
+
+  document.getElementById('resetVerifyGeneralErr').classList.add('hidden');
+
+  if (!verifyCode) { showFieldErr('resetVerifyCodeWrap','resetVerifyCodeErr','Verification code is required'); valid = false; }
+  else if (verifyCode.length !== 6 || !/^\d+$/.test(verifyCode)) { showFieldErr('resetVerifyCodeWrap','resetVerifyCodeErr','Please enter a valid 6-digit code'); valid = false; }
+
+  if (!newPass) { showFieldErr('resetNewPassWrap','resetNewPassErr','New password is required'); valid = false; }
+  else if (newPass.length < 8) { showFieldErr('resetNewPassWrap','resetNewPassErr','Password must be at least 8 characters'); valid = false; }
+  else if (!passRe.test(newPass)) { showFieldErr('resetNewPassWrap','resetNewPassErr','Must include uppercase, lowercase, and a number'); valid = false; }
+
+  if (!confirmPass) { showFieldErr('resetConfirmPassWrap','resetConfirmPassErr','Please confirm your password'); valid = false; }
+  else if (confirmPass !== newPass) { showFieldErr('resetConfirmPassWrap','resetConfirmPassErr','Passwords do not match'); valid = false; }
+
+  if (!valid) return;
+
+  setLoading('resetStep2Btn','resetStep2Text','resetStep2Spinner', true);
+
+  setTimeout(() => {
+    setLoading('resetStep2Btn','resetStep2Text','resetStep2Spinner', false);
+    // Simulate verification code check (only accepts "123456")
+    if (verifyCode !== '123456') {
+      showFieldErr('resetVerifyCodeWrap','resetVerifyCodeErr','Verification code is incorrect');
+      return;
+    }
+    // Success - update user password
+    const email = document.getElementById('resetEmail').getAttribute('data-value');
+    const userIdx = registeredUsers.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+    if (userIdx !== -1) {
+      registeredUsers[userIdx].password = newPass;
+    }
+    
+    // Show success screen with countdown
+    showResetPasswordSuccess();
+  }, 1200);
+}
+
+function showResetPasswordSuccess() {
+  const modal = document.getElementById('modal');
+  const panels = modal.querySelectorAll('[id^="panel"]');
+  panels.forEach(p => p.classList.add('hidden'));
+  
+  const successPanel = document.createElement('div');
+  successPanel.className = 'p-8 pt-10 text-center';
+  successPanel.id = 'panelResetSuccess';
+  
+  const iconDiv = document.createElement('div');
+  iconDiv.className = 'w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center';
+  iconDiv.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+  iconDiv.innerHTML = '<i data-lucide="check" class="w-7 h-7" style="color: #fff;"></i>';
+  
+  const heading = document.createElement('h2');
+  heading.className = 'text-2xl font-bold mb-2';
+  heading.style.color = '#f1f5f9';
+  heading.textContent = 'Password changed!';
+  
+  const desc = document.createElement('p');
+  desc.style.color = '#94a3b8';
+  desc.textContent = 'Your password has been reset successfully.';
+  
+  const countdownEl = document.createElement('div');
+  countdownEl.style.cssText = 'margin-top: 1.5rem; font-size: 1.5em; font-weight: bold; color: #6366f1;';
+  
+  const returnMsg = document.createElement('span');
+  returnMsg.style.color = '#cbd5e1';
+  returnMsg.textContent = 'Returning to login in ';
+  
+  countdownEl.appendChild(returnMsg);
+  
+  const countdownNum = document.createElement('span');
+  countdownNum.style.color = '#6366f1';
+  let countdown = 3;
+  countdownNum.textContent = countdown;
+  
+  countdownEl.appendChild(countdownNum);
+  
+  const countdownEnd = document.createElement('span');
+  countdownEnd.style.color = '#cbd5e1';
+  countdownEnd.textContent = ' seconds...';
+  countdownEl.appendChild(countdownEnd);
+  
+  const buttonContainer = document.createElement('div');
+  buttonContainer.style.cssText = 'margin-top: 1.5rem; display: flex; gap: 1rem;';
+  
+  const skipBtn = document.createElement('button');
+  skipBtn.textContent = 'Go to Login Now';
+  skipBtn.style.cssText = 'flex: 1; padding: 0.75rem 1.5rem; background: linear-gradient(to right, #3b82f6, #6366f1); color: #fff; border: none; border-radius: 0.75rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;';
+  skipBtn.onmouseover = () => skipBtn.style.opacity = '0.9';
+  skipBtn.onmouseout = () => skipBtn.style.opacity = '1';
+  skipBtn.onclick = () => {
+    clearInterval(interval);
+    successPanel.remove();
+    showPanel('panelSignIn');
+    resetAllForms();
+    lucide.createIcons();
+  };
+  
+  buttonContainer.appendChild(skipBtn);
+  
+  successPanel.appendChild(iconDiv);
+  successPanel.appendChild(heading);
+  successPanel.appendChild(desc);
+  successPanel.appendChild(countdownEl);
+  successPanel.appendChild(buttonContainer);
+  
+  modal.appendChild(successPanel);
+  
+  const interval = setInterval(() => {
+    countdown--;
+    countdownNum.textContent = countdown;
+    if (countdown < 0) {
+      clearInterval(interval);
+      successPanel.remove();
+      showPanel('panelSignIn');
+      resetAllForms();
+      lucide.createIcons();
+    }
+  }, 1000);
+  
+  lucide.createIcons();
+}
+
+// Element SDK
+const defaultConfig = {
+  background_color: '#0f172a',
+  surface_color: 'rgba(30, 41, 59, 0.95)',
+  text_color: '#f1f5f9',
+  primary_action_color: '#3b82f6',
+  secondary_action_color: '#60a5fa',
+  font_family: 'DM Sans',
+  font_size: 16,
+  sign_in_title: 'Sign in',
+  sign_up_title: 'Sign up',
+  guest_link_text: '( Continue as a guest )'
+};
+
+function applyConfig(config) {
+  const c = { ...defaultConfig, ...config };
+  const font = c.font_family || defaultConfig.font_family;
+  const baseSize = c.font_size || defaultConfig.font_size;
+  
+  document.body.style.fontFamily = `${font}, sans-serif`;
+  document.querySelectorAll('*').forEach(el => { el.style.fontFamily = `${font}, sans-serif`; });
+
+  // Colors
+  document.getElementById('app').style.background = `linear-gradient(to bottom right, #0f172a, #1e3a8a, #4c1d95)`;
+  document.getElementById('modal').style.background = c.surface_color;
+
+  // Text colors
+  document.querySelectorAll('h2').forEach(el => el.style.color = c.text_color);
+  document.querySelectorAll('label').forEach(el => el.style.color = c.text_color);
+
+  // Primary action
+  document.getElementById('openBtn').style.background = `linear-gradient(to right, #3b82f6, #6366f1)`;
+  document.getElementById('siSubmitBtn').style.background = `linear-gradient(to right, #3b82f6, #6366f1)`;
+  document.getElementById('suStep1Btn').style.background = `linear-gradient(to right, #3b82f6, #6366f1)`;
+  document.getElementById('suStep2Btn').style.background = `linear-gradient(to right, #3b82f6, #6366f1)`;
+
+  // Secondary action (links)
+  document.querySelectorAll('a[style*="818cf8"], a').forEach(el => {
+    if (el.style.color && el.style.color !== 'rgb(100, 116, 139)') {
+      el.style.color = c.secondary_action_color;
+    }
+  });
+
+  // Titles
+  document.getElementById('signInTitle').textContent = c.sign_in_title;
+  document.getElementById('signUpTitle').textContent = c.sign_up_title;
+  document.getElementById('guestLink').textContent = c.guest_link_text;
+  document.getElementById('guestLink2').textContent = c.guest_link_text;
+  document.getElementById('guestLink3').textContent = c.guest_link_text;
+
+  // Font sizing
+  document.querySelectorAll('h2').forEach(el => el.style.fontSize = `${baseSize * 1.5}px`);
+  document.querySelectorAll('label').forEach(el => el.style.fontSize = `${baseSize * 0.875}px`);
+  document.querySelectorAll('input').forEach(el => el.style.fontSize = `${baseSize * 0.875}px`);
+  document.querySelectorAll('button[type="submit"] span').forEach(el => el.style.fontSize = `${baseSize * 0.875}px`);
+}
+
+function lighten(hex, pct) {
+  let r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  r = Math.min(255, r + Math.round(pct * 2.55));
+  g = Math.min(255, g + Math.round(pct * 2.55));
+  b = Math.min(255, b + Math.round(pct * 2.55));
+  return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
+}
+
+if (window.elementSdk) {
+  window.elementSdk.init({
+    defaultConfig,
+    onConfigChange: async (config) => { applyConfig(config); },
+    mapToCapabilities: (config) => ({
+      recolorables: [
+        { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+        { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+        { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+        { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: (v) => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+        { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } }
+      ],
+      borderables: [],
+      fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); } },
+      fontSizeable: { get: () => config.font_size || defaultConfig.font_size, set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); } }
+    }),
+    mapToEditPanelValues: (config) => new Map([
+      ['sign_in_title', config.sign_in_title || defaultConfig.sign_in_title],
+      ['sign_up_title', config.sign_up_title || defaultConfig.sign_up_title],
+      ['guest_link_text', config.guest_link_text || defaultConfig.guest_link_text]
+    ])
+  });
+}
+
+lucide.createIcons();
+</script>
+    </div>
+   </div>
+  </div>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9eebd6ce4320a7f5',t:'MTc3NjYwMDk3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
