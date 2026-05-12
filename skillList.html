@@ -1,0 +1,38 @@
+<div id="skillList"
+    class="skillList container flex flex-wrap justify-center pt-4 pb-5 mt-4 mb-4 mx-auto lg:mt-8 lg:pt-8 xl:mt-12">
+    <!-- Mock Test Header Card -->
+    <div id="testWrap" class="testWrap w-full px-3 py-3 flex justify-center">
+        <div id="test" class="test w-full lg:w-1/2 xl:w-1/3 border border-white/10 rounded-2xl p-4 text-center bg-slate-900/60 backdrop-blur-xl shadow-xl hover:border-sky-500/30 transition-all duration-300">
+            <a href="/other/mock-test" class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-indigo-400 hover:from-sky-300 hover:to-indigo-300 transition-all">Mock Test</a>
+        </div>
+    </div>
+
+    <!-- Skill Category Cards -->
+    @for(skill of skills; track skill; let i = $index){
+    @if(skill.skill != 'Other'){
+    <div class="skillsWrap w-full lg:w-1/2 xl:w-1/4 px-3 py-3 flex">
+        <div id="{{skill.skill.toLowerCase()}}Skills"
+            [class]="'text-white ' + skill.skill.toLowerCase() + 'Skills skills w-full p-6 bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl hover:border-sky-500/30 transition-all duration-300 flex flex-col shadow-black/20'">
+            <h2 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-indigo-400">{{skill.skill}}</h2>
+            <div class="h-px w-full bg-white/10 my-4"></div>
+            <div class="space-y-3 flex-grow">
+                @for(type of skill.types; track type; let j = $index){
+                <div class="group">
+                    <a [routerLink]="[skill.paths[j]]" class="text-slate-400 hover:text-sky-400 transition-colors duration-200 block">
+                        {{type}}
+                    </a>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+    }
+    }
+
+    <!-- Footer Supported Skills (Vocab) -->
+    <div id="supportedSkillsWrap" class="supportedSkillsWrap w-full px-3 py-3 flex justify-center mt-4">
+        <div id="vocab" class="vocab supportedSkills w-full md:w-1/2 lg:w-1/3 border border-white/10 rounded-2xl p-4 text-center bg-slate-900/60 backdrop-blur-xl shadow-xl hover:border-sky-500/30 transition-all duration-300">
+            <a href="assets/vocabGame_pingpong/vocabGame_pingpong.html" class="text-slate-300 hover:text-white transition-colors font-medium">Vocabulary games</a>
+        </div>
+    </div>
+</div>
