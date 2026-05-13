@@ -1,0 +1,57 @@
+<div id="skillList"
+    class="skillList container flex flex-wrap justify-center pt-4 pb-5 mt-4 mb-4 mx-auto lg:mt-8 lg:pt-8 xl:mt-12">
+    <!-- Mock Test Header Card -->
+    <div id="testWrap" class="testWrap w-full px-3 py-3 flex justify-center">
+        <div id="test" class="test w-full lg:w-1/2 xl:w-1/3 border-t-2 border-rose-500/50 border-x border-white/10 border-b border-white/10 rounded-2xl p-4 text-center bg-slate-900/60 backdrop-blur-xl shadow-xl hover:border-rose-500 transition-all duration-300 group">
+            <a href="/other/mock-test" class="text-xl font-bold text-rose-400 group-hover:text-rose-300 transition-all flex items-center justify-center gap-2">
+                <i data-lucide="clipboard-check" class="w-6 h-6"></i>
+                Mock Test
+            </a>
+        </div>
+    </div>
+
+    <!-- Skill Category Cards -->
+    @for(skill of skills; track skill; let i = $index){
+    @if(skill.skill != 'Other'){
+    <div class="skillsWrap w-full lg:w-1/2 xl:w-1/4 px-3 py-3 flex">
+        <div id="{{skill.skill.toLowerCase()}}Skills"
+            [class]="'text-white ' + skill.skill.toLowerCase() + 'Skills skills w-full p-6 bg-slate-900/60 backdrop-blur-xl border border-white/10 border-t-2 rounded-2xl shadow-xl transition-all duration-300 flex flex-col ' +
+            (skill.skill === 'Speaking' ? 'border-t-sky-500/50 hover:border-t-sky-500 shadow-sky-500/5' :
+             skill.skill === 'Writing' ? 'border-t-emerald-500/50 hover:border-t-emerald-500 shadow-emerald-500/5' :
+             skill.skill === 'Reading' ? 'border-t-amber-500/50 hover:border-t-amber-500 shadow-amber-500/5' :
+             skill.skill === 'Listening' ? 'border-t-purple-500/50 hover:border-t-purple-500 shadow-purple-500/5' : '')">
+
+            <h2 class="text-xl font-bold flex items-center gap-2"
+                [class]="skill.skill === 'Speaking' ? 'text-sky-400' :
+                         skill.skill === 'Writing' ? 'text-emerald-400' :
+                         skill.skill === 'Reading' ? 'text-amber-400' :
+                         skill.skill === 'Listening' ? 'text-purple-400' : ''">
+                @if(skill.skill === 'Speaking'){ <i data-lucide="mic" class="w-5 h-5"></i> }
+                @if(skill.skill === 'Writing'){ <i data-lucide="pen-tool" class="w-5 h-5"></i> }
+                @if(skill.skill === 'Reading'){ <i data-lucide="book-open" class="w-5 h-5"></i> }
+                @if(skill.skill === 'Listening'){ <i data-lucide="headphones" class="w-5 h-5"></i> }
+                {{skill.skill}}
+            </h2>
+
+            <div class="h-px w-full bg-white/10 my-4"></div>
+            <div class="space-y-3 flex-grow">
+                @for(type of skill.types; track type; let j = $index){
+                <div class="group/item">
+                    <a [routerLink]="[skill.paths[j]]" class="text-slate-400 hover:text-white transition-colors duration-200 block">
+                        {{type}}
+                    </a>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+    }
+    }
+
+    <!-- Footer Supported Skills (Vocab) -->
+    <div id="supportedSkillsWrap" class="supportedSkillsWrap w-full px-3 py-3 flex justify-center mt-4">
+        <div id="vocab" class="vocab supportedSkills w-full md:w-1/2 lg:w-1/3 border border-white/10 rounded-2xl p-4 text-center bg-slate-900/60 backdrop-blur-xl shadow-xl hover:border-white/20 transition-all duration-300">
+            <a href="assets/vocabGame_pingpong/vocabGame_pingpong.html" class="text-slate-300 hover:text-white transition-colors font-medium">Vocabulary games</a>
+        </div>
+    </div>
+</div>
