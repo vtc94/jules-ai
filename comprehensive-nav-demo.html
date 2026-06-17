@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTE Master — Comprehensive Navbar (Plain HTML/JS)</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <!-- Lucide Icons via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-item { position: relative; }
+        .mega-menu {
+            position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            opacity: 0; visibility: hidden; transition: opacity 0.2s; z-index: 50; padding-top: 8px;
+        }
+        .nav-item:hover > .mega-menu { opacity: 1; visibility: visible; }
+        .sub-item { position: relative; }
+        .sub-menu {
+            position: absolute; left: 100%; top: 0;
+            opacity: 0; visibility: hidden; transition: opacity 0.15s; z-index: 60; padding-left: 4px;
+        }
+        .sub-item:hover > .sub-menu { opacity: 1; visibility: visible; }
+        .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+        .mobile-menu.open { max-height: 1000px; }
+        .mobile-accordion { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .mobile-accordion.open { max-height: 500px; }
+        .profile-tooltip {
+            display: none; position: absolute; right: 0; width: 13rem; border-radius: 0.75rem;
+            background: #0f172a; border: 1px solid rgba(255,255,255,0.1); z-index: 50; overflow: hidden;
+        }
+        .profile-tooltip.open { display: block; }
+    </style>
+</head>
+
+<body class="h-full bg-slate-950 text-white antialiased">
+    <!-- COMPREHENSIVE NAVBAR -->
+    <nav id="navbar" class="fixed top-0 left-0 w-full z-50 border-b border-white/10 bg-slate-900/90 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Left: Logo & Burger -->
+                <div class="flex items-center gap-4">
+                    <button id="burger-btn" class="md:hidden p-2 text-slate-400 hover:text-white transition">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center font-bold text-white">P</div>
+                        <span class="text-xl font-bold tracking-tight">PTE Master</span>
+                    </div>
+                </div>
+
+                <!-- Center: Desktop Links -->
+                <div class="hidden md:flex items-center gap-2">
+                    <div class="nav-item">
+                        <button class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white flex items-center gap-1">
+                            Practice <i data-lucide="chevron-down" class="w-4 h-4 opacity-50"></i>
+                        </button>
+                        <div class="mega-menu">
+                            <div class="bg-slate-900 border border-white/10 rounded-xl shadow-2xl p-1.5 min-w-[180px]">
+                                <div class="sub-item">
+                                    <button class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/5">
+                                        <span>Speaking</span> <i data-lucide="chevron-right" class="w-4 h-4 opacity-30"></i>
+                                    </button>
+                                    <div class="sub-menu">
+                                        <div class="bg-slate-900 border border-white/10 rounded-xl p-1.5 min-w-[180px]">
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Read Aloud</a>
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Repeat Sentence</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-item">
+                                    <button class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/5">
+                                        <span>Writing</span> <i data-lucide="chevron-right" class="w-4 h-4 opacity-30"></i>
+                                    </button>
+                                    <div class="sub-menu">
+                                        <div class="bg-slate-900 border border-white/10 rounded-xl p-1.5 min-w-[180px]">
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Summarise Text</a>
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Write Essay</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white transition">Tutorial</a>
+                    <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white transition">Pricing</a>
+                    <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white transition">Forum</a>
+                </div>
+
+                <!-- Right: Auth State -->
+                <div class="flex items-center gap-4">
+                    <!-- Guest -->
+                    <div id="guest-state" class="hidden flex items-center gap-2">
+                        <button onclick="setLoggedIn(true)" class="text-sm font-medium text-slate-300 hover:text-white px-4 py-2">Log In</button>
+                        <button onclick="setLoggedIn(true)" class="bg-sky-500 hover:bg-sky-400 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">Sign Up</button>
+                    </div>
+                    <!-- Authenticated -->
+                    <div id="auth-state" class="flex items-center gap-4">
+                        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20">
+                            <i data-lucide="coins" class="w-4 h-4 text-sky-400"></i>
+                            <span class="text-sky-300 font-bold text-sm">1,250</span>
+                        </div>
+                        <div class="relative">
+                            <button id="profile-btn" class="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center border border-white/10 hover:border-sky-500/50 transition">
+                                <i data-lucide="user" class="w-5 h-5 text-slate-400"></i>
+                            </button>
+                            <div id="profile-tooltip" class="profile-tooltip mt-2 right-0">
+                                <div class="px-4 py-3 border-b border-white/5">
+                                    <p class="text-xs text-slate-500">student@ptemaster.com</p>
+                                </div>
+                                <div class="p-1">
+                                    <button class="w-full text-left px-3 py-2 text-sm text-slate-300 hover:bg-white/5 rounded-md transition">Profile</button>
+                                    <button onclick="setLoggedIn(false)" class="w-full text-left px-3 py-2 text-sm text-rose-400 hover:bg-rose-500/10 rounded-md transition">Log Out</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu md:hidden bg-slate-900 border-t border-white/10">
+            <div class="px-4 py-3 space-y-1">
+                <button onclick="toggleAccordion('mob-practice')" class="w-full flex items-center justify-between px-3 py-2 text-slate-300 hover:text-white">
+                    Practice <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </button>
+                <div id="mob-practice" class="mobile-accordion pl-4 space-y-1">
+                    <a href="#" class="block px-3 py-1.5 text-sm text-slate-400 hover:text-white">Speaking</a>
+                    <a href="#" class="block px-3 py-1.5 text-sm text-slate-400 hover:text-white">Writing</a>
+                </div>
+                <a href="#" class="block px-3 py-2 text-slate-300 hover:text-white">Tutorial</a>
+                <a href="#" class="block px-3 py-2 text-slate-300 hover:text-white">Pricing</a>
+                <a href="#" class="block px-3 py-2 text-slate-300 hover:text-white">Forum</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT (BLANK) -->
+    <main class="h-full flex items-center justify-center">
+        <div class="text-slate-800 text-xs uppercase tracking-widest pointer-events-none">Blank Page Body</div>
+    </main>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // State Management (Plain JS)
+        let isLoggedIn = true;
+        function setLoggedIn(val) {
+            isLoggedIn = val;
+            document.getElementById('guest-state').classList.toggle('hidden', isLoggedIn);
+            document.getElementById('auth-state').classList.toggle('hidden', !isLoggedIn);
+            if (!isLoggedIn) document.getElementById('profile-tooltip').classList.remove('open');
+        }
+        setLoggedIn(isLoggedIn);
+
+        // UI Interactions
+        const burgerBtn = document.getElementById('burger-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        burgerBtn.onclick = () => mobileMenu.classList.toggle('open');
+
+        const profileBtn = document.getElementById('profile-btn');
+        const profileTooltip = document.getElementById('profile-tooltip');
+        profileBtn.onclick = (e) => {
+            e.stopPropagation();
+            profileTooltip.classList.toggle('open');
+        };
+
+        window.onclick = () => profileTooltip.classList.remove('open');
+
+        function toggleAccordion(id) {
+            document.getElementById(id).classList.toggle('open');
+        }
+    </script>
+</body>
+
+</html>

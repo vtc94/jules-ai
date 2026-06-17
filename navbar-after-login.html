@@ -1,229 +1,142 @@
 <!doctype html>
-<html lang="en" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Glass Nav Bar</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Space+Mono:wght@700&amp;display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'DM Sans', sans-serif; }
+<html lang="en">
 
-    .tooltip-enter { animation: tooltipIn 0.2s ease-out forwards; }
-    .tooltip-exit { animation: tooltipOut 0.15s ease-in forwards; }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTE Master Navbar — Plain HTML/JS</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <style>
+        .mega-menu {
+            display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            padding-top: 0.5rem; z-index: 50;
+        }
+        .nav-item:hover .mega-menu { display: block; }
+        .sub-menu {
+            display: none; position: absolute; left: 100%; top: 0; padding-left: 0.25rem;
+        }
+        .sub-item:hover .sub-menu { display: block; }
+        .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .mobile-menu.open { max-height: 100vh; }
+        .mobile-accordion { max-height: 0; overflow: hidden; transition: max-height 0.2s ease-out; }
+        .mobile-accordion.open { max-height: 500px; }
+    </style>
+</head>
 
-    @keyframes tooltipIn {
-      from { opacity: 0; transform: translateY(-8px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    @keyframes tooltipOut {
-      from { opacity: 1; transform: translateY(0) scale(1); }
-      to { opacity: 0; transform: translateY(-8px) scale(0.95); }
-    }
+<body class="bg-slate-950 font-sans text-white">
+    <!-- NAVBAR START -->
+    <nav class="fixed top-0 left-0 w-full z-50 border-b border-white/10 bg-slate-900/80 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand & Burger -->
+                <div class="flex items-center gap-4">
+                    <button onclick="document.getElementById('mobile-menu').classList.toggle('open')" class="md:hidden p-2 text-slate-400 hover:text-white">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center font-bold">P</div>
+                        <span class="text-xl font-bold tracking-tight">PTE Master</span>
+                    </div>
+                </div>
 
-    .token-glow {
-      text-shadow: 0 0 12px rgba(250, 204, 21, 0.4);
-    }
+                <!-- Desktop Links -->
+                <div class="hidden md:flex items-center gap-2">
+                    <div class="nav-item relative">
+                        <button class="px-3 py-2 text-sm font-medium text-slate-300 hover:text-white flex items-center gap-1">
+                            Practice <i data-lucide="chevron-down" class="w-4 h-4 opacity-50"></i>
+                        </button>
+                        <div class="mega-menu">
+                            <div class="bg-slate-900 border border-white/10 rounded-xl shadow-2xl p-1.5 min-w-[180px]">
+                                <div class="sub-item relative">
+                                    <button class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/5">
+                                        Speaking <i data-lucide="chevron-right" class="w-4 h-4 opacity-30"></i>
+                                    </button>
+                                    <div class="sub-menu">
+                                        <div class="bg-slate-900 border border-white/10 rounded-xl p-1.5 min-w-[180px]">
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Read Aloud</a>
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Repeat Sentence</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-item relative">
+                                    <button class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/5">
+                                        Writing <i data-lucide="chevron-right" class="w-4 h-4 opacity-30"></i>
+                                    </button>
+                                    <div class="sub-menu">
+                                        <div class="bg-slate-900 border border-white/10 rounded-xl p-1.5 min-w-[180px]">
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Summarise Text</a>
+                                            <a href="#" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">Essay</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="px-3 py-2 text-sm font-medium text-slate-300 hover:text-white transition">Pricing</a>
+                    <a href="#" class="px-3 py-2 text-sm font-medium text-slate-300 hover:text-white transition">Tutorial</a>
+                </div>
 
-    .buy-btn {
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
-      transition: all 0.25s ease;
-    }
-    .buy-btn:hover {
-      background: linear-gradient(135deg, #60a5fa, #3b82f6);
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-      transform: translateY(-1px);
-    }
-
-    .profile-ring {
-      background: conic-gradient(#7c3aed, #06b6d4, #7c3aed);
-      padding: 2px;
-      border-radius: 50%;
-      transition: all 0.25s ease;
-      cursor: pointer;
-    }
-    .profile-ring:hover {
-      box-shadow: 0 0 16px rgba(124, 58, 237, 0.5);
-      transform: scale(1.05);
-    }
-  </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full">
-  <div id="app-wrapper" class="w-full h-full" style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #0f172a 100%);">
-   <!-- Nav Bar -->
-   <nav class="w-full px-5 py-3 flex items-center justify-between" style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.07);">
-    <!-- Left: Brand -->
-    <div class="flex items-center gap-2">
-     <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #7c3aed, #06b6d4);">
-      <i data-lucide="zap" style="width:18px;height:18px;color:#fff;"></i>
-     </div><span id="brand-name" class="text-white font-bold text-lg tracking-tight" style="font-family:'Space Mono',monospace;">NexusPay</span>
-    </div><!-- Right: Tokens + Buy + Profile -->
-    <div class="flex items-center gap-4 relative">
-     <!-- Token Amount -->
-     <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style="background: rgba(250, 204, 21, 0.08); border: 1px solid rgba(250, 204, 21, 0.2);">
-      <svg style="width:15px;height:15px;color:#facc15;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-  <path d="M2.273 5.625A4.483 4.483 0 0 1 5.25 4.5h13.5c1.141 0 2.183.425 2.977 1.125A3 3 0 0 0 18.75 3H5.25a3 3 0 0 0-2.977 2.625ZM2.273 8.625A4.483 4.483 0 0 1 5.25 7.5h13.5c1.141 0 2.183.425 2.977 1.125A3 3 0 0 0 18.75 6H5.25a3 3 0 0 0-2.977 2.625ZM5.25 9a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3h13.5a3 3 0 0 0 3-3v-6a3 3 0 0 0-3-3H15a.75.75 0 0 0-.75.75 2.25 2.25 0 0 1-4.5 0A.75.75 0 0 0 9 9H5.25Z" />
-</svg>
-<span id="token-count" class="text-yellow-400 font-semibold text-sm token-glow">1,250</span> <span class="text-yellow-500 font-semibold text-xs token-glow">Tokens</span>
-     </div><!-- Buy Tokens Button --> <button id="buy-btn" class="buy-btn text-white text-sm font-semibold px-4 py-2 rounded-full flex items-center gap-1.5 border-0 cursor-pointer"> 
-     <svg style="width:15px;height:15px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-  <path d="M5.223 2.25c-.497 0-.974.198-1.325.55l-1.3 1.298A3.75 3.75 0 0 0 7.5 9.75c.627.47 1.406.75 2.25.75.844 0 1.624-.28 2.25-.75.626.47 1.406.75 2.25.75.844 0 1.623-.28 2.25-.75a3.75 3.75 0 0 0 4.902-5.652l-1.3-1.299a1.875 1.875 0 0 0-1.325-.549H5.223Z" />
-  <path fill-rule="evenodd" d="M3 20.25v-8.755c1.42.674 3.08.673 4.5 0A5.234 5.234 0 0 0 9.75 12c.804 0 1.568-.182 2.25-.506a5.234 5.234 0 0 0 2.25.506c.804 0 1.567-.182 2.25-.506 1.42.674 3.08.675 4.5.001v8.755h.75a.75.75 0 0 1 0 1.5H2.25a.75.75 0 0 1 0-1.5H3Zm3-6a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1-.75-.75v-3Zm8.25-.75a.75.75 0 0 0-.75.75v5.25c0 .414.336.75.75.75h3a.75.75 0 0 0 .75-.75v-5.25a.75.75 0 0 0-.75-.75h-3Z" clip-rule="evenodd" />
-</svg>
-<span id="buy-btn-text">Buy Tokens</span> </button> <!-- Profile Icon -->
-     <div class="relative" id="profile-wrapper">
-      <button id="profile-btn" class="profile-ring border-0 cursor-pointer bg-transparent" aria-label="Profile menu" aria-expanded="false">
-       <div class="w-9 h-9 rounded-full flex items-center justify-center" style="background: #1e293b;">
-        <i data-lucide="user" style="width:18px;height:18px;color:#94a3b8;"></i>
-       </div></button> <!-- Tooltip Dropdown -->
-      <div id="profile-tooltip" class="hidden absolute right-0 mt-2 w-52 rounded-xl overflow-hidden z-50" style="background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
-       <!-- User Info -->
-       <div class="px-4 pt-4 pb-3 flex items-center gap-3" style="border-bottom: 1px solid rgba(255,255,255,0.07);">
-        <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #7c3aed, #06b6d4);">
-         <span class="text-white font-bold text-sm">JD</span>
+                <!-- User Section -->
+                <div class="flex items-center gap-4">
+                    <!-- Guest -->
+                    <div id="guest-ui" class="hidden flex items-center gap-2">
+                        <button onclick="toggleUser(true)" class="text-sm font-medium text-slate-300 hover:text-white">Log In</button>
+                        <button onclick="toggleUser(true)" class="bg-sky-500 hover:bg-sky-400 text-white text-sm font-semibold px-4 py-2 rounded-lg">Sign Up</button>
+                    </div>
+                    <!-- Authenticated -->
+                    <div id="auth-ui" class="flex items-center gap-4">
+                        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20">
+                            <i data-lucide="coins" class="w-4 h-4 text-sky-400"></i>
+                            <span class="text-sky-300 font-bold text-sm">1,250</span>
+                        </div>
+                        <div class="relative">
+                            <button onclick="document.getElementById('prof-drop').classList.toggle('hidden')" class="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center border border-white/10 hover:border-sky-500/50 transition">
+                                <i data-lucide="user" class="w-5 h-5 text-slate-400"></i>
+                            </button>
+                            <div id="prof-drop" class="hidden absolute right-0 mt-2 w-48 bg-slate-900 border border-white/10 rounded-xl shadow-2xl overflow-hidden">
+                                <div class="px-4 py-3 border-b border-white/5 text-xs text-slate-500">student@ptemaster.com</div>
+                                <div class="p-1">
+                                    <button onclick="toggleUser(false)" class="w-full text-left px-3 py-2 text-sm text-rose-400 hover:bg-rose-500/10 rounded-lg">Log Out</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="min-w-0">
-         <p class="text-white font-semibold text-sm truncate">Jane Doe</p>
-         <p class="text-slate-400 text-xs truncate">jane@example.com</p>
+
+        <!-- Mobile Content -->
+        <div id="mobile-menu" class="mobile-menu md:hidden bg-slate-900 border-t border-white/10">
+            <div class="px-4 py-3 space-y-1">
+                <button onclick="document.getElementById('mob-practice').classList.toggle('open')" class="w-full flex items-center justify-between px-3 py-2 text-slate-300">
+                    Practice <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </button>
+                <div id="mob-practice" class="mobile-accordion pl-4 space-y-1">
+                    <a href="#" class="block px-3 py-1.5 text-sm text-slate-400 hover:text-white">Speaking</a>
+                    <a href="#" class="block px-3 py-1.5 text-sm text-slate-400 hover:text-white">Writing</a>
+                </div>
+                <a href="#" class="block px-3 py-2 text-slate-300 hover:text-white">Pricing</a>
+                <a href="#" class="block px-3 py-2 text-slate-300 hover:text-white">Tutorial</a>
+            </div>
         </div>
-       </div><!-- Menu Items -->
-       <div class="py-1.5">
-        <a href="#" class="flex items-center gap-2.5 px-4 py-2.5 text-slate-300 text-sm no-underline transition-colors hover:bg-white/5" onclick="event.preventDefault()"> <i data-lucide="user" style="width:15px;height:15px;color:#94a3b8;"></i> My Profile </a> <a href="#" class="flex items-center gap-2.5 px-4 py-2.5 text-slate-300 text-sm no-underline transition-colors hover:bg-white/5" onclick="event.preventDefault()"> <i data-lucide="settings" style="width:15px;height:15px;color:#94a3b8;"></i> Settings </a>
-       </div><!-- Logout -->
-       <div style="border-top: 1px solid rgba(255,255,255,0.07);" class="py-1.5">
-        <a href="#" id="logout-btn" class="flex items-center gap-2.5 px-4 py-2.5 text-red-400 text-sm no-underline transition-colors hover:bg-red-500/10" onclick="event.preventDefault()"> <i data-lucide="log-out" style="width:15px;height:15px;color:#f87171;"></i> Log Out </a>
-       </div>
-      </div>
-     </div>
-    </div>
-   </nav><!-- Placeholder content -->
-   <div class="flex items-center justify-center" style="height: calc(100% - 60px); opacity: 0.3;">
-    <p class="text-slate-500 text-sm tracking-widest uppercase">Page Content</p>
-   </div>
-  </div>
-  <script>
-    lucide.createIcons();
+    </nav>
+    <!-- NAVBAR END -->
 
-    // Tooltip toggle
-    const profileBtn = document.getElementById('profile-btn');
-    const tooltip = document.getElementById('profile-tooltip');
-    let tooltipOpen = false;
+    <main class="h-screen flex items-center justify-center text-slate-800 text-xs uppercase tracking-widest">
+        Page content area (Click items to test)
+    </main>
 
-    function openTooltip() {
-      tooltip.classList.remove('hidden', 'tooltip-exit');
-      tooltip.classList.add('tooltip-enter');
-      profileBtn.setAttribute('aria-expanded', 'true');
-      tooltipOpen = true;
-    }
+    <script>
+        lucide.createIcons();
+        function toggleUser(isLoggedIn) {
+            document.getElementById('guest-ui').classList.toggle('hidden', isLoggedIn);
+            document.getElementById('auth-ui').classList.toggle('hidden', !isLoggedIn);
+            document.getElementById('prof-drop').classList.add('hidden');
+        }
+    </script>
+</body>
 
-    function closeTooltip() {
-      tooltip.classList.remove('tooltip-enter');
-      tooltip.classList.add('tooltip-exit');
-      profileBtn.setAttribute('aria-expanded', 'false');
-      tooltipOpen = false;
-      setTimeout(() => { if (!tooltipOpen) tooltip.classList.add('hidden'); }, 150);
-    }
-
-    profileBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      tooltipOpen ? closeTooltip() : openTooltip();
-    });
-
-    document.addEventListener('click', (e) => {
-      if (tooltipOpen && !document.getElementById('profile-wrapper').contains(e.target)) closeTooltip();
-    });
-
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && tooltipOpen) closeTooltip(); });
-
-    // Logout inline confirmation
-    const logoutBtn = document.getElementById('logout-btn');
-    logoutBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const parent = logoutBtn.parentElement;
-      logoutBtn.style.display = 'none';
-      const confirm = document.createElement('div');
-      confirm.className = 'px-4 py-2.5 flex items-center gap-2';
-      confirm.innerHTML = `
-        <span class="text-red-400 text-sm flex-1">Log out?</span>
-        <button class="text-xs font-semibold text-white bg-red-500 hover:bg-red-600 rounded-md px-2.5 py-1 border-0 cursor-pointer transition-colors" id="confirm-yes">Yes</button>
-        <button class="text-xs font-semibold text-slate-400 hover:text-white rounded-md px-2.5 py-1 border-0 cursor-pointer bg-transparent transition-colors" id="confirm-no">Cancel</button>
-      `;
-      parent.appendChild(confirm);
-      document.getElementById('confirm-no').addEventListener('click', () => { confirm.remove(); logoutBtn.style.display = 'flex'; });
-      document.getElementById('confirm-yes').addEventListener('click', () => { confirm.innerHTML = '<span class="text-slate-400 text-sm px-4 py-1">Logged out ✓</span>'; });
-    });
-
-    // Element SDK
-    const defaultConfig = {
-      brand_name: 'NexusPay',
-      token_count: '1,250',
-      buy_button_text: 'Buy Tokens',
-      background_color: '#0f172a',
-      surface_color: '#1e293b',
-      text_color: '#e2e8f0',
-      primary_action: '#7c3aed',
-      secondary_action: '#06b6d4'
-    };
-
-    function applyConfig(config) {
-      const c = { ...defaultConfig, ...config };
-      document.getElementById('brand-name').textContent = c.brand_name;
-      document.getElementById('token-count').textContent = c.token_count;
-      document.getElementById('buy-btn-text').textContent = c.buy_button_text;
-
-      // Colors
-      const wrapper = document.getElementById('app-wrapper');
-      wrapper.style.background = `linear-gradient(135deg, ${c.background_color} 0%, ${c.primary_action}22 40%, ${c.background_color} 100%)`;
-
-      document.querySelectorAll('.buy-btn').forEach(b => {
-        b.style.background = `linear-gradient(135deg, ${c.primary_action}, ${c.primary_action}dd)`;
-      });
-
-      const fonts = c.font_family ? `${c.font_family}, DM Sans, sans-serif` : 'DM Sans, sans-serif';
-      document.body.style.fontFamily = fonts;
-
-      if (c.font_size) {
-        const s = c.font_size;
-        document.getElementById('brand-name').style.fontSize = `${s * 1.15}px`;
-        document.getElementById('token-count').style.fontSize = `${s * 0.875}px`;
-        document.getElementById('buy-btn-text').style.fontSize = `${s * 0.875}px`;
-      }
-    }
-
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig,
-        onConfigChange: async (config) => applyConfig(config),
-        mapToCapabilities: (config) => ({
-          recolorables: [
-            { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
-            { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
-            { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
-            { get: () => config.primary_action || defaultConfig.primary_action, set: (v) => { config.primary_action = v; window.elementSdk.setConfig({ primary_action: v }); } },
-            { get: () => config.secondary_action || defaultConfig.secondary_action, set: (v) => { config.secondary_action = v; window.elementSdk.setConfig({ secondary_action: v }); } }
-          ],
-          borderables: [],
-          fontEditable: {
-            get: () => config.font_family || defaultConfig.font_family || '',
-            set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
-          },
-          fontSizeable: {
-            get: () => config.font_size || defaultConfig.font_size || 16,
-            set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
-          }
-        }),
-        mapToEditPanelValues: (config) => new Map([
-          ['brand_name', config.brand_name || defaultConfig.brand_name],
-          ['token_count', config.token_count || defaultConfig.token_count],
-          ['buy_button_text', config.buy_button_text || defaultConfig.buy_button_text]
-        ])
-      });
-    }
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ea892941316a93d',t:'MTc3NTg5NTYzMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

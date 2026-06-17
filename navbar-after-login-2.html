@@ -1,344 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Glassmorphism Navbar | Token Profile</title>
-    <!-- Tailwind CSS v3 + Font Awesome 6 (free icons) + Google Fonts for modern look -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTE Master — Glass Navbar (Plain HTML/JS)</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Override Tailwind default theme slightly to enhance glassmorphism (no major conflicts) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <!-- Inter font for clean modern typography -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* Custom smooth glass + gradient background */
         body {
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at 10% 20%, rgba(15, 25, 55, 1) 0%, rgba(5, 10, 30, 1) 100%);
+            background: radial-gradient(circle at 10% 20%, #0f172a 0%, #020617 100%);
             min-height: 100vh;
-            margin: 0;
-            padding: 0;
         }
-        /* Additional subtle animated grain effect for depth (optional) */
-        .bg-grain {
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-            pointer-events: none;
-        }
-        /* custom tooltip (profile dropdown) styling - glass card with smooth transitions */
-        .profile-tooltip {
-            visibility: hidden;
-            opacity: 0;
-            transform: translateY(-12px) scale(0.96);
-            transition: visibility 0.2s ease, opacity 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            backdrop-filter: blur(16px);
-            background: rgba(15, 25, 45, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.35), 0 0 0 0.5px rgba(255, 255, 255, 0.1) inset;
-        }
-        .profile-tooltip.show {
-            visibility: visible;
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-        /* custom hover for interactive elements */
-        .nav-btn-hover {
-            transition: all 0.2s ease;
-        }
-        .nav-btn-hover:hover {
-            background: rgba(255, 255, 255, 0.12);
-            transform: translateY(-1px);
-        }
-        .logout-btn {
-            transition: background 0.2s;
-        }
-        .logout-btn:hover {
-            background: rgba(220, 38, 38, 0.2);
-            border-color: rgba(239, 68, 68, 0.5);
-            color: #f87171;
-        }
-        /* buy token pulse effect (subtle) */
-        @keyframes soft-glow {
-            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
-            70% { box-shadow: 0 0 0 6px rgba(99, 102, 241, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
-        }
-        .buy-pulse {
-            animation: soft-glow 1.8s infinite;
-        }
-        /* responsive adjustments */
-        @media (max-width: 640px) {
-            .token-amount-text {
-                font-size: 0.85rem;
-            }
-            .buy-btn-text {
-                font-size: 0.85rem;
-            }
-        }
+        .mega-menu { display: none; position: absolute; top: 100%; left: 0; padding-top: 0.5rem; z-index: 50; }
+        .nav-item:hover .mega-menu { display: block; }
+        .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .mobile-menu.open { max-height: 100vh; }
     </style>
 </head>
-<body class="bg-grain relative">
-    <!-- Main background gradient overlay (already on body but adding richness) -->
-    <div class="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,_rgba(56,89,150,0.15),_transparent_70%)]"></div>
-    
-    <!-- Navigation Bar Component: Glassmorphism (dark variant) with backdrop blur + transparency -->
-    <nav class="w-full sticky top-0 z-50 bg-slate-900/60 backdrop-blur-md border-b border-white/10 shadow-lg">
+
+<body class="text-white">
+    <!-- GLASS NAVBAR -->
+    <nav class="sticky top-0 z-50 bg-slate-900/60 backdrop-blur-md border-b border-white/10 shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-end items-center h-16 md:h-18">
-                <!-- All sections align to the right: buy token button + token amount + profile icon -->
-                <div class="flex items-center space-x-4 sm:space-x-5 md:space-x-6">
-                    <!-- Token Amount Display (modern with icon) -->
-                    <div class="flex items-center space-x-2 bg-white/5 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/15 shadow-sm">
-                        <i class="fa-solid fa-coins text-indigo-300 text-sm sm:text-base"></i>
-                        <span class="token-amount-text font-semibold text-white/90 text-sm sm:text-base tracking-wide" id="tokenAmountDisplay">2,450.75</span>
-                        <span class="text-white/50 text-xs font-medium hidden sm:inline">Tokens</span>
-                    </div>
-                    
-                    <!-- Buy Token Button (glass style, with pulse subtle effect on hover) -->
-                    <button id="buyTokenBtn" class="buy-pulse nav-btn-hover flex items-center gap-2 bg-indigo-500/20 hover:bg-indigo-500/35 text-white border border-indigo-400/40 rounded-full px-4 py-1.5 sm:px-5 sm:py-2 backdrop-blur-sm transition-all duration-200 font-medium text-sm sm:text-base">
-                        <i class="fa-solid fa-store text-indigo-200 text-xs sm:text-sm"></i>
-                        <span class="buy-btn-text">Buy Token</span>
+            <div class="flex justify-between items-center h-16">
+                <!-- Left -->
+                <div class="flex items-center gap-4">
+                    <button onclick="document.getElementById('mob-nav').classList.toggle('open')" class="md:hidden text-white/70 hover:text-white">
+                        <i class="fa-solid fa-bars"></i>
                     </button>
-                    
-                    <!-- Profile Icon with click-to-toggle tooltip (dropdown menu) -->
-                    <div class="relative">
-                        <button id="profileIconBtn" class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/25 text-white hover:bg-white/20 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400/60 focus:ring-offset-1 focus:ring-offset-slate-800">
-                            <i class="fa-regular fa-user text-base sm:text-lg"></i>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-indigo-400 text-xl"></i>
+                        <span class="font-bold text-lg">PTE Master</span>
+                    </div>
+                </div>
+
+                <!-- Center -->
+                <div class="hidden md:flex items-center space-x-1">
+                    <div class="nav-item relative">
+                        <button class="px-3 py-2 text-sm font-medium text-white/70 hover:text-white flex items-center gap-1.5">
+                            Practice <i class="fa-solid fa-chevron-down text-[10px]"></i>
                         </button>
-                        
-                        <!-- Tooltip / Dropdown Card: includes Log-out option and user info context -->
-                        <div id="profileTooltip" class="profile-tooltip absolute right-0 mt-3 w-56 rounded-xl overflow-hidden z-50 origin-top-right">
-                            <div class="py-2 px-1 flex flex-col">
-                                <!-- user brief section (optional nice detail) -->
-                                <div class="px-3 py-2 border-b border-white/10 mb-1">
-                                    <p class="text-white/80 text-xs font-medium">Signed in as</p>
-                                    <p class="text-white text-sm font-semibold truncate">crypto.nav@example.com</p>
-                                </div>
-                                <!-- Log-out option (main action in tooltip) -->
-                                <button id="logoutBtn" class="logout-btn flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:text-white transition-all duration-200 text-left text-sm font-medium group">
-                                    <i class="fa-solid fa-arrow-right-from-bracket w-4 text-red-300 group-hover:text-red-400"></i>
-                                    <span>Log out</span>
-                                </button>
-                                <!-- optional extra subtle line (just design) -->
-                                <div class="mt-1 pt-1 border-t border-white/5 text-center">
-                                    <p class="text-[10px] text-white/40">Session active</p>
-                                </div>
+                        <div class="mega-menu">
+                            <div class="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-2 min-w-[200px]">
+                                <a href="#" class="block px-3 py-2 text-sm text-white/70 hover:text-white hover:bg-white/5 rounded-lg">Speaking</a>
+                                <a href="#" class="block px-3 py-2 text-sm text-white/70 hover:text-white hover:bg-white/5 rounded-lg">Writing</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="px-3 py-2 text-sm font-medium text-white/70 hover:text-white">Tutorial</a>
+                    <a href="#" class="px-3 py-2 text-sm font-medium text-white/70 hover:text-white">Pricing</a>
+                </div>
+
+                <!-- Right -->
+                <div class="flex items-center gap-4">
+                    <div id="guest-box" class="hidden flex gap-2">
+                        <button onclick="toggle(true)" class="text-sm font-medium text-white/70">Log In</button>
+                        <button onclick="toggle(true)" class="bg-indigo-500/20 border border-indigo-400/40 px-4 py-1.5 rounded-full text-sm">Sign Up</button>
+                    </div>
+                    <div id="auth-box" class="flex items-center gap-4">
+                        <div class="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 text-sm">
+                            <i class="fa-solid fa-coins text-indigo-400"></i> <span>2,450.75</span>
+                        </div>
+                        <div class="relative">
+                            <button onclick="document.getElementById('drop').classList.toggle('hidden')" class="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
+                                <i class="fa-regular fa-user"></i>
+                            </button>
+                            <div id="drop" class="hidden absolute right-0 mt-3 w-48 bg-slate-900/90 border border-white/10 rounded-xl shadow-2xl overflow-hidden backdrop-blur-xl">
+                                <div class="px-4 py-2 border-b border-white/5 text-[10px] text-white/50">jane.doe@example.com</div>
+                                <button onclick="toggle(false)" class="w-full text-left px-4 py-2 text-sm hover:bg-white/5 text-red-400">Log out</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- Mobile -->
+        <div id="mob-nav" class="mobile-menu md:hidden bg-slate-900 border-t border-white/10">
+            <div class="p-4 space-y-2">
+                <a href="#" class="block text-white/70">Practice</a>
+                <a href="#" class="block text-white/70">Tutorial</a>
+                <a href="#" class="block text-white/70">Pricing</a>
+            </div>
+        </div>
     </nav>
-    
-    <!-- Main content area: just to showcase modern background and glass context, no extra interference -->
-    <main class="max-w-5xl mx-auto px-5 py-12 md:py-20 relative z-10">
-        <div class="backdrop-blur-sm bg-white/5 rounded-2xl border border-white/10 p-6 md:p-10 shadow-2xl">
-            <div class="flex flex-col items-center text-center space-y-4">
-                <div class="inline-flex items-center gap-3 bg-indigo-500/10 px-4 py-2 rounded-full border border-indigo-400/30">
-                    <i class="fa-solid fa-gem text-indigo-300"></i>
-                    <span class="text-white/90 text-sm font-medium">Glassmorphism Dashboard</span>
-                </div>
-                <h1 class="text-3xl md:text-5xl font-bold bg-gradient-to-r from-white via-indigo-200 to-purple-200 bg-clip-text text-transparent">Modern Token Hub</h1>
-                <p class="text-white/60 max-w-lg text-base">Semi-transparent overlay + blur backdrop. Profile icon reveals logout tooltip. Buy token increases your balance.</p>
-                <div class="flex gap-4 mt-4 text-white/40 text-sm">
-                    <span class="flex items-center gap-1"><i class="fa-regular fa-circle-check text-emerald-400"></i> Glass effect</span>
-                    <span class="flex items-center gap-1"><i class="fa-regular fa-compass"></i> Right-aligned nav</span>
-                    <span class="flex items-center gap-1"><i class="fa-solid fa-arrow-right-to-bracket"></i> Logout ready</span>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Extra dummy cards to show blur context, not essential -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
-            <div class="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-5">
-                <i class="fa-solid fa-chart-line text-indigo-300 text-xl"></i>
-                <h3 class="text-white font-semibold mt-2">Portfolio</h3>
-                <p class="text-white/50 text-xs">Real-time analytics with glass UI</p>
-            </div>
-            <div class="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-5">
-                <i class="fa-solid fa-coins text-amber-300 text-xl"></i>
-                <h3 class="text-white font-semibold mt-2">Staking</h3>
-                <p class="text-white/50 text-xs">Earn rewards on your tokens</p>
-            </div>
-            <div class="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-5">
-                <i class="fa-solid fa-wallet text-emerald-300 text-xl"></i>
-                <h3 class="text-white font-semibold mt-2">Wallet</h3>
-                <p class="text-white/50 text-xs">Connected securely</p>
-            </div>
-        </div>
+
+    <main class="pt-24 text-center text-white/10 uppercase tracking-tighter select-none">
+        Blank Body
     </main>
-    
-    <!-- Notification toast (subtle feedback for buy & logout) -->
-    <div id="toastMsg" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-800/90 backdrop-blur-md border border-white/20 rounded-full px-5 py-2.5 shadow-xl text-white text-sm font-medium transition-all duration-300 z-[100] pointer-events-none opacity-0 translate-y-4 flex items-center gap-2">
-        <i id="toastIcon" class="fa-solid fa-circle-info text-indigo-300"></i>
-        <span id="toastText">Action complete</span>
-    </div>
 
     <script>
-        // ------------------------------
-        // Interactive functionality:
-        // 1) Profile icon click toggles tooltip (log-out option inside)
-        // 2) Buy token button increases token amount (token amount state)
-        // 3) Log-out option triggers logout simulation (toast, tooltip close)
-        // 4) Click outside closes tooltip automatically (improved UX)
-        // 5) All aligns to right, glassmorphism theme preserved.
-        // ------------------------------
-        
-        // DOM elements
-        const profileBtn = document.getElementById('profileIconBtn');
-        const tooltip = document.getElementById('profileTooltip');
-        const logoutOption = document.getElementById('logoutBtn');
-        const buyTokenBtn = document.getElementById('buyTokenBtn');
-        const tokenDisplaySpan = document.getElementById('tokenAmountDisplay');
-        
-        // Token state (numeric value, display formatted)
-        let currentTokenAmount = 2450.75;
-        
-        // Helper: format token with commas and 2 decimals (if needed)
-        function formatTokenAmount(amount) {
-            return amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        function toggle(loggedIn) {
+            document.getElementById('guest-box').classList.toggle('hidden', loggedIn);
+            document.getElementById('auth-box').classList.toggle('hidden', !loggedIn);
+            document.getElementById('drop').classList.add('hidden');
         }
-        
-        // Update token display in UI
-        function updateTokenDisplay() {
-            tokenDisplaySpan.innerText = formatTokenAmount(currentTokenAmount);
-        }
-        
-        // Toast notification system
-        let toastTimeout = null;
-        function showToast(message, isSuccess = true, iconType = 'info') {
-            const toastEl = document.getElementById('toastMsg');
-            const toastTextSpan = document.getElementById('toastText');
-            const toastIcon = document.getElementById('toastIcon');
-            
-            // Clear any previous timeout to avoid conflicts
-            if (toastTimeout) clearTimeout(toastTimeout);
-            
-            // Set icon based on type
-            if (iconType === 'success') {
-                toastIcon.className = 'fa-regular fa-circle-check text-emerald-400';
-            } else if (iconType === 'logout') {
-                toastIcon.className = 'fa-solid fa-arrow-right-from-bracket text-rose-300';
-            } else {
-                toastIcon.className = 'fa-solid fa-cart-shopping text-indigo-300';
-            }
-            
-            toastTextSpan.innerText = message;
-            toastEl.classList.remove('opacity-0', 'translate-y-4');
-            toastEl.classList.add('opacity-100', 'translate-y-0');
-            
-            toastTimeout = setTimeout(() => {
-                toastEl.classList.remove('opacity-100', 'translate-y-0');
-                toastEl.classList.add('opacity-0', 'translate-y-4');
-            }, 2200);
-        }
-        
-        // Function to close tooltip
-        function closeTooltip() {
-            if (tooltip.classList.contains('show')) {
-                tooltip.classList.remove('show');
-            }
-        }
-        
-        // Function to open tooltip (if not already open)
-        function openTooltip() {
-            if (!tooltip.classList.contains('show')) {
-                tooltip.classList.add('show');
-            }
-        }
-        
-        // Toggle tooltip on profile icon click
-        function toggleTooltip(event) {
-            event.stopPropagation();
-            if (tooltip.classList.contains('show')) {
-                closeTooltip();
-            } else {
-                openTooltip();
-            }
-        }
-        
-        // Buy token: increase token amount by a random realistic value between 85.50 and 310.25
-        // also gives a smooth feedback toast
-        function handleBuyToken() {
-            // random increment between 85.5 and 310.25 (feels rewarding)
-            const increment = +(Math.random() * (310.25 - 85.5) + 85.5).toFixed(2);
-            currentTokenAmount += increment;
-            updateTokenDisplay();
-            showToast(`+${increment.toFixed(2)} tokens purchased!`, true, 'success');
-            // Additional micro-interaction: add a tiny scale effect to the button
-            buyTokenBtn.classList.add('scale-95');
-            setTimeout(() => {
-                buyTokenBtn.classList.remove('scale-95');
-            }, 120);
-            // bonus: optional console log, but no needed
-        }
-        
-        // Logout simulation: close tooltip, show logout message, maybe reset token? (just demo, no hard reset required)
-        // In a real app, you'd redirect or clear session. We'll simulate and reset token amount to initial?
-        // For UX clarity, we show toast and reset token amount to default (optional but demonstrates "logout" effect).
-        // Also keep it intuitive: since this is a demo, we can reset token amount to initial value 2450.75 after logging out
-        // to simulate a fresh state. Alternatively show message without reset. I'll choose to reset token to initial amount
-        // and notify user "Logged out. Session reset." It feels complete. However, user might expect a fresh demo state.
-        // To align with logout, we also close tooltip.
-        function handleLogout() {
-            closeTooltip();
-            // Simulate logout: optionally reset token amount to default (showing new session)
-            // but keep it as a clean state: reset token amount to default value 2450.75.
-            currentTokenAmount = 2450.75;
-            updateTokenDisplay();
-            showToast('Logged out successfully. Token balance reset to default.', false, 'logout');
-            // small extra: if you want to show any other feedback, do nothing else.
-            // Also ensure that any open tooltip is closed, and profile icon state remains.
-            // No further side effects.
-        }
-        
-        // Click outside handler: close tooltip when clicking anywhere outside profile button + tooltip itself
-        function handleClickOutside(event) {
-            // if tooltip is not visible, ignore
-            if (!tooltip.classList.contains('show')) return;
-            
-            // Check if click target is inside profile button OR inside tooltip element
-            const isClickInsideProfileBtn = profileBtn.contains(event.target);
-            const isClickInsideTooltip = tooltip.contains(event.target);
-            
-            if (!isClickInsideProfileBtn && !isClickInsideTooltip) {
-                closeTooltip();
-            }
-        }
-        
-        // Attach event listeners
-        profileBtn.addEventListener('click', toggleTooltip);
-        buyTokenBtn.addEventListener('click', handleBuyToken);
-        logoutOption.addEventListener('click', (e) => {
-            e.stopPropagation();  // avoid event bubbling that could retrigger tooltip
-            handleLogout();
-        });
-        
-        // Global click listener for closing tooltip when clicking outside
-        document.addEventListener('click', handleClickOutside);
-        
-        // Prevent tooltip from closing when clicking inside tooltip (optional but handleClickOutside already allows inside)
-        // However, we need to stop propagation from tooltip so that clicks on logout or inside the dropdown don't bubble to document and cause immediate close? Actually, handleClickOutside checks if target inside tooltip, so it's safe.
-        // Also if you click logout, it's inside tooltip, so it won't close the tooltip before logout action. Perfect.
-        
-        // Optional: if user presses Escape key, close tooltip for accessibility
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && tooltip.classList.contains('show')) {
-                closeTooltip();
-            }
-        });
-        
-        // Additional: style adjustment to ensure buy token button pulse stops on hover to avoid clash, but it's fine.
-        // Initial display formatting
-        updateTokenDisplay();
-        
-        // small micro to add dynamic token on load ready (just ensure)
-        console.log('Glassmorphism navbar ready | profile tooltip with logout | buy token increases amount');
-        
-        // Bonus: preload optional & any responsive no issues
-        // Also token amount will be formatted with commas.
-        
-        // Edge case: if multiple rapid clicks, everything fine
     </script>
 </body>
+
 </html>
